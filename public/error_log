@@ -1,0 +1,5 @@
+[15-Jun-2026 07:09:31 UTC] PHP Warning:  require(/home1/invenzmf/public_html/mysalon/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home1/invenzmf/public_html/mysalon/public/index.php on line 14
+[15-Jun-2026 07:09:31 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home1/invenzmf/public_html/mysalon/public/../vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php83/root/usr/share/pear') in /home1/invenzmf/public_html/mysalon/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home1/invenzmf/public_html/mysalon/public/index.php on line 14

@@ -120,7 +120,7 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="price" class="form-label">Price (LKR)</label>
+                            <label for="price" class="form-label">Price (Rs.)</label>
                             <input type="number" class="form-control @error('price') is-invalid @enderror"
                                 id="price" name="price" value="{{ old('price', $service->price) }}" min="0" step="0.01" required>
                             @error('price')

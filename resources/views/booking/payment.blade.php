@@ -54,9 +54,9 @@
                                             <p><strong>Time:</strong> {{ $booking->appointment_time }}</p>
                                         </div>
                                         <div class="col-md-6">
-                                            <p><strong>Base Price:</strong> {{ number_format($booking->base_price, 2) }} LKR</p>
-                                            <p><strong>Service Fee (3%):</strong> {{ number_format($booking->addons_price, 2) }} LKR</p>
-                                            <p><strong>Total Amount:</strong> {{ number_format($booking->total_price, 2) }} LKR</p>
+                                            <p><strong>Base Price:</strong> Rs. {{number_format($booking->base_price, 2)}}</p>
+                                            <p><strong>Service Fee (3%):</strong> Rs. {{number_format($booking->addons_price, 2)}}</p>
+                                            <p><strong>Total Amount:</strong> Rs. {{number_format($booking->total_price, 2)}}</p>
                                         </div>
                                     </div>
                                 </div>

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ServiceCategory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -34,13 +35,16 @@ class AdminController extends Controller
             ->get();
 
         // Get popular services
-        $popularServices = Service::withCount('bookings')
-            ->with('category')
+        $popularServices = Service::query()
             ->select('services.*')
-            ->selectRaw('COUNT(bookings.id) as bookings_count')
-            ->selectRaw('SUM(CASE WHEN bookings.payment_status = "paid" THEN bookings.total_price ELSE 0 END) as revenue')
-            ->leftJoin('bookings', 'services.id', '=', 'bookings.service_id')
-            ->groupBy('services.id')
+            ->withCount('bookings')
+            ->with('category')
+            ->selectSub(function ($query) {
+                $query->from('bookings')
+                    ->selectRaw('COALESCE(SUM(total_price), 0)')
+                    ->whereColumn('bookings.service_id', 'services.id')
+                    ->where('payment_status', 'paid');
+            }, 'revenue')
             ->orderByDesc('bookings_count')
             ->take(5)
             ->get();
@@ -58,23 +62,16 @@ class AdminController extends Controller
     public function services()
     {
         $services = Service::query()
+            ->select('services.*')
             ->withCount('bookings')
             ->with(['category', 'icon'])
-            ->select('services.*')
-            ->selectRaw('SUM(CASE WHEN bookings.payment_status = "paid" THEN bookings.total_price ELSE 0 END) as revenue')
-            ->leftJoin('bookings', 'services.id', '=', 'bookings.service_id')
-            ->groupBy(
-                'services.id',
-                'services.name',
-                'services.description',
-                'services.features',
-                'services.duration',
-                'services.price',
-                'services.category_id',
-                'services.status',
-                'services.created_at',
-                'services.updated_at'
-            )->orderBy('services.name')
+            ->selectSub(function ($query) {
+                $query->from('bookings')
+                    ->selectRaw('COALESCE(SUM(total_price), 0)')
+                    ->whereColumn('bookings.service_id', 'services.id')
+                    ->where('payment_status', 'paid');
+            }, 'revenue')
+            ->orderBy('services.name')
             ->get();
 
         return view('admin.services.index', compact('services'));
@@ -248,6 +245,29 @@ class AdminController extends Controller
         return view('admin.users.create');
     }
 
+    public function storeUser(Request $request)
+    {
+        $validated = $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed',
+            'role'     => 'required|in:user,admin',
+            'is_verified' => 'nullable|boolean',
+        ]);
+
+        User::create([
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role'     => $validated['role'],
+            'is_verified' => $request->boolean('is_verified'),
+        ]);
+
+        return redirect()
+            ->route('admin.users.index')
+            ->with('success', 'User created successfully.');
+    }
+
 
 
     public function editUser(User $user)
@@ -262,12 +282,14 @@ class AdminController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'required|in:user,admin',
+            'is_verified' => 'nullable|boolean',
         ]);
 
         $updateData = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
+            'is_verified' => $user->id === Auth::id() ? true : $request->boolean('is_verified'),
         ];
 
         if (!empty($validated['password'])) {
@@ -280,9 +302,24 @@ class AdminController extends Controller
             ->with('user_updated', 'User updated successfully.');
     }
 
+    public function toggleUserVerification(User $user)
+    {
+        if ($user->id === Auth::id()) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'You cannot change verification for your own account.');
+        }
+
+        $user->update([
+            'is_verified' => ! $user->is_verified,
+        ]);
+
+        return redirect()->route('admin.users.index')
+            ->with('user_updated', 'User verification status updated successfully.');
+    }
+
     public function destroyUser(User $user)
     {
-        if ($user->id === auth::id()) {
+        if ($user->id === Auth::id()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'You cannot delete your own account.');
         }

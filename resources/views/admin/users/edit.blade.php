@@ -69,6 +69,16 @@
                         @enderror
                     </div>
 
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="is_verified" name="is_verified" value="1"
+                            {{ old('is_verified', $user->is_verified) ? 'checked' : '' }}
+                            {{ $user->id === Auth::id() ? 'disabled' : '' }}>
+                        <label for="is_verified" class="form-check-label">Verified user</label>
+                        @if($user->id === Auth::id())
+                        <div class="form-text">You cannot remove verification from your own account.</div>
+                        @endif
+                    </div>
+
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary">Update User</button>
                     </div>

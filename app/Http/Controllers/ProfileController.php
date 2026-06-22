@@ -28,7 +28,14 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = Auth::user();
-        $user->fill($request->validated());
+        $validated = $request->validated();
+        $validated['has_no_gst'] = $request->boolean('has_no_gst');
+
+        if ($validated['has_no_gst']) {
+            $validated['gst_number'] = null;
+        }
+
+        $user->fill($validated);
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
@@ -36,7 +43,7 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::back()->with('status', 'profile-updated');
     }
 
     /**

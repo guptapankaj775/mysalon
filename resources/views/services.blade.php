@@ -45,7 +45,7 @@
                 <div class="mb-4 col-lg-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                     <x-bridal-service-card
                         :title="$service->name"
-                        :price="'LKR ' . number_format($service->price, 2)"
+                        :price="'Rs. ' . number_format($service->price, 2)"
                         :duration="$service->duration . ' mins'"
                         :features="$service->features"
                         :package-type="Str::slug($service->name)"
@@ -58,7 +58,7 @@
                     <x-service-card
                         :title="$service->name"
                         :description="$service->description"
-                        :price="'LKR ' . number_format($service->price, 2)"
+                        :price="'Rs. ' . number_format($service->price, 2)"
                         :duration="$service->duration . ' mins'"
                         :icon="$service->images->where('is_primary', true)->first()?->image_path ?? 'fas ' . $iconClass"
                         :service-id="$service->id" />

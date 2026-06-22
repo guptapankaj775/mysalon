@@ -146,15 +146,15 @@
                             <div class="col-md-6">
                                 <div class="detail-row">
                                     <div class="detail-label">Base Price</div>
-                                    <div class="detail-value">{{ number_format($booking->base_price, 2) }} LKR</div>
+                                    <div class="detail-value">Rs. {{number_format($booking->base_price, 2)}}</div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-label">Service Fee</div>
-                                    <div class="detail-value">{{ number_format($booking->addons_price, 2) }} LKR</div>
+                                    <div class="detail-value">Rs. {{number_format($booking->addons_price, 2)}}</div>
                                 </div>
                                 <div class="detail-row">
                                     <div class="detail-label">Total Amount</div>
-                                    <div class="detail-value font-weight-bold">{{ number_format($booking->total_price, 2) }} LKR</div>
+                                    <div class="detail-value font-weight-bold">Rs. {{number_format($booking->total_price, 2)}}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">

@@ -85,7 +85,7 @@
                                                 {{ request('service') == $service->id ? 'selected' : 
                                                    ($selectedService && $selectedService->id == $service->id ? 'selected' : '') }}
                                                 data-price="{{ $service->price }}">
-                                                {{ $service->name }} - {{ number_format($service->price, 2) }} LKR
+                                                {{ $service->name }} - Rs. {{ number_format($service->price, 2) }}
                                             </option>
                                             @endforeach
                                         </select>
