@@ -66,6 +66,108 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
+        .form-check-input {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .form-check-input:checked {
+            background-color: #D4AF37;
+            border-color: #D4AF37;
+        }
+
+        .tax-billing-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .tax-billing-title {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .tax-billing-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #D4AF37;
+            display: inline-block;
+        }
+
+        .tax-billing-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .profile-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-verify-gst {
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.7rem 1.1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .btn-verify-gst:hover {
+            border-color: #D4AF37;
+            color: #D4AF37;
+        }
+
+        .btn-save {
+            background-color: var(--primary-color) !important;
+            color: var(--dark-color) !important;
+            border: 2px solid var(--primary-color) !important;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn-save:hover {
+            background-color: transparent !important;
+            color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 575.98px) {
+            .dashboard-header {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .profile-header-actions {
+                width: 100%;
+            }
+
+            .profile-header-actions .btn-save {
+                width: 100%;
+            }
+
+            .tax-billing-header {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .tax-billing-actions {
+                justify-content: space-between;
+            }
+        }
+
         .form-group label {
             color: #fff;
             margin-bottom: 0.5rem;
@@ -260,6 +362,10 @@
 
 
     @section('content')
+    @php
+    $showProfileTab = session('status') === 'profile-updated' || session('status') === 'password-updated' || $errors->any() || $errors->updatePassword->any();
+    @endphp
+
     <!-- Dashboard Section -->
     <section class="dashboard-section">
         <div class="container">
@@ -299,7 +405,7 @@
                             <ul class="nav flex-column">
                                 <li class="nav-item">
                                     <a
-                                        class="nav-link active"
+                                        class="nav-link {{ $showProfileTab ? '' : 'active' }}"
                                         href="#overview"
                                         data-bs-toggle="tab">
                                         <i class="fas fa-th-large"></i> Dashboard Overview
@@ -314,7 +420,15 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#profile" data-bs-toggle="tab">
+                                    <a
+                                        class="nav-link"
+                                        href="#inventory"
+                                        data-bs-toggle="tab">
+                                        <i class="fas fa-boxes"></i> My Created Inventory
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ $showProfileTab ? 'active' : '' }}" href="#profile" data-bs-toggle="tab">
                                         <i class="fas fa-user-edit"></i> Profile Settings
                                     </a>
                                 </li>
@@ -327,7 +441,7 @@
                 <div class="col-lg-9">
                     <div class="tab-content">
                         <!-- Overview Tab -->
-                        <div class="tab-pane fade show active" id="overview">
+                        <div class="tab-pane fade {{ $showProfileTab ? '' : 'show active' }}" id="overview">
                             <div class="dashboard-header">
                                 <h2>My Dashboard</h2>
                                 <a href="{{ route('services') }}" class="btn btn-book-appointment">
@@ -370,7 +484,7 @@
                                             <div class="action-icon" style="background: #FF9800;">
                                                 <i class="fas fa-coins"></i>
                                             </div>
-                                            <h4>{{ number_format($totalSpent, 2) }} LKR</h4>
+                                            <h4>Rs. {{ number_format($totalSpent, 2) }}</h4>
                                             <p>Total Spent</p>
                                         </div>
                                     </div>
@@ -396,7 +510,7 @@
                                         <div class="appointment-info">
                                             <h4>{{ $appointment->service->name }}</h4>
                                             <p><i class="fas fa-clock"></i> {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('g:i A') }}</p>
-                                            <p><i class="fas fa-money-bill"></i> {{ number_format($appointment->total_price, 2) }} LKR</p>
+                                            <p><i class="fas fa-money-bill"></i> Rs. {{ number_format($appointment->total_price, 2) }}</p>
                                             <span class="status {{ $appointment->status }}">{{ ucfirst($appointment->status) }}</span>
                                         </div>
                                         <div class="appointment-actions">
@@ -445,7 +559,7 @@
                                         <div class="appointment-info">
                                             <h4>{{ $appointment->service->name }}</h4>
                                             <p><i class="fas fa-clock"></i> {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('g:i A') }}</p>
-                                            <p><i class="fas fa-money-bill"></i> {{ number_format($appointment->total_price, 2) }} LKR</p>
+                                            <p><i class="fas fa-money-bill"></i> Rs. {{ number_format($appointment->total_price, 2) }}</p>
                                             <span class="status {{ $appointment->status }}">{{ ucfirst($appointment->status) }}</span>
                                         </div>
                                         <div class="appointment-actions">
@@ -480,7 +594,7 @@
                                         <div class="appointment-info">
                                             <h4>{{ $appointment->service->name }}</h4>
                                             <p><i class="fas fa-clock"></i> {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('g:i A') }}</p>
-                                            <p><i class="fas fa-money-bill"></i> {{ number_format($appointment->total_price, 2) }} LKR</p>
+                                            <p><i class="fas fa-money-bill"></i> Rs. {{ number_format($appointment->total_price, 2) }}</p>
                                             <span class="status {{ $appointment->status }}">{{ ucfirst($appointment->status) }}</span>
                                         </div>
                                         <div class="appointment-actions">
@@ -507,22 +621,39 @@
                         </div>
 
                         <!-- Profile Tab -->
-                        <div class="tab-pane fade" id="profile">
+                        <div class="tab-pane fade {{ $showProfileTab ? 'show active' : '' }}" id="profile">
                             <div class="dashboard-header">
                                 <h2>Profile Settings</h2>
+                                <div class="profile-header-actions">
+                                    <button type="submit" form="profileForm" class="btn btn-save">
+                                        Save Profile
+                                    </button>
+                                </div>
                             </div>
-                            <div class="section-card">
-                                <form id="profileForm" class="profile-form">
+                            @if (session('status') === 'profile-updated')
+                            <div class="alert alert-success">
+                                Profile details updated successfully.
+                            </div>
+                            @endif
+                            <form id="profileForm" class="profile-form" method="POST" action="{{ route('profile.update') }}">
+                                @csrf
+                                @method('PATCH')
+
+                                <div class="section-card">
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="firstName">Name</label>
                                                 <input
                                                     type="text"
-                                                    class="form-control"
+                                                    class="form-control @error('name') is-invalid @enderror"
                                                     id="firstName"
-                                                    value="{{ $user->name }}"
-                                                    disabled />
+                                                    name="name"
+                                                    value="{{ old('name', $user->name) }}"
+                                                    required />
+                                                @error('name')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -530,9 +661,13 @@
                                                 <label for="lastName">Last Name</label>
                                                 <input
                                                     type="text"
-                                                    class="form-control"
+                                                    class="form-control @error('last_name') is-invalid @enderror"
                                                     id="lastName"
-                                                    value="Johnson" />
+                                                    name="last_name"
+                                                    value="{{ old('last_name', $user->last_name) }}" />
+                                                @error('last_name')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -540,10 +675,14 @@
                                                 <label for="email">Email Address</label>
                                                 <input
                                                     type="email"
-                                                    class="form-control"
+                                                    class="form-control @error('email') is-invalid @enderror"
                                                     id="email"
-                                                    value="{{ $user->email }}"
-                                                    disabled />
+                                                    name="email"
+                                                    value="{{ old('email', $user->email) }}"
+                                                    required />
+                                                @error('email')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -551,9 +690,13 @@
                                                 <label for="phone">Phone Number</label>
                                                 <input
                                                     type="tel"
-                                                    class="form-control"
+                                                    class="form-control @error('phone') is-invalid @enderror"
                                                     id="phone"
-                                                    value="076-555-0123" />
+                                                    name="phone"
+                                                    value="{{ old('phone', $user->phone) }}" />
+                                                @error('phone')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="col-12">
@@ -562,21 +705,115 @@
                                             </button>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+
+                                <!-- Tax and Billing Section -->
+                                <div class="mt-4 section-card">
+                                    <div class="tax-billing-header">
+                                        <div class="tax-billing-title">
+                                            <span class="tax-billing-dot"></span>
+                                            <span>Tax & Billing</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-10">
+                                            <input
+                                                type="text"
+                                                class="form-control @error('gst_number') is-invalid @enderror"
+                                                id="gstNumber"
+                                                name="gst_number"
+                                                placeholder="GST number"
+                                                value="{{ old('gst_number', $user->gst_number) }}" />
+                                            @error('gst_number')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-2 d-grid">
+                                            <button type="button" class="btn btn-verify-gst">Verify</button>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    id="hasNoGst"
+                                                    name="has_no_gst"
+                                                    value="1"
+                                                    {{ old('has_no_gst', $user->has_no_gst) ? 'checked' : '' }}>
+                                                <label class="form-check-label text-white" for="hasNoGst">
+                                                    I don't have a GST number
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input
+                                                type="text"
+                                                class="form-control @error('billing_name') is-invalid @enderror"
+                                                id="billingName"
+                                                name="billing_name"
+                                                placeholder="Billing name"
+                                                value="{{ old('billing_name', $user->billing_name) }}" />
+                                            @error('billing_name')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input
+                                                type="text"
+                                                class="form-control @error('trade_name') is-invalid @enderror"
+                                                id="tradeName"
+                                                name="trade_name"
+                                                placeholder="Trade name"
+                                                value="{{ old('trade_name', $user->trade_name) }}" />
+                                            @error('trade_name')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-12">
+                                            <textarea
+                                                class="form-control @error('billing_address') is-invalid @enderror"
+                                                id="billingAddress"
+                                                name="billing_address"
+                                                rows="4"
+                                                placeholder="Billing address">{{ old('billing_address', $user->billing_address) }}</textarea>
+                                            @error('billing_address')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="col-12 text-end">
+                                            <button type="submit" class="btn btn-save">
+                                                Save Section
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
 
                             <!-- Password Change Section -->
                             <div class="mt-4 section-card">
                                 <h3>Change Password</h3>
-                                <form id="passwordForm" class="password-form">
+                                @if (session('status') === 'password-updated')
+                                <div class="alert alert-success">
+                                    Password updated successfully.
+                                </div>
+                                @endif
+                                <form id="passwordForm" class="password-form" method="POST" action="{{ route('password.update') }}">
+                                    @csrf
+                                    @method('PUT')
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="currentPassword">Current Password</label>
                                                 <input
                                                     type="password"
-                                                    class="form-control"
-                                                    id="currentPassword" />
+                                                    class="form-control @error('current_password', 'updatePassword') is-invalid @enderror"
+                                                    id="currentPassword"
+                                                    name="current_password"
+                                                    required />
+                                                @error('current_password', 'updatePassword')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -584,8 +821,13 @@
                                                 <label for="newPassword">New Password</label>
                                                 <input
                                                     type="password"
-                                                    class="form-control"
-                                                    id="newPassword" />
+                                                    class="form-control @error('password', 'updatePassword') is-invalid @enderror"
+                                                    id="newPassword"
+                                                    name="password"
+                                                    required />
+                                                @error('password', 'updatePassword')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="col-md-6">
@@ -593,8 +835,13 @@
                                                 <label for="confirmNewPassword">Confirm New Password</label>
                                                 <input
                                                     type="password"
-                                                    class="form-control"
-                                                    id="confirmNewPassword" />
+                                                    class="form-control @error('password_confirmation', 'updatePassword') is-invalid @enderror"
+                                                    id="confirmNewPassword"
+                                                    name="password_confirmation"
+                                                    required />
+                                                @error('password_confirmation', 'updatePassword')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
                                         <div class="col-12">
@@ -604,6 +851,57 @@
                                         </div>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+
+                        <!-- Inventory Tab -->
+                        <div class="tab-pane fade" id="inventory">
+                            <div class="dashboard-header d-flex justify-content-between align-items-center">
+                                <h2>My Created Inventory</h2>
+                            </div>
+                            
+                            <div class="mt-4 section-card">
+                                <div class="table-responsive">
+                                    <table class="table" style="background: transparent; color: #fff;">
+                                        <thead>
+                                            <tr style="border-bottom: 2px solid rgba(255, 255, 255, 0.1); color: #D4AF37;">
+                                                <th class="py-3">Item Name</th>
+                                                <th class="py-3">SKU</th>
+                                                <th class="py-3">Quantity</th>
+                                                <th class="py-3">Status</th>
+                                                <th class="py-3">Price</th>
+                                                <th class="py-3">Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($user->createdInventories as $item)
+                                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); vertical-align: middle;">
+                                                <td class="py-3 font-weight-bold" style="color: #fff;">{{ $item->item_name }}</td>
+                                                <td class="py-3"><code>{{ $item->sku ?? '-' }}</code></td>
+                                                <td class="py-3" style="color: #fff;">{{ $item->quantity }}</td>
+                                                <td class="py-3">
+                                                    @if($item->quantity == 0)
+                                                        <span class="badge bg-danger">Out of Stock</span>
+                                                    @elseif($item->quantity <= $item->min_quantity)
+                                                        <span class="badge bg-warning text-dark">Low Stock</span>
+                                                    @else
+                                                        <span class="badge bg-success">In Stock</span>
+                                                    @endif
+                                                </td>
+                                                <td class="py-3" style="color: #fff;">Rs. {{ number_format($item->price, 2) }}</td>
+                                                <td class="py-3 text-truncate" style="max-width: 250px; color: rgba(255,255,255,0.7);">{{ $item->description ?? '-' }}</td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td colspan="6" class="text-center py-5 text-muted">
+                                                    <i class="fas fa-box-open fa-2x mb-3" style="color: #D4AF37; opacity: 0.5;"></i>
+                                                    <p class="mb-0">You haven't created any inventory items yet.</p>
+                                                </td>
+                                            </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

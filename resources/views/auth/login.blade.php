@@ -53,7 +53,7 @@
                                 placeholder="name@example.com" required autofocus>
                         </div>
                         @error('email')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -67,7 +67,7 @@
                                 required autocomplete="current-password">
                         </div>
                         @error('password')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
 

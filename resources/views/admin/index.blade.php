@@ -135,7 +135,7 @@
                         <div class="stat-icon revenue">
                             <i class="fas fa-money-bill-wave"></i>
                         </div>
-                        <div class="stat-value">{{ number_format($totalRevenue, 2) }} LKR</div>
+                        <div class="stat-value">Rs. {{number_format($totalRevenue, 2)}}</div>
                         <div class="stat-label">Total Revenue</div>
                     </div>
                 </div>
@@ -198,7 +198,7 @@
                                     <br>
                                     <small>{{ \Carbon\Carbon::parse($booking->appointment_time)->format('g:i A') }}</small>
                                 </td>
-                                <td>{{ number_format($booking->total_price, 2) }} LKR</td>
+                                <td>Rs. {{number_format($booking->total_price, 2)}}</td>
                                 <td>
                                     <span class="status-badge status-{{ $booking->status }}">
                                         {{ ucfirst($booking->status) }}
@@ -244,9 +244,9 @@
                             <tr>
                                 <td>{{ $service->name }}</td>
                                 <td>{{ $service->category->name }}</td>
-                                <td>{{ number_format($service->price, 2) }} LKR</td>
+                                <td>Rs. {{number_format($service->price, 2)}}</td>
                                 <td>{{ $service->bookings_count }}</td>
-                                <td>{{ number_format($service->revenue, 2) }} LKR</td>
+                                <td>Rs. {{number_format($service->revenue, 2)}}</td>
                                 <td>
                                     <a href="{{ route('admin.services.edit', $service->id) }}"
                                         class="btn btn-sm btn-outline-primary action-btn">

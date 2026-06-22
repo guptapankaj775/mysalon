@@ -10,7 +10,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $user = Auth::user()->load('createdInventories');
 
         // Get upcoming appointments
         $upcomingAppointments = Booking::where('user_id', $user->id)

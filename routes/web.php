@@ -52,11 +52,13 @@ Route::middleware(['auth'])->group(function () {
 
         // Users routes
         Route::get('/users', [AdminController::class, 'users'])->name('admin.users.index');
-
         Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
         Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+        Route::patch('/users/{user}/verification', [AdminController::class, 'toggleUserVerification'])->name('admin.users.toggle-verification');
         Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
-
+        Route::get('/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
+        Route::post('/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
+        
         // Categories routes
         Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories');
         Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
@@ -64,6 +66,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
         Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+
+        // Inventory routes
+        Route::get('/inventory', [App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('admin.inventory.index');
+        Route::get('/inventory/create', [App\Http\Controllers\Admin\InventoryController::class, 'create'])->name('admin.inventory.create');
+        Route::post('/inventory', [App\Http\Controllers\Admin\InventoryController::class, 'store'])->name('admin.inventory.store');
+        Route::get('/inventory/{inventory}/edit', [App\Http\Controllers\Admin\InventoryController::class, 'edit'])->name('admin.inventory.edit');
+        Route::put('/inventory/{inventory}', [App\Http\Controllers\Admin\InventoryController::class, 'update'])->name('admin.inventory.update');
+        Route::delete('/inventory/{inventory}', [App\Http\Controllers\Admin\InventoryController::class, 'destroy'])->name('admin.inventory.destroy');
     });
 
     // Booking routes

@@ -39,6 +39,7 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Role</th>
+                                <th scope="col">Verified</th>
                                 <th scope="col">Joined Date</th>
                                 <th scope="col">Actions</th>
                             </tr>
@@ -54,8 +55,22 @@
                                         {{ ucfirst($user->role) }}
                                     </span>
                                 </td>
+                                <td>
+                                    <span class="badge bg-{{ $user->is_verified ? 'success' : 'warning' }}">
+                                        {{ $user->is_verified ? 'Verified' : 'Pending' }}
+                                    </span>
+                                </td>
                                 <td>{{ $user->created_at->format('M d, Y') }}</td>
                                 <td>
+                                    @if($user->id !== Auth::id())
+                                    <form action="{{ route('admin.users.toggle-verification', $user->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <!-- <button type="submit" class="btn btn-sm btn-{{ $user->is_verified ? 'warning' : 'success' }} me-2">
+                                            {{ $user->is_verified ? 'Unverify' : 'Verify' }}
+                                        </button> -->
+                                    </form>
+                                    @endif
                                     <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-info me-2">
                                         <i class="fas fa-edit"></i>
                                     </a>

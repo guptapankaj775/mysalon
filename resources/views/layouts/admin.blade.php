@@ -184,6 +184,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="{{ route('admin.inventory.index') }}" class="nav-link {{ request()->routeIs('admin.inventory*') ? 'active' : '' }}">
+                    <i class="fas fa-boxes"></i> Inventory
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="{{ route('admin.feedback.index') }}" class="nav-link {{ request()->routeIs('admin.feedback*') ? 'active' : '' }}">
                     <i class="fas fa-comments"></i>
                     Feedbacks

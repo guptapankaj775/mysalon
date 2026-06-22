@@ -19,10 +19,18 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
         'email',
+        'phone',
+        'gst_number',
+        'has_no_gst',
+        'billing_name',
+        'trade_name',
+        'billing_address',
         'password',
         'profile_photo',
         'role',
+        'is_verified',
     ];
 
     /**
@@ -44,6 +52,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'is_verified' => 'boolean',
+            'has_no_gst' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -54,5 +64,13 @@ class User extends Authenticatable
     public function bookings()
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * Get the inventory items created by the user.
+     */
+    public function createdInventories()
+    {
+        return $this->hasMany(Inventory::class, 'user_id');
     }
 }

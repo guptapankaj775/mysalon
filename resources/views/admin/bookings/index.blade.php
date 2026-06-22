@@ -159,7 +159,7 @@
                                 <td>{{ $booking->service->name }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->appointment_date)->format('M d, Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->appointment_time)->format('g:i A') }}</td>
-                                <td>{{ number_format($booking->total_price, 2) }} LKR</td>
+                                <td>Rs. {{number_format($booking->total_price, 2)}}</td>
                                 <td>
                                     <span class="status-badge status-{{ $booking->status }}">
                                         {{ ucfirst($booking->status) }}

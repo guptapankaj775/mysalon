@@ -86,9 +86,9 @@
                                 </td>
                                 <td>{{ $service->category->name }}</td>
                                 <td>{{ $service->duration }} min</td>
-                                <td>{{ number_format($service->price, 2) }} LKR</td>
+                                <td>Rs. {{number_format($service->price, 2)}}</td>
                                 <td>{{ $service->bookings_count }}</td>
-                                <td>{{ number_format($service->revenue ?? 0, 2) }} LKR</td>
+                                <td>Rs. {{number_format($service->revenue ?? 0, 2)}}</td>
                                 <td>
                                     <span class="status-badge status-{{ $service->status ? 'active' : 'inactive' }}">
                                         {{ $service->status ? 'Active' : 'Inactive' }}

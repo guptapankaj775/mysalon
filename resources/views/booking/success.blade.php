@@ -147,7 +147,7 @@
                                 <div class="col-md-6">
                                     <div class="detail-row">
                                         <div class="detail-label">Amount Paid</div>
-                                        <div class="detail-value">{{ number_format($booking->total_price, 2) }} LKR</div>
+                                        <div class="detail-value">Rs. {{number_format($booking->total_price, 2)}}</div>
                                     </div>
                                     <div class="detail-row">
                                         <div class="detail-label">Transaction ID</div>
