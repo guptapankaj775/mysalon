@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\Specialist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ServiceCategory;
@@ -251,7 +252,7 @@ class AdminController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
-            'role'     => 'required|in:user,admin',
+            'role'     => 'required|in:user,admin,staff',
             'is_verified' => 'nullable|boolean',
         ]);
 
@@ -281,7 +282,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|in:user,admin',
+            'role' => 'required|in:user,admin,staff',
             'is_verified' => 'nullable|boolean',
         ]);
 
@@ -328,5 +329,104 @@ class AdminController extends Controller
 
         return redirect()->route('admin.users.index')
             ->with('user_deleted', 'User deleted successfully.');
+    }
+
+    // Staff (Specialist) Management Methods
+    public function staff()
+    {
+        $staff = Specialist::with('services')->orderBy('created_at', 'desc')->paginate(10);
+        return view('admin.staff.index', compact('staff'));
+    }
+
+    public function createStaff()
+    {
+        $services = Service::where('status', true)->get();
+        return view('admin.staff.create', compact('services'));
+    }
+
+    public function storeStaff(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'bio' => 'nullable|string|max:1000',
+            'image' => 'nullable|image|max:1024', // max 1MB
+            'status' => 'boolean',
+            'services' => 'nullable|array',
+            'services.*' => 'exists:services,id',
+        ]);
+
+        $status = $request->has('status');
+
+        $specialistData = [
+            'name' => $validated['name'],
+            'bio' => $validated['bio'] ?? null,
+            'status' => $status,
+        ];
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('specialists', 'public');
+            $specialistData['image_path'] = $path;
+        }
+
+        $specialist = Specialist::create($specialistData);
+
+        if (!empty($validated['services'])) {
+            $specialist->services()->sync($validated['services']);
+        }
+
+        return redirect()->route('admin.staff.index')->with('success', 'Staff member added successfully');
+    }
+
+    public function editStaff(Specialist $specialist)
+    {
+        $services = Service::where('status', true)->get();
+        $specialist->load('services');
+        return view('admin.staff.edit', compact('specialist', 'services'));
+    }
+
+    public function updateStaff(Request $request, Specialist $specialist)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:100',
+            'bio' => 'nullable|string|max:1000',
+            'image' => 'nullable|image|max:1024',
+            'status' => 'boolean',
+            'services' => 'nullable|array',
+            'services.*' => 'exists:services,id',
+        ]);
+
+        $status = $request->has('status');
+
+        $specialistData = [
+            'name' => $validated['name'],
+            'bio' => $validated['bio'] ?? null,
+            'status' => $status,
+        ];
+
+        if ($request->hasFile('image')) {
+            // Delete old image
+            if ($specialist->image_path) {
+                Storage::disk('public')->delete($specialist->image_path);
+            }
+            $path = $request->file('image')->store('specialists', 'public');
+            $specialistData['image_path'] = $path;
+        }
+
+        $specialist->update($specialistData);
+
+        // Sync services
+        $services = $validated['services'] ?? [];
+        $specialist->services()->sync($services);
+
+        return redirect()->route('admin.staff.index')->with('success', 'Staff member updated successfully');
+    }
+
+    public function destroyStaff(Specialist $specialist)
+    {
+        if ($specialist->image_path) {
+            Storage::disk('public')->delete($specialist->image_path);
+        }
+        $specialist->delete();
+        return redirect()->route('admin.staff.index')->with('success', 'Staff member deleted successfully');
     }
 }

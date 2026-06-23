@@ -27,6 +27,9 @@ class User extends Authenticatable
         'billing_name',
         'trade_name',
         'billing_address',
+        'location',
+        'latitude',
+        'longitude',
         'password',
         'profile_photo',
         'role',
@@ -110,5 +113,27 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    /**
+     * Check if the user has a specific permission.
+     */
+    public function hasPermission(string $permission): bool
+    {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return RolePermission::where('role', $this->role)
+            ->where('permission', $permission)
+            ->exists();
+    }
+
+    /**
+     * Check if the user has a specific role.
+     */
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role;
     }
 }

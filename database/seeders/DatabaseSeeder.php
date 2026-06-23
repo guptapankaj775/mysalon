@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             ServiceCategoriesTableSeeder::class,
             ServicesTableSeeder::class,
             ServiceImagesTableSeeder::class,
+            RolePermissionSeeder::class,
         ]);
     }
 }

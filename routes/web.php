@@ -66,6 +66,15 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
         Route::get('/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
         Route::post('/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
+
+        // Staff (Specialist) Management routes
+        Route::get('/staff', [AdminController::class, 'staff'])->name('admin.staff.index');
+        // Let's create specific routes to avoid model-binding conflicts or matching order issues
+        Route::get('/staff/create', [AdminController::class, 'createStaff'])->name('admin.staff.create');
+        Route::post('/staff', [AdminController::class, 'storeStaff'])->name('admin.staff.store');
+        Route::get('/staff/{specialist}/edit', [AdminController::class, 'editStaff'])->name('admin.staff.edit');
+        Route::put('/staff/{specialist}', [AdminController::class, 'updateStaff'])->name('admin.staff.update');
+        Route::delete('/staff/{specialist}', [AdminController::class, 'destroyStaff'])->name('admin.staff.destroy');
         
         // Categories routes
         Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories');
@@ -96,6 +105,10 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/subscribers/{userSubscription}/status', [App\Http\Controllers\Admin\SubscriptionController::class, 'updateSubscriptionStatus'])->name('admin.subscribers.update-status');
         Route::get('/subscription-settings', [App\Http\Controllers\Admin\SubscriptionController::class, 'settings'])->name('admin.subscription.settings');
         Route::post('/subscription-settings', [App\Http\Controllers\Admin\SubscriptionController::class, 'updateSettings'])->name('admin.subscription.settings.update');
+
+        // Roles & Permissions routes
+        Route::get('/roles-permissions', [App\Http\Controllers\Admin\RolePermissionController::class, 'index'])->name('admin.roles.index');
+        Route::post('/roles-permissions', [App\Http\Controllers\Admin\RolePermissionController::class, 'update'])->name('admin.roles.update');
     });
 
     // Booking routes

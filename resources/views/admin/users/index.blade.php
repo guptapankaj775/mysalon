@@ -7,6 +7,11 @@
     <div class="container-fluid">
         <div class="flex-wrap pt-3 pb-2 mb-3 d-flex justify-content-between flex-md-nowrap align-items-center border-bottom">
             <h1 class="h2">User Management</h1>
+            <div class="actions">
+                <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add New User
+                </a>
+            </div>
         </div> @if(session('user_updated'))
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             {{ session('user_updated') }}

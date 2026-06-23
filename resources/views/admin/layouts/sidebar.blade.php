@@ -15,6 +15,12 @@
             </a>
         </li>
 
+        <li class="{{ request()->is('admin/staff*') ? 'active' : '' }}">
+            <a href="{{ route('admin.staff.index') }}" class="nav-link">
+                <i class="fas fa-user-tie"></i> Staff
+            </a>
+        </li>
+
         <li class="{{ request()->is('admin/services*') ? 'active' : '' }}">
             <a href="{{ route('admin.services') }}" class="nav-link">
                 <i class="fas fa-cut"></i> Services

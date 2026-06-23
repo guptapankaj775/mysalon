@@ -63,6 +63,25 @@
             background: #2C2C2C;
             transition: 0.3s;
             z-index: 1000;
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar for Sidebar */
+        .sidenav::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .sidenav::-webkit-scrollbar-track {
+            background: #2C2C2C;
+        }
+
+        .sidenav::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 4px;
+        }
+
+        .sidenav::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.6);
         }
 
         .sidenav-header {
@@ -182,6 +201,16 @@
             <li class="{{ request()->is('admin/users*') ? 'active' : '' }}">
                 <a href="{{ route('admin.users.index') }}" class="nav-link">
                     <i class="fas fa-users"></i> Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.staff.index') }}" class="nav-link {{ request()->routeIs('admin.staff*') ? 'active' : '' }}">
+                    <i class="fas fa-user-tie"></i> Staff
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.roles.index') }}" class="nav-link {{ request()->routeIs('admin.roles*') ? 'active' : '' }}">
+                    <i class="fas fa-shield-alt"></i> Permissions
                 </a>
             </li>
             <li class="nav-item">

@@ -32,6 +32,9 @@ class ProfileUpdateRequest extends FormRequest
             'billing_name' => ['nullable', 'string', 'max:255'],
             'trade_name' => ['nullable', 'string', 'max:255'],
             'billing_address' => ['nullable', 'string', 'max:1000'],
+            'location' => ['nullable', 'string', 'max:500'],
+            'latitude' => ['nullable', 'numeric'],
+            'longitude' => ['nullable', 'numeric'],
         ];
     }
 }
