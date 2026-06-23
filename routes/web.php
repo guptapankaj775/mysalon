@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -20,6 +21,13 @@ Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
+
+    // Subscription routes
+    Route::get('/subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
+    Route::post('/subscription/select', [SubscriptionController::class, 'selectPlan'])->name('subscription.select');
+    Route::get('/subscription/{subscription}/payment', [SubscriptionController::class, 'payment'])->name('subscription.payment');
+    Route::post('/subscription/{subscription}/payment', [SubscriptionController::class, 'processPayment'])->name('subscription.payment.process');
+    Route::get('/subscription/{subscription}/success', [SubscriptionController::class, 'success'])->name('subscription.success');
 
     // Feedback routes
     Route::get('/feedback/create/{booking}', [FeedbackController::class, 'create'])->name('feedback.create');
@@ -74,6 +82,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/inventory/{inventory}/edit', [App\Http\Controllers\Admin\InventoryController::class, 'edit'])->name('admin.inventory.edit');
         Route::put('/inventory/{inventory}', [App\Http\Controllers\Admin\InventoryController::class, 'update'])->name('admin.inventory.update');
         Route::delete('/inventory/{inventory}', [App\Http\Controllers\Admin\InventoryController::class, 'destroy'])->name('admin.inventory.destroy');
+
+        // Subscription Plans routes
+        Route::get('/subscriptions', [App\Http\Controllers\Admin\SubscriptionController::class, 'index'])->name('admin.subscriptions.index');
+        Route::get('/subscriptions/create', [App\Http\Controllers\Admin\SubscriptionController::class, 'create'])->name('admin.subscriptions.create');
+        Route::post('/subscriptions', [App\Http\Controllers\Admin\SubscriptionController::class, 'store'])->name('admin.subscriptions.store');
+        Route::get('/subscriptions/{subscription}/edit', [App\Http\Controllers\Admin\SubscriptionController::class, 'edit'])->name('admin.subscriptions.edit');
+        Route::put('/subscriptions/{subscription}', [App\Http\Controllers\Admin\SubscriptionController::class, 'update'])->name('admin.subscriptions.update');
+        Route::delete('/subscriptions/{subscription}', [App\Http\Controllers\Admin\SubscriptionController::class, 'destroy'])->name('admin.subscriptions.destroy');
+
+        // Subscribers list & settings
+        Route::get('/subscribers', [App\Http\Controllers\Admin\SubscriptionController::class, 'subscribers'])->name('admin.subscribers');
+        Route::patch('/subscribers/{userSubscription}/status', [App\Http\Controllers\Admin\SubscriptionController::class, 'updateSubscriptionStatus'])->name('admin.subscribers.update-status');
+        Route::get('/subscription-settings', [App\Http\Controllers\Admin\SubscriptionController::class, 'settings'])->name('admin.subscription.settings');
+        Route::post('/subscription-settings', [App\Http\Controllers\Admin\SubscriptionController::class, 'updateSettings'])->name('admin.subscription.settings.update');
     });
 
     // Booking routes

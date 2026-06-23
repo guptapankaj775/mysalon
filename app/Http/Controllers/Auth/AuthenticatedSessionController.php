@@ -28,6 +28,14 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = Auth::user();
+
+        // Redirect non-admins without active plan to subscription selection
+        if (!$user->isAdmin() && !$user->hasActivePlan()) {
+            return redirect()->route('subscription.index')
+                ->with('info', 'Welcome! Please select a subscription plan to get started.');
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

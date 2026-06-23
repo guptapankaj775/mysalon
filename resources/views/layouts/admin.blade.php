@@ -22,7 +22,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         /* Alert Styles */
@@ -200,6 +201,26 @@
                     @endif
                 </a>
             </li>
+            <!-- Subscription Section -->
+            <li style="padding: 0.5rem 20px 0.2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); pointer-events: none; margin-top: 0.5rem;">
+                Subscriptions
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.subscriptions.index') }}" class="nav-link {{ request()->is('admin/subscriptions*') ? 'active' : '' }}">
+                    <i class="fas fa-layer-group"></i> Plans
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.subscribers') }}" class="nav-link {{ request()->is('admin/subscribers*') ? 'active' : '' }}">
+                    <i class="fas fa-id-card"></i> Subscribers
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.subscription.settings') }}" class="nav-link {{ request()->is('admin/subscription-settings*') ? 'active' : '' }}">
+                    <i class="fas fa-sliders-h"></i> Settings
+                </a>
+            </li>
+
             <li class="nav-item">
                 <a href="{{ route('home') }}" class="nav-link" target="_blank">
                     <i class="fas fa-globe"></i>

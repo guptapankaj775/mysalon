@@ -33,6 +33,41 @@
             </a>
         </li>
 
+        <li class="{{ request()->is('admin/inventory*') ? 'active' : '' }}">
+            <a href="{{ route('admin.inventory.index') }}" class="nav-link">
+                <i class="fas fa-boxes"></i> Inventory
+            </a>
+        </li>
+
+        <li class="{{ request()->is('admin/feedbacks*') ? 'active' : '' }}">
+            <a href="{{ route('admin.feedback.index') }}" class="nav-link">
+                <i class="fas fa-star"></i> Feedback
+            </a>
+        </li>
+
+        <!-- Subscription Section -->
+        <li style="padding: 0.4rem 1rem 0.2rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.35); pointer-events: none; margin-top: 0.5rem;">
+            Subscriptions
+        </li>
+
+        <li class="{{ request()->is('admin/subscriptions*') ? 'active' : '' }}">
+            <a href="{{ route('admin.subscriptions.index') }}" class="nav-link">
+                <i class="fas fa-layer-group"></i> Plans
+            </a>
+        </li>
+
+        <li class="{{ request()->is('admin/subscribers*') ? 'active' : '' }}">
+            <a href="{{ route('admin.subscribers') }}" class="nav-link">
+                <i class="fas fa-id-card"></i> Subscribers
+            </a>
+        </li>
+
+        <li class="{{ request()->is('admin/subscription-settings*') ? 'active' : '' }}">
+            <a href="{{ route('admin.subscription.settings') }}" class="nav-link">
+                <i class="fas fa-sliders-h"></i> Sub. Settings
+            </a>
+        </li>
+
         <li>
             <a href="{{ url('/') }}" class="nav-link" target="_blank">
                 <i class="fas fa-globe"></i> Visit Website

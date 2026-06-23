@@ -295,6 +295,114 @@
             background: #43a047;
             color: white;
         }
+        /* Locked feature overlay */
+        .locked-section {
+            position: relative;
+        }
+
+        .locked-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10,10,15,0.82);
+            backdrop-filter: blur(4px);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            gap: 0.75rem;
+        }
+
+        .locked-overlay i {
+            font-size: 2.5rem;
+            color: rgba(212,175,55,0.6);
+        }
+
+        .locked-overlay p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.95rem;
+            margin: 0;
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        .locked-overlay .btn-unlock {
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            color: #000;
+            font-weight: 700;
+            padding: 0.55rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        /* Subscription notice banner */
+        .subscription-notice {
+            background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(239,68,68,0.08));
+            border: 1px solid rgba(245,158,11,0.35);
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .subscription-notice .notice-icon {
+            width: 42px;
+            height: 42px;
+            background: rgba(245,158,11,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+            color: #fbbf24;
+        }
+
+        .subscription-notice .notice-text {
+            flex: 1;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.9rem;
+        }
+
+        .subscription-notice .notice-text strong {
+            color: #fbbf24;
+        }
+
+        .subscription-notice .btn-subscribe {
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            color: #000;
+            font-weight: 700;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            text-decoration: none;
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+
+        /* Trial expiry badge */
+        .trial-expiry-badge {
+            background: rgba(34,197,94,0.12);
+            border: 1px solid rgba(34,197,94,0.25);
+            border-radius: 50px;
+            padding: 0.3rem 0.9rem;
+            font-size: 0.8rem;
+            color: #4ade80;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-top: 0.5rem;
+        }
+
+        .trial-expiry-badge.expiring {
+            background: rgba(239,68,68,0.12);
+            border-color: rgba(239,68,68,0.25);
+            color: #f87171;
+        }
     </style>
     @endpush
 
@@ -439,14 +547,51 @@
 
                 <!-- Main Content -->
                 <div class="col-lg-9">
+                    <!-- Subscription Notice Banner -->
+                    @if(!$hasActivePlan && $noticeMessage)
+                    <div class="subscription-notice">
+                        <div class="notice-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="notice-text">
+                            {{ $noticeMessage }}
+                        </div>
+                        <a href="{{ route('subscription.index') }}" class="btn-subscribe">
+                            <i class="fas fa-crown me-1"></i>Subscribe
+                        </a>
+                    </div>
+                    @endif
+
+                    @if($activeSubscription && $activeSubscription->days_remaining <= 7 && $activeSubscription->days_remaining > 0)
+                    <div class="subscription-notice" style="background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.08)); border-color: rgba(59,130,246,0.3);">
+                        <div class="notice-icon" style="background: rgba(59,130,246,0.2); color: #60a5fa;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="notice-text">
+                            Your <strong style="color:#60a5fa;">{{ $activeSubscription->plan->name }}</strong> plan expires in
+                            <strong style="color:#60a5fa;">{{ $activeSubscription->days_remaining }} day(s)</strong>.
+                            Renew to keep full access.
+                        </div>
+                        <a href="{{ route('subscription.index') }}" class="btn-subscribe" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff;">
+                            <i class="fas fa-sync me-1"></i>Renew
+                        </a>
+                    </div>
+                    @endif
+
                     <div class="tab-content">
                         <!-- Overview Tab -->
                         <div class="tab-pane fade {{ $showProfileTab ? '' : 'show active' }}" id="overview">
                             <div class="dashboard-header">
                                 <h2>My Dashboard</h2>
+                                @if(!in_array('booking', $limitedFeatures ?? []))
                                 <a href="{{ route('services') }}" class="btn btn-book-appointment">
                                     <i class="fas fa-plus"></i> Book New Appointment
                                 </a>
+                                @else
+                                <a href="{{ route('subscription.index') }}" class="btn btn-book-appointment" style="background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.2);">
+                                    <i class="fas fa-lock"></i> Subscribe to Book
+                                </a>
+                                @endif
                             </div>
 
                             <!-- Quick Actions -->
@@ -492,7 +637,14 @@
                             </div>
 
                             <!-- Upcoming Appointments -->
-                            <div class="mt-4 section-card">
+                            <div class="mt-4 section-card locked-section">
+                                @if(in_array('appointments', $limitedFeatures ?? []))
+                                <div class="locked-overlay">
+                                    <i class="fas fa-lock"></i>
+                                    <p>Appointment history is locked.<br>Subscribe to view all your appointments.</p>
+                                    <a href="{{ route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
+                                </div>
+                                @endif
                                 <div class="card-header">
                                     <h3>Upcoming Appointments</h3>
                                     <a
@@ -528,7 +680,9 @@
                                     @empty
                                     <div class="py-4 text-center">
                                         <p>No upcoming appointments</p>
+                                        @if(!in_array('booking', $limitedFeatures ?? []))
                                         <a href="{{ route('services') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                        @endif
                                     </div>
                                     @endforelse
                                 </div>
@@ -546,7 +700,15 @@
                                     <button class="btn btn-filter">Cancelled</button>
                                 </div>
                             </div>
-                            <div class="appointments-timeline">
+                            <div class="appointments-timeline locked-section">
+                                @if(in_array('appointments', $limitedFeatures ?? []))
+                                <div class="locked-overlay" style="min-height: 200px;">
+                                    <i class="fas fa-lock"></i>
+                                    <p>Full appointment history is locked.<br>Subscribe to view all your appointments.</p>
+                                    <a href="{{ route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
+                                </div>
+                                @endif
+
                                 <!-- Upcoming Appointments -->
                                 <div class="mb-4 timeline-section">
                                     <h3>Upcoming Appointments</h3>
@@ -860,7 +1022,14 @@
                                 <h2>My Created Inventory</h2>
                             </div>
                             
-                            <div class="mt-4 section-card">
+                            <div class="mt-4 section-card locked-section">
+                                @if(in_array('inventory', $limitedFeatures ?? []))
+                                <div class="locked-overlay">
+                                    <i class="fas fa-lock"></i>
+                                    <p>Inventory management is locked.<br>Subscribe to manage your inventory.</p>
+                                    <a href="{{ route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
+                                </div>
+                                @endif
                                 <div class="table-responsive">
                                     <table class="table" style="background: transparent; color: #fff;">
                                         <thead>
@@ -874,6 +1043,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+
                                             @forelse($user->createdInventories as $item)
                                             <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); vertical-align: middle;">
                                                 <td class="py-3 font-weight-bold" style="color: #fff;">{{ $item->item_name }}</td>
