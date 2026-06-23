@@ -73,4 +73,42 @@ class User extends Authenticatable
     {
         return $this->hasMany(Inventory::class, 'user_id');
     }
+
+    /**
+     * Get all subscriptions for the user.
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(UserSubscription::class);
+    }
+
+    /**
+     * Get the user's active subscription.
+     */
+    public function activeSubscription()
+    {
+        return $this->hasOne(UserSubscription::class)
+            ->where('status', 'active')
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                      ->orWhere('expires_at', '>', now());
+            })
+            ->latest();
+    }
+
+    /**
+     * Check if the user has an active subscription plan.
+     */
+    public function hasActivePlan(): bool
+    {
+        return $this->activeSubscription()->exists();
+    }
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }
