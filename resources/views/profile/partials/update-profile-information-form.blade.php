@@ -47,6 +47,19 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="location" :value="__('Location')" />
+            <div class="mt-1 flex rounded-md shadow-sm">
+                <x-text-input id="location" name="location" type="text" class="block w-full flex-1 rounded-none rounded-l-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600" :value="old('location', $user->location)" placeholder="Your location address" />
+                <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude', $user->latitude) }}" />
+                <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude', $user->longitude) }}" />
+                <button type="button" id="btnDetectLocationTailwind" onclick="detectLocationTailwind()" class="inline-flex items-center px-4 rounded-r-md border border-l-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                    <i class="fas fa-map-marker-alt mr-1"></i> Auto Detect
+                </button>
+            </div>
+            <x-input-error class="mt-2" :messages="$errors->get('location')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
@@ -61,4 +74,56 @@
             @endif
         </div>
     </form>
+
+    @push('scripts')
+    <script>
+        function detectLocationTailwind() {
+            const btn = document.getElementById('btnDetectLocationTailwind');
+            const input = document.getElementById('location');
+            const originalText = btn.innerHTML;
+
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting...';
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data && data.display_name) {
+                                input.value = data.display_name;
+                                document.getElementById('latitude').value = lat;
+                                document.getElementById('longitude').value = lon;
+                            } else {
+                                alert('Could not resolve address for your coordinates.');
+                            }
+                            btn.disabled = false;
+                            btn.innerHTML = originalText;
+                        })
+                        .catch(error => {
+                            console.error('Error reverse geocoding:', error);
+                            alert('Error getting address details.');
+                            btn.disabled = false;
+                            btn.innerHTML = originalText;
+                        });
+                },
+                function (error) {
+                    console.error('Geolocation error:', error);
+                    alert('Unable to retrieve your location. Please ensure location permissions are granted.');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        }
+    </script>
+    @endpush
 </section>

@@ -295,6 +295,22 @@
             background: #43a047;
             color: white;
         }
+
+        .btn-gold {
+            background-color: #D4AF37 !important;
+            color: #111 !important;
+            border: 1px solid #D4AF37 !important;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gold:hover {
+            background-color: #E6B800 !important;
+            border-color: #E6B800 !important;
+            color: #111 !important;
+            transform: translateY(-1px);
+        }
     </style>
     @endpush
 
@@ -356,6 +372,54 @@
                 }
             });
         });
+
+        function detectLocation() {
+            const btn = document.getElementById('btnDetectLocation');
+            const input = document.getElementById('locationInput');
+            const originalText = btn.innerHTML;
+
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Detecting...';
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data && data.display_name) {
+                                input.value = data.display_name;
+                                document.getElementById('latitudeInput').value = lat;
+                                document.getElementById('longitudeInput').value = lon;
+                            } else {
+                                alert('Could not resolve address for your coordinates.');
+                            }
+                            btn.disabled = false;
+                            btn.innerHTML = originalText;
+                        })
+                        .catch(error => {
+                            console.error('Error reverse geocoding:', error);
+                            alert('Error getting address details.');
+                            btn.disabled = false;
+                            btn.innerHTML = originalText;
+                        });
+                },
+                function (error) {
+                    console.error('Geolocation error:', error);
+                    alert('Unable to retrieve your location. Please ensure location permissions are granted.');
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        }
     </script>
     @endpush
 
@@ -695,6 +759,28 @@
                                                     name="phone"
                                                     value="{{ old('phone', $user->phone) }}" />
                                                 @error('phone')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="locationInput">Location</label>
+                                                <div class="input-group">
+                                                    <input
+                                                        type="text"
+                                                        class="form-control @error('location') is-invalid @enderror"
+                                                        id="locationInput"
+                                                        name="location"
+                                                        placeholder="Your location address"
+                                                        value="{{ old('location', $user->location) }}" />
+                                                    <input type="hidden" name="latitude" id="latitudeInput" value="{{ old('latitude', $user->latitude) }}" />
+                                                    <input type="hidden" name="longitude" id="longitudeInput" value="{{ old('longitude', $user->longitude) }}" />
+                                                    <button type="button" class="btn btn-gold" id="btnDetectLocation" onclick="detectLocation()">
+                                                        <i class="fas fa-map-marker-alt me-1"></i> Auto Detect
+                                                    </button>
+                                                </div>
+                                                @error('location')
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
