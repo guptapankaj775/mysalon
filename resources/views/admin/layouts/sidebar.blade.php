@@ -15,6 +15,12 @@
             </a>
         </li>
 
+        <li class="{{ request()->is('admin/staff*') ? 'active' : '' }}">
+            <a href="{{ route('admin.staff.index') }}" class="nav-link">
+                <i class="fas fa-user-tie"></i> Staff
+            </a>
+        </li>
+
         <li class="{{ request()->is('admin/services*') ? 'active' : '' }}">
             <a href="{{ route('admin.services') }}" class="nav-link">
                 <i class="fas fa-cut"></i> Services
@@ -30,6 +36,41 @@
         <li class="{{ request()->is('admin/categories*') ? 'active' : '' }}">
             <a href="{{ route('admin.categories') }}" class="nav-link">
                 <i class="fas fa-th-list"></i> Categories
+            </a>
+        </li>
+
+        <li class="{{ request()->is('admin/inventory*') ? 'active' : '' }}">
+            <a href="{{ route('admin.inventory.index') }}" class="nav-link">
+                <i class="fas fa-boxes"></i> Inventory
+            </a>
+        </li>
+
+        <li class="{{ request()->is('admin/feedbacks*') ? 'active' : '' }}">
+            <a href="{{ route('admin.feedback.index') }}" class="nav-link">
+                <i class="fas fa-star"></i> Feedback
+            </a>
+        </li>
+
+        <!-- Subscription Section -->
+        <li style="padding: 0.4rem 1rem 0.2rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.35); pointer-events: none; margin-top: 0.5rem;">
+            Subscriptions
+        </li>
+
+        <li class="{{ request()->is('admin/subscriptions*') ? 'active' : '' }}">
+            <a href="{{ route('admin.subscriptions.index') }}" class="nav-link">
+                <i class="fas fa-layer-group"></i> Plans
+            </a>
+        </li>
+
+        <li class="{{ request()->is('admin/subscribers*') ? 'active' : '' }}">
+            <a href="{{ route('admin.subscribers') }}" class="nav-link">
+                <i class="fas fa-id-card"></i> Subscribers
+            </a>
+        </li>
+
+        <li class="{{ request()->is('admin/subscription-settings*') ? 'active' : '' }}">
+            <a href="{{ route('admin.subscription.settings') }}" class="nav-link">
+                <i class="fas fa-sliders-h"></i> Sub. Settings
             </a>
         </li>
 
