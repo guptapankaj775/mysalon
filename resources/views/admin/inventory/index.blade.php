@@ -228,6 +228,7 @@
                                 <th>Item Name</th>
                                 <th>SKU</th>
                                 <th>Creator (User)</th>
+                                <th>Supplier</th>
                                 <th>Quantity</th>
                                 <th>Min Qty (Alert)</th>
                                 <th>Price</th>
@@ -259,6 +260,15 @@
                                 <td><code>{{ $item->sku ?? 'N/A' }}</code></td>
                                 <td>
                                     <span class="badge bg-secondary text-white">{{ $item->creator->name ?? 'Deleted User' }}</span>
+                                </td>
+                                <td>
+                                    @if($item->vendor)
+                                        <a href="{{ route('admin.vendors.edit', $item->vendor->id) }}" class="text-decoration-none fw-semibold" style="color: #D4AF37;">
+                                            {{ $item->vendor->name }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted small">-</span>
+                                    @endif
                                 </td>
                                 <td class="font-weight-bold">{{ $item->quantity }}</td>
                                 <td>{{ $item->min_quantity }}</td>

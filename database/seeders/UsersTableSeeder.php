@@ -20,6 +20,7 @@ class UsersTableSeeder extends Seeder
             'password' => Hash::make('password123'),
             'role' => 'admin',
             'email_verified_at' => now(),
+            'is_verified' => true,
         ]);
 
         // Create regular user
@@ -29,6 +30,7 @@ class UsersTableSeeder extends Seeder
             'password' => Hash::make('password123'),
             'role' => 'user',
             'email_verified_at' => now(),
+            'is_verified' => true,
         ]);
 
         // Create more sample users

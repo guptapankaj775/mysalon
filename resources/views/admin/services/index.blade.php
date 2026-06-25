@@ -80,7 +80,15 @@
                                         </div>
                                         <div>
                                             <div class="fw-bold">{{ $service->name }}</div>
-                                            <small class="text-muted">{{ Str::limit($service->description, 50) }}</small>
+                                            <small class="text-muted d-block mb-1">{{ Str::limit($service->description, 50) }}</small>
+                                            @if($service->inventories->isNotEmpty())
+                                                <div class="d-flex flex-wrap gap-1 align-items-center">
+                                                    <span class="text-muted" style="font-size: 0.75rem;"><i class="fas fa-boxes text-warning me-1"></i>Consumes:</span>
+                                                    @foreach($service->inventories as $inv)
+                                                        <span class="badge bg-light text-dark border font-weight-normal" style="font-size: 0.7rem; font-weight: normal;">{{ $inv->item_name }}</span>
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>

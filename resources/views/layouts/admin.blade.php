@@ -26,6 +26,15 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
+        /* Fix Tailwind conflict with Bootstrap collapse */
+        .collapse:not(.show) {
+            display: none !important;
+        }
+        .collapse.show {
+            display: block !important;
+            visibility: visible !important;
+        }
+
         /* Alert Styles */
         .alert {
             border-radius: 8px;
@@ -214,8 +223,28 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.inventory.index') }}" class="nav-link {{ request()->routeIs('admin.inventory*') ? 'active' : '' }}">
-                    <i class="fas fa-boxes"></i> Inventory
+                <a href="javascript:void(0);" class="nav-link {{ request()->routeIs('admin.brands*', 'admin.inventory-categories*', 'admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="cursor: default;">
+                    <i class="fas fa-boxes"></i> Inventory Management
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.brands.index') }}" class="nav-link {{ request()->routeIs('admin.brands*') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
+                    <i class="fas fa-tag" style="font-size: 0.8rem; width: 15px;"></i> Brand
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.inventory-categories.index') }}" class="nav-link {{ request()->routeIs('admin.inventory-categories*') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
+                    <i class="fas fa-folder-open" style="font-size: 0.8rem; width: 15px;"></i> Inv Category
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.inventory.index') }}" class="nav-link {{ request()->routeIs('admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
+                    <i class="fas fa-list" style="font-size: 0.8rem; width: 15px;"></i> Inventory
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.vendors.index') }}" class="nav-link {{ request()->routeIs('admin.vendors*') ? 'active' : '' }}">
+                    <i class="fas fa-truck"></i> Vendors
                 </a>
             </li>
             <li class="nav-item">
@@ -250,12 +279,7 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a href="{{ route('home') }}" class="nav-link" target="_blank">
-                    <i class="fas fa-globe"></i>
-                    Visit Website
-                </a>
-            </li>
+
             <li class="mt-4 nav-item">
                 <form method="POST" action="{{ route('logout') }}" class="nav-link" style="cursor: pointer;"
                     onclick="event.preventDefault(); this.closest('form').submit();">
@@ -294,7 +318,8 @@
         @yield('content')
     </div>
 
-
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     @stack('scripts')
     <script>

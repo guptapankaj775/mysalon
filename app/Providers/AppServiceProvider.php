@@ -37,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
             'manage_inventory',
             'manage_feedbacks',
             'manage_roles',
+            'manage_vendors',
             'create_bookings',
             'view_history',
             'edit_profile',

@@ -16,7 +16,7 @@ class InventoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Inventory::with('creator');
+        $query = Inventory::with(['creator', 'vendor', 'brand', 'category']);
 
         // Apply Search Filter (Item Name or SKU)
         if ($request->filled('search')) {
@@ -54,7 +54,10 @@ class InventoryController extends Controller
      */
     public function create()
     {
-        return view('admin.inventory.create');
+        $vendors = \App\Models\Vendor::where('status', true)->orderBy('name')->get();
+        $brands = \App\Models\Brand::where('status', true)->orderBy('name')->get();
+        $categories = \App\Models\InventoryCategory::where('status', true)->orderBy('name')->get();
+        return view('admin.inventory.create', compact('vendors', 'brands', 'categories'));
     }
 
     /**
@@ -63,15 +66,41 @@ class InventoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'item_name'    => 'required|string|max:255',
-            'sku'          => 'nullable|string|max:100',
-            'description'  => 'nullable|string',
-            'quantity'     => 'required|integer|min:0',
-            'price'        => 'required|numeric|min:0',
-            'min_quantity' => 'required|integer|min:0',
-            'unit_value'   => 'nullable|numeric|min:0',
-            'unit'         => 'nullable|string|in:Gram,Pack,ML,kg,grm',
+            'item_name'                   => 'required|string|max:255',
+            'status'                      => 'boolean',
+            'brand_id'                    => 'nullable|exists:brands,id',
+            'inventory_category_id'       => 'nullable|exists:inventory_categories,id',
+            'division'                    => 'nullable|string|max:255',
+            'sku'                         => 'nullable|string|max:100',
+            'hsn_code'                    => 'nullable|string|max:100',
+            'description'                 => 'nullable|string',
+            'quantity'                    => 'required|integer|min:0',
+            'stock_status'                => 'boolean',
+            'manage_stock'                => 'boolean',
+            'price'                       => 'required|numeric|min:0',
+            'mrp'                         => 'nullable|numeric|min:0',
+            'discount_percent'            => 'nullable|numeric|min:0|max:100',
+            'cost'                        => 'nullable|numeric|min:0',
+            'purchase_discount_percent'   => 'nullable|numeric|min:0|max:100',
+            'additional_discount_percent' => 'nullable|numeric|min:0|max:100',
+            'additional_discount_amount'  => 'nullable|numeric|min:0',
+            'taxable_amount'              => 'nullable|numeric|min:0',
+            'special_price'               => 'nullable|numeric|min:0',
+            'tax_class'                   => 'nullable|string|in:None,Taxable Goods',
+            'gst_percent'                 => 'nullable|numeric|min:0|max:100',
+            'gst_input'                   => 'nullable|numeric|min:0',
+            'gst_output'                  => 'nullable|numeric|min:0',
+            'min_quantity'                => 'required|integer|min:0',
+            'unit_value'                  => 'nullable|numeric|min:0',
+            'size'                        => 'nullable|string|max:255',
+            'weight'                      => 'nullable|numeric|min:0',
+            'unit'                        => 'nullable|string|in:Gram,Pack,ML,kg,grm',
+            'vendor_id'                   => 'nullable|exists:vendors,id',
         ]);
+
+        $validated['status'] = $request->boolean('status');
+        $validated['manage_stock'] = $request->boolean('manage_stock');
+        $validated['stock_status'] = $request->boolean('stock_status');
 
         // Automatically set creator user_id to currently logged-in user
         $validated['user_id'] = Auth::id();
@@ -88,7 +117,10 @@ class InventoryController extends Controller
      */
     public function edit(Inventory $inventory)
     {
-        return view('admin.inventory.edit', compact('inventory'));
+        $vendors = \App\Models\Vendor::where('status', true)->orderBy('name')->get();
+        $brands = \App\Models\Brand::where('status', true)->orderBy('name')->get();
+        $categories = \App\Models\InventoryCategory::where('status', true)->orderBy('name')->get();
+        return view('admin.inventory.edit', compact('inventory', 'vendors', 'brands', 'categories'));
     }
 
     /**
@@ -97,15 +129,41 @@ class InventoryController extends Controller
     public function update(Request $request, Inventory $inventory)
     {
         $validated = $request->validate([
-            'item_name'    => 'required|string|max:255',
-            'sku'          => 'nullable|string|max:100',
-            'description'  => 'nullable|string',
-            'quantity'     => 'required|integer|min:0',
-            'price'        => 'required|numeric|min:0',
-            'min_quantity' => 'required|integer|min:0',
-            'unit_value'   => 'nullable|numeric|min:0',
-            'unit'         => 'nullable|string|in:Gram,Pack,ML,kg,grm',
+            'item_name'                   => 'required|string|max:255',
+            'status'                      => 'boolean',
+            'brand_id'                    => 'nullable|exists:brands,id',
+            'inventory_category_id'       => 'nullable|exists:inventory_categories,id',
+            'division'                    => 'nullable|string|max:255',
+            'sku'                         => 'nullable|string|max:100',
+            'hsn_code'                    => 'nullable|string|max:100',
+            'description'                 => 'nullable|string',
+            'quantity'                    => 'required|integer|min:0',
+            'stock_status'                => 'boolean',
+            'manage_stock'                => 'boolean',
+            'price'                       => 'required|numeric|min:0',
+            'mrp'                         => 'nullable|numeric|min:0',
+            'discount_percent'            => 'nullable|numeric|min:0|max:100',
+            'cost'                        => 'nullable|numeric|min:0',
+            'purchase_discount_percent'   => 'nullable|numeric|min:0|max:100',
+            'additional_discount_percent' => 'nullable|numeric|min:0|max:100',
+            'additional_discount_amount'  => 'nullable|numeric|min:0',
+            'taxable_amount'              => 'nullable|numeric|min:0',
+            'special_price'               => 'nullable|numeric|min:0',
+            'tax_class'                   => 'nullable|string|in:None,Taxable Goods',
+            'gst_percent'                 => 'nullable|numeric|min:0|max:100',
+            'gst_input'                   => 'nullable|numeric|min:0',
+            'gst_output'                  => 'nullable|numeric|min:0',
+            'min_quantity'                => 'required|integer|min:0',
+            'unit_value'                  => 'nullable|numeric|min:0',
+            'size'                        => 'nullable|string|max:255',
+            'weight'                      => 'nullable|numeric|min:0',
+            'unit'                        => 'nullable|string|in:Gram,Pack,ML,kg,grm',
+            'vendor_id'                   => 'nullable|exists:vendors,id',
         ]);
+
+        $validated['status'] = $request->boolean('status');
+        $validated['manage_stock'] = $request->boolean('manage_stock');
+        $validated['stock_status'] = $request->boolean('stock_status');
 
         $inventory->update($validated);
 

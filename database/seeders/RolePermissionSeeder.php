@@ -23,6 +23,7 @@ class RolePermissionSeeder extends Seeder
                 'manage_inventory',
                 'manage_feedbacks',
                 'manage_roles',
+                'manage_vendors',
             ],
             'user' => [
                 'create_bookings',

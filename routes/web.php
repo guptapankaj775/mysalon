@@ -109,6 +109,13 @@ Route::middleware(['auth'])->group(function () {
         // Roles & Permissions routes
         Route::get('/roles-permissions', [App\Http\Controllers\Admin\RolePermissionController::class, 'index'])->name('admin.roles.index');
         Route::post('/roles-permissions', [App\Http\Controllers\Admin\RolePermissionController::class, 'update'])->name('admin.roles.update');
+
+        // Vendors routes
+        Route::resource('vendors', App\Http\Controllers\Admin\VendorController::class)->names('admin.vendors');
+
+        // Brands and Inventory Categories routes
+        Route::resource('brands', App\Http\Controllers\Admin\BrandController::class)->names('admin.brands');
+        Route::resource('inventory-categories', App\Http\Controllers\Admin\InventoryCategoryController::class)->names('admin.inventory-categories');
     });
 
     // Booking routes
