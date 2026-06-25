@@ -39,6 +39,11 @@ class Service extends Model
         return $this->belongsToMany(Specialist::class, 'service_specialist_mapping');
     }
 
+    public function inventories(): BelongsToMany
+    {
+        return $this->belongsToMany(Inventory::class, 'service_inventory_mapping');
+    }
+
     public function icon()
     {
         return $this->hasOne(ServiceImage::class)->select(['service_id', 'image_path as path']);

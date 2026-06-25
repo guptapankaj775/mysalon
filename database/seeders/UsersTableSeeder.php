@@ -13,16 +13,15 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user (or update if it already exists)
-        User::updateOrCreate(
-            ['email' => 'admin@salonjc.com'],
-            [
-                'name' => 'Admin User',
-                'password' => Hash::make('password123'), // change as needed
-                'role' => 'superadmin', // grant all permissions – adjust if your app uses a different role name
-                'email_verified_at' => now(),
-            ]
-        );
+        // Create admin user
+        User::create([
+            'name' => 'Admin User',
+            'email' => 'admin@salonjc.com',
+            'password' => Hash::make('password123'),
+            'role' => 'admin',
+            'email_verified_at' => now(),
+            'is_verified' => true,
+        ]);
 
         // Create regular user
         User::create([
@@ -31,6 +30,7 @@ class UsersTableSeeder extends Seeder
             'password' => Hash::make('password123'),
             'role' => 'user',
             'email_verified_at' => now(),
+            'is_verified' => true,
         ]);
 
         // Create more sample users

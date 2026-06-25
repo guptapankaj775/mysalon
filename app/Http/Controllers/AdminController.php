@@ -9,6 +9,7 @@ use App\Models\Specialist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\ServiceCategory;
+use App\Models\Inventory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -65,7 +66,7 @@ class AdminController extends Controller
         $services = Service::query()
             ->select('services.*')
             ->withCount('bookings')
-            ->with(['category', 'icon'])
+            ->with(['category', 'icon', 'inventories'])
             ->selectSub(function ($query) {
                 $query->from('bookings')
                     ->selectRaw('COALESCE(SUM(total_price), 0)')
@@ -81,7 +82,8 @@ class AdminController extends Controller
     public function createService()
     {
         $categories = ServiceCategory::all();
-        return view('admin.services.create', compact('categories'));
+        $inventories = Inventory::orderBy('item_name')->get();
+        return view('admin.services.create', compact('categories', 'inventories'));
     }
 
     public function storeService(Request $request)
@@ -94,14 +96,23 @@ class AdminController extends Controller
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:service_categories,id',
             'status' => 'boolean',
-            'icon' => 'required|string|max:50'
+            'icon' => 'required|string|max:50',
+            'inventories' => 'nullable|array',
+            'inventories.*' => 'exists:inventories,id',
         ]);
 
         $iconPath = $validated['icon'];
         unset($validated['icon']);
+        
+        $inventoriesInput = $request->input('inventories', []);
+        unset($validated['inventories']);
 
         $service = Service::create($validated);
         $service->icon()->create(['image_path' => $iconPath]);
+
+        if (!empty($inventoriesInput)) {
+            $service->inventories()->sync($inventoriesInput);
+        }
 
         return redirect()->route('admin.services')->with('success', 'Service created successfully');
     }
@@ -109,7 +120,9 @@ class AdminController extends Controller
     public function editService(Service $service)
     {
         $categories = ServiceCategory::all();
-        return view('admin.services.edit', compact('service', 'categories'));
+        $inventories = Inventory::orderBy('item_name')->get();
+        $service->load('inventories');
+        return view('admin.services.edit', compact('service', 'categories', 'inventories'));
     }
 
     public function updateService(Request $request, Service $service)
@@ -122,11 +135,16 @@ class AdminController extends Controller
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:service_categories,id',
             'status' => 'boolean',
-            'icon' => 'required|string|max:50'
+            'icon' => 'required|string|max:50',
+            'inventories' => 'nullable|array',
+            'inventories.*' => 'exists:inventories,id',
         ]);
 
         $iconPath = $validated['icon'];
         unset($validated['icon']);
+
+        $inventoriesInput = $request->input('inventories', []);
+        unset($validated['inventories']);
 
         $service->update($validated);
 
@@ -136,6 +154,8 @@ class AdminController extends Controller
         } else {
             $service->icon()->create(['image_path' => $iconPath]);
         }
+
+        $service->inventories()->sync($inventoriesInput);
 
         return redirect()->route('admin.services')->with('success', 'Service updated successfully');
     }
