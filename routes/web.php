@@ -126,6 +126,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/booking/{id}/payment', [BookingController::class, 'showPayment'])->name('booking.payment');
     Route::post('/booking/{id}/payment', [BookingController::class, 'processPayment'])->name('booking.payment.process');
     Route::get('/booking/{id}/payment/success', [BookingController::class, 'paymentSuccess'])->name('booking.payment.success');
+    Route::get('/booking/{id}/invoice', [BookingController::class, 'showInvoice'])->name('booking.invoice');
 
     // Booking management routes
     Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');

@@ -27,6 +27,37 @@ class Booking extends Model
         'user_id' // Add user_id to fillable
     ];
 
+    protected static function booted()
+    {
+        static::created(function ($booking) {
+            if ($booking->payment_status === 'paid') {
+                $invoiceNumber = 'INV-BOOK-' . $booking->id;
+                SalesInvoice::firstOrCreate(
+                    ['invoice_number' => $invoiceNumber],
+                    [
+                        'customer_name' => $booking->full_name,
+                        'amount' => $booking->total_price,
+                        'status' => 'paid',
+                    ]
+                );
+            }
+        });
+
+        static::updated(function ($booking) {
+            if ($booking->wasChanged('payment_status') && $booking->payment_status === 'paid') {
+                $invoiceNumber = 'INV-BOOK-' . $booking->id;
+                SalesInvoice::firstOrCreate(
+                    ['invoice_number' => $invoiceNumber],
+                    [
+                        'customer_name' => $booking->full_name,
+                        'amount' => $booking->total_price,
+                        'status' => 'paid',
+                    ]
+                );
+            }
+        });
+    }
+
     public function service()
     {
         return $this->belongsTo(Service::class);

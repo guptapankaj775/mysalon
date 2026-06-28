@@ -36,7 +36,7 @@ class InventoryController extends Controller
         $stats = [
             'total_items' => (clone $query)->count(),
             'total_quantity' => (clone $query)->sum('quantity'),
-            'total_value' => (clone $query)->sum(DB::raw('quantity * price')),
+            'total_value' => (clone $query)->sum(DB::raw('quantity * COALESCE(mrp, price)')),
             'low_stock_count' => (clone $query)->whereColumn('quantity', '<=', 'min_quantity')->count(),
         ];
 

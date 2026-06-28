@@ -131,6 +131,36 @@
             color: white;
             transform: translateY(-2px);
         }
+
+        /* Custom Tooltip Styling */
+        .tooltip {
+            font-size: 0.75rem !important;
+        }
+        .tooltip-inner {
+            background-color: #2C2C2C !important;
+            color: #ffffff !important;
+            border: 1px solid #D4AF37;
+            padding: 8px 12px;
+            border-radius: 6px;
+            max-width: 300px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .bs-tooltip-top .tooltip-arrow::before, 
+        .bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before {
+            border-top-color: #D4AF37 !important;
+        }
+        .bs-tooltip-bottom .tooltip-arrow::before, 
+        .bs-tooltip-auto[data-popper-placement^="bottom"] .tooltip-arrow::before {
+            border-bottom-color: #D4AF37 !important;
+        }
+        .bs-tooltip-start .tooltip-arrow::before, 
+        .bs-tooltip-auto[data-popper-placement^="left"] .tooltip-arrow::before {
+            border-left-color: #D4AF37 !important;
+        }
+        .bs-tooltip-end .tooltip-arrow::before, 
+        .bs-tooltip-auto[data-popper-placement^="right"] .tooltip-arrow::before {
+            border-right-color: #D4AF37 !important;
+        }
     </style>
     @endpush
 
@@ -227,13 +257,13 @@
                             <tr>
                                 <th>Item Name</th>
                                 <th>SKU</th>
-                                <th>Creator (User)</th>
-                                <th>Supplier</th>
+                                <th>Brand</th>
                                 <th>Quantity</th>
-                                <th>Min Qty (Alert)</th>
-                                <th>Price</th>
+                                <th>Min Qty</th>
+                                <th>MRP</th>
                                 <th>Total Value</th>
                                 <th>Status</th>
+                                <th>Creator</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -241,30 +271,38 @@
                             @forelse($inventories as $item)
                             <tr>
                                 <td>
-                                    <div class="font-weight-bold">
-                                        {{ $item->item_name }}
+                                    @php
+                                        $unitText = '';
+                                        if ($item->unit && $item->unit_value) {
+                                            $val = $item->unit_value;
+                                            $formattedVal = $val % 1 == 0 ? (int)$val : $val;
+                                            $unitText = " ({$formattedVal} {$item->unit})";
+                                        } elseif ($item->unit) {
+                                            $unitText = " ({$item->unit})";
+                                        }
+                                        $fullTooltip = $item->item_name . $unitText . ($item->description ? " - {$item->description}" : "");
+                                    @endphp
+                                    <div class="text-truncate" style="max-width:150px; cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $fullTooltip }}">
+                                        <span class="fw-bold">{{ $item->item_name }}</span>
                                         @if($item->unit && $item->unit_value)
                                             @php
                                                 $val = $item->unit_value;
                                                 $formattedVal = $val % 1 == 0 ? (int)$val : $val;
                                             @endphp
-                                            <span class="badge bg-light text-dark border ms-1">{{ $formattedVal }} {{ $item->unit }}</span>
+                                            <span class="badge bg-light text-dark border ms-1" style="font-size: 10px; padding: 2px 4px;">{{ $formattedVal }} {{ $item->unit }}</span>
                                         @elseif($item->unit)
-                                            <span class="badge bg-light text-dark border ms-1">{{ $item->unit }}</span>
+                                            <span class="badge bg-light text-dark border ms-1" style="font-size: 10px; padding: 2px 4px;">{{ $item->unit }}</span>
+                                        @endif
+                                        @if($item->description)
+                                            <span class="text-muted ms-1" style="font-size: 12px;">- {{ $item->description }}</span>
                                         @endif
                                     </div>
-                                    @if($item->description)
-                                        <small class="text-muted d-block text-truncate" style="max-width: 200px;">{{ $item->description }}</small>
-                                    @endif
                                 </td>
                                 <td><code>{{ $item->sku ?? 'N/A' }}</code></td>
                                 <td>
-                                    <span class="badge bg-secondary text-white">{{ $item->creator->name ?? 'Deleted User' }}</span>
-                                </td>
-                                <td>
-                                    @if($item->vendor)
-                                        <a href="{{ route('admin.vendors.edit', $item->vendor->id) }}" class="text-decoration-none fw-semibold" style="color: #D4AF37;">
-                                            {{ $item->vendor->name }}
+                                    @if($item->brand)
+                                        <a href="{{ route('admin.brands.edit', $item->brand->id) }}" class="text-decoration-none fw-semibold text-truncate d-inline-block" style="color: #D4AF37; max-width: 120px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $item->brand->name }}">
+                                            {{ $item->brand->name }}
                                         </a>
                                     @else
                                         <span class="text-muted small">-</span>
@@ -273,18 +311,18 @@
                                 <td class="font-weight-bold">{{ $item->quantity }}</td>
                                 <td>{{ $item->min_quantity }}</td>
                                 <td>
-                                    Rs. {{number_format($item->price, 2)}}
+                                    Rs. {{number_format($item->mrp ?? $item->price, 2)}}
                                     @if($item->unit && $item->unit_value)
                                         @php
                                             $val = $item->unit_value;
                                             $formattedVal = $val % 1 == 0 ? (int)$val : $val;
                                         @endphp
-                                        <small class="text-muted d-block">per {{ $formattedVal }} {{ $item->unit }}</small>
+                                        <small class="text-muted d-block" style="font-size: 10px;">per {{ $formattedVal }} {{ $item->unit }}</small>
                                     @elseif($item->unit)
-                                        <small class="text-muted d-block">per {{ $item->unit }}</small>
+                                        <small class="text-muted d-block" style="font-size: 10px;">per {{ $item->unit }}</small>
                                     @endif
                                 </td>
-                                <td class="font-weight-bold">Rs. {{number_format($item->quantity * $item->price, 2)}}</td>
+                                <td class="font-weight-bold">Rs. {{number_format($item->quantity * ($item->mrp ?? $item->price), 2)}}</td>
                                 <td>
                                     @if($item->quantity == 0)
                                         <span class="status-badge status-outstock">Out of Stock</span>
@@ -295,15 +333,21 @@
                                     @endif
                                 </td>
                                 <td>
+                                    <div class="small fw-semibold text-dark text-truncate" style="max-width: 100px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $item->creator->name ?? 'Deleted User' }}">
+                                        {{ $item->creator->name ?? 'Deleted User' }}
+                                    </div>
+                                    <small class="text-muted d-block" style="font-size: 10px;">{{ $item->created_at ? $item->created_at->format('Y-m-d H:i') : 'N/A' }}</small>
+                                </td>
+                                <td>
                                     <div class="d-flex gap-2">
                                         <a href="{{ route('admin.inventory.edit', $item->id) }}" class="btn btn-sm btn-outline-dark action-btn">
-                                            <i class="fas fa-edit me-1"></i> Edit
+                                            <i class="fas fa-edit me-1"></i>
                                         </a>
                                         <form action="{{ route('admin.inventory.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this inventory item?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger action-btn">
-                                                <i class="fas fa-trash me-1"></i> Delete
+                                                <i class="fas fa-trash me-1"></i>
                                             </button>
                                         </form>
                                     </div>
@@ -311,7 +355,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="9" class="text-center py-5 text-muted">
+                                <td colspan="10" class="text-center py-5 text-muted">
                                     <i class="fas fa-box-open fa-3x mb-3 text-muted" style="opacity: 0.3;"></i>
                                     <p class="mb-0">No inventory items found. Click "Add Inventory Item" to get started.</p>
                                 </td>
@@ -327,4 +371,68 @@
         </div>
     </div>
     @endsection
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let searchTimeout;
+            const searchInput = document.getElementById('search');
+
+            function initTooltips() {
+                // Remove any existing active tooltips to prevent orphans
+                const existing = document.querySelectorAll('.tooltip');
+                existing.forEach(el => el.remove());
+
+                // Initialize new tooltips
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                    new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
+
+            // Initialize on page load
+            initTooltips();
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    clearTimeout(searchTimeout);
+                    const query = e.target.value;
+                    
+                    searchTimeout = setTimeout(() => {
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('search', query);
+                        url.searchParams.set('page', 1);
+                        
+                        const tableContainer = document.querySelector('.data-table');
+                        if (tableContainer) {
+                            tableContainer.style.opacity = '0.5';
+                        }
+                        
+                        fetch(url.toString(), {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newTable = doc.querySelector('.data-table');
+                            if (newTable && tableContainer) {
+                                tableContainer.innerHTML = newTable.innerHTML;
+                                tableContainer.style.opacity = '1';
+                                // Re-initialize tooltips for newly loaded items
+                                initTooltips();
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            if (tableContainer) tableContainer.style.opacity = '1';
+                        });
+                    }, 300);
+                });
+            }
+        });
+    </script>
+    @endpush
 </x-admin-layout>

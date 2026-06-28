@@ -24,11 +24,30 @@ class Vendor extends Model
         'bank_code',
         'logo_path',
         'description',
+        'group_id',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($vendor) {
+            if (empty($vendor->group_id)) {
+                $group = Group::firstOrCreate(['name' => 'Creditor']);
+                $vendor->group_id = $group->id;
+            }
+        });
+    }
 
     protected $casts = [
         'status' => 'boolean',
     ];
+
+    /**
+     * Get the group assigned to this vendor.
+     */
+    public function group()
+    {
+        return $this->belongsTo(Group::class, 'group_id');
+    }
 
     /**
      * Get the inventory items supplied by this vendor.

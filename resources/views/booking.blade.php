@@ -29,7 +29,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="fullName">Full Name *</label>
-                                        <input type="text" class="form-control" id="fullName" name="fullName" required value="{{ old('fullName') }}" />
+                                        <input type="text" class="form-control" id="fullName" name="fullName" required value="{{ old('fullName', auth()->user()->name . (auth()->user()->last_name ? ' ' . auth()->user()->last_name : '')) }}" />
                                         @error('fullName')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -39,7 +39,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="phone">Phone Number *</label>
-                                        <input type="tel" class="form-control" id="phone" name="phone" required value="{{ old('phone') }}" />
+                                        <input type="tel" class="form-control" id="phone" name="phone" required value="{{ old('phone', auth()->user()->phone) }}" />
                                         @error('phone')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -49,7 +49,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="email">Email Address *</label>
-                                        <input type="email" class="form-control" id="email" name="email" required value="{{ old('email') }}" />
+                                        <input type="email" class="form-control" id="email" name="email" required value="{{ old('email', auth()->user()->email) }}" />
                                         @error('email')
                                         <span class="text-danger">{{ $message }}</span>
                                         @enderror

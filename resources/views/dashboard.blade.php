@@ -729,6 +729,11 @@
                                             <span class="status {{ $appointment->status }}">{{ ucfirst($appointment->status) }}</span>
                                         </div>
                                         <div class="appointment-actions">
+                                            @if($appointment->payment_status === 'paid')
+                                            <a href="{{ route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                                <i class="fas fa-file-invoice me-1"></i> Invoice
+                                            </a>
+                                            @endif
                                             @if($appointment->status === 'pending')
                                             <button class="btn btn-cancel">
                                                 <i class="fas fa-times"></i> Cancel
@@ -788,6 +793,11 @@
                                             <span class="status {{ $appointment->status }}">{{ ucfirst($appointment->status) }}</span>
                                         </div>
                                         <div class="appointment-actions">
+                                            @if($appointment->payment_status === 'paid')
+                                            <a href="{{ route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                                <i class="fas fa-file-invoice me-1"></i> Invoice
+                                            </a>
+                                            @endif
                                             @if($appointment->status === 'pending')
                                             <button class="btn btn-cancel">
                                                 <i class="fas fa-times"></i> Cancel
@@ -823,6 +833,11 @@
                                             <span class="status {{ $appointment->status }}">{{ ucfirst($appointment->status) }}</span>
                                         </div>
                                         <div class="appointment-actions">
+                                            @if($appointment->payment_status === 'paid')
+                                            <a href="{{ route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                                <i class="fas fa-file-invoice me-1"></i> Invoice
+                                            </a>
+                                            @endif
                                             @if($appointment->status === 'completed')
                                             @if(!$appointment->feedback)
                                             <a href="{{ route('feedback.create', $appointment->id) }}"

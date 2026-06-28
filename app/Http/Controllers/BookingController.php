@@ -186,4 +186,32 @@ class BookingController extends Controller
 
         return redirect()->back()->with('success', 'Booking rescheduled successfully.');
     }
+
+    public function showInvoice($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        // Check if the user is authorized to view this invoice
+        if ($booking->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Only allow viewing invoice if the payment is paid
+        if ($booking->payment_status !== 'paid') {
+            return redirect()->route('dashboard')
+                ->with('error', 'This booking has not been paid for yet.');
+        }
+
+        // Retrieve or create the corresponding sales invoice automatically
+        $salesInvoice = \App\Models\SalesInvoice::firstOrCreate(
+            ['invoice_number' => 'INV-BOOK-' . $booking->id],
+            [
+                'customer_name' => $booking->full_name,
+                'amount' => $booking->total_price,
+                'status' => 'paid',
+            ]
+        );
+
+        return view('booking.invoice', compact('booking', 'salesInvoice'));
+    }
 }

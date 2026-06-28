@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <script>
+        (function() {
+            var sidebarState = localStorage.getItem('sidebar-collapsed');
+            if (sidebarState === 'true') {
+                document.documentElement.classList.add('sidebar-collapsed-state');
+            }
+        })();
+    </script>
+
     <title>{{ config('app.name', 'Laravel') }} - Admin</title>
 
     <!-- Favicon -->
@@ -171,6 +180,16 @@
                 margin-left: 250px;
             }
         }
+
+        @media (min-width: 769px) {
+            html.sidebar-collapsed-state .sidenav {
+                transform: translateX(-250px);
+            }
+
+            html.sidebar-collapsed-state .main-content {
+                margin-left: 0;
+            }
+        }
     </style>
     @stack('styles')
 </head>
@@ -293,7 +312,7 @@
 
     <div class="main-content">
         <div class="top-bar">
-            <button class="btn btn-link d-md-none" id="sidenavToggle">
+            <button class="btn btn-link text-dark border-0 p-0 me-3" id="sidenavToggle" style="font-size: 1.1rem; color: #2c2c2c !important; cursor: pointer;">
                 <i class="fas fa-bars"></i>
             </button>
             <div class="user-info">
@@ -324,8 +343,14 @@
     @stack('scripts')
     <script>
         document.getElementById('sidenavToggle')?.addEventListener('click', function() {
-            document.querySelector('.sidenav').classList.toggle('active');
-            document.querySelector('.main-content').classList.toggle('pushed');
+            var isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed-state');
+            localStorage.setItem('sidebar-collapsed', isCollapsed ? 'true' : 'false');
+
+            // Toggle active/pushed on mobile
+            if (window.innerWidth <= 768) {
+                document.querySelector('.sidenav').classList.toggle('active');
+                document.querySelector('.main-content').classList.toggle('pushed');
+            }
         });
     </script>
 </body>
