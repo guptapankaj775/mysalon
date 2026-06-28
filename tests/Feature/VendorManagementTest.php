@@ -58,6 +58,7 @@ test('admins can create a vendor with advanced details and logo', function () {
     $vendor = Vendor::where('name', 'Loreal Supplier')->first();
     $this->assertNotNull($vendor);
     $this->assertSame('Jane Loreal', $vendor->contact_name);
+    $this->assertSame('Creditor', $vendor->group->name);
     $this->assertSame('jane@loreal.com', $vendor->email);
     $this->assertSame('https://loreal.com', $vendor->website);
     $this->assertSame('VAT-LOREAL-789', $vendor->tax_number);

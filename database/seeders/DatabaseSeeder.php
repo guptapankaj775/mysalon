@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             ServicesTableSeeder::class,
             ServiceImagesTableSeeder::class,
             RolePermissionSeeder::class,
+            GroupSeeder::class,
             VendorSeeder::class,
             InventorySeeder::class,
         ]);

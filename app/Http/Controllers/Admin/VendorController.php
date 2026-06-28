@@ -17,7 +17,7 @@ class VendorController extends Controller
     {
         Gate::authorize('manage_vendors');
 
-        $query = Vendor::withCount('inventories');
+        $query = Vendor::with(['group'])->withCount('inventories');
 
         // Apply Search Filter
         if ($request->filled('search')) {

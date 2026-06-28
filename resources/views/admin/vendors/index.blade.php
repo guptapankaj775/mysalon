@@ -136,9 +136,10 @@
                     <thead>
                         <tr class="table-light">
                             <th class="ps-3 py-3" style="width: 5%;">#</th>
-                            <th class="py-3" style="width: 35%;">Vendor / Brand</th>
-                            <th class="py-3" style="width: 20%;">Contact Person</th>
-                            <th class="py-3" style="width: 20%;">Contact Details</th>
+                            <th class="py-3" style="width: 30%;">Vendor / Brand</th>
+                            <th class="py-3" style="width: 15%;">Contact Person</th>
+                            <th class="py-3" style="width: 15%;">Contact Details</th>
+                            <th class="text-center py-3" style="width: 10%;">Group</th>
                             <th class="text-center py-3" style="width: 10%;">Items Supplied</th>
                             <th class="text-center py-3" style="width: 10%;">Status</th>
                             <th class="text-end pe-3 py-3" style="width: 10%;">Actions</th>
@@ -193,6 +194,9 @@
                                 @endif
                             </td>
                             <td class="text-center">
+                                <span class="badge bg-light text-dark border rounded-pill px-3">{{ $vendor->group ?? 'Creditor' }}</span>
+                            </td>
+                            <td class="text-center">
                                 <span class="badge bg-light text-dark border rounded-pill px-3">{{ $vendor->inventories_count }}</span>
                             </td>
                             <td class="text-center">
@@ -200,19 +204,21 @@
                                     {{ $vendor->status ? 'Active' : 'Inactive' }}
                                 </span>
                             </td>
-                            <td class="text-end pe-3">
-                                <a href="{{ route('admin.vendors.edit', $vendor->id) }}" class="btn btn-sm btn-outline-info me-1 rounded-circle" title="Edit Vendor">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('admin.vendors.destroy', $vendor->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" 
-                                            onclick="return confirm('Are you sure you want to delete this vendor? This will un-assign any associated inventory items and permanently delete the vendor logo.')"
-                                            title="Delete Vendor">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('admin.vendors.edit', $vendor->id) }}" class="btn btn-sm btn-outline-info me-1 rounded-circle" title="Edit Vendor">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('admin.vendors.destroy', $vendor->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" 
+                                                onclick="return confirm('Are you sure you want to delete this vendor? This will un-assign any associated inventory items and permanently delete the vendor logo.')"
+                                                title="Delete Vendor">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         @empty
