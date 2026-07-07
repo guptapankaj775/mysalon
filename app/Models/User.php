@@ -34,6 +34,11 @@ class User extends Authenticatable
         'profile_photo',
         'role',
         'is_verified',
+        'created_by',
+        'salon_name',
+        'salon_type',
+        'salon_model',
+        'franchisee_name',
     ];
 
     /**

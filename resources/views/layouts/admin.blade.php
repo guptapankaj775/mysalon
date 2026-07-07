@@ -197,109 +197,196 @@
 <body>
     <nav class="sidenav">
         <div class="sidenav-header">
-            <a href="{{ route('admin.dashboard') }}" class="sidenav-brand"> <i class="fas fa-spa me-2" style="color: #D4AF37;"></i>
-                <span style="color: #D4AF37;">SalonJC</span> Admin
+            <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}" class="sidenav-brand"> 
+                <i class="fas fa-spa me-2" style="color: #D4AF37;"></i>
+                <span style="color: #D4AF37;">SalonJC</span> 
+                @if(Auth::user()->role === 'admin') Admin @else Portal @endif
             </a>
         </div>
         <ul class="mt-4 nav flex-column">
-            <li class="nav-item">
-                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-home"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.services') }}" class="nav-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
-                    <i class="fas fa-cut"></i>
-                    Services
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.bookings') }}" class="nav-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-check"></i>
-                    Bookings
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.categories') }}" class="nav-link {{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
-                    <i class="fas fa-th-list"></i>
-                    Categories
-                </a>
-            </li>
-            <li class="{{ request()->is('admin/users*') ? 'active' : '' }}">
-                <a href="{{ route('admin.users.index') }}" class="nav-link">
-                    <i class="fas fa-users"></i> Users
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.staff.index') }}" class="nav-link {{ request()->routeIs('admin.staff*') ? 'active' : '' }}">
-                    <i class="fas fa-user-tie"></i> Staff
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.roles.index') }}" class="nav-link {{ request()->routeIs('admin.roles*') ? 'active' : '' }}">
-                    <i class="fas fa-shield-alt"></i> Permissions
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="javascript:void(0);" class="nav-link {{ request()->routeIs('admin.brands*', 'admin.inventory-categories*', 'admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="cursor: default;">
-                    <i class="fas fa-boxes"></i> Inventory Management
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.brands.index') }}" class="nav-link {{ request()->routeIs('admin.brands*') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
-                    <i class="fas fa-tag" style="font-size: 0.8rem; width: 15px;"></i> Brand
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.inventory-categories.index') }}" class="nav-link {{ request()->routeIs('admin.inventory-categories*') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
-                    <i class="fas fa-folder-open" style="font-size: 0.8rem; width: 15px;"></i> Inv Category
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.inventory.index') }}" class="nav-link {{ request()->routeIs('admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
-                    <i class="fas fa-list" style="font-size: 0.8rem; width: 15px;"></i> Inventory
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.vendors.index') }}" class="nav-link {{ request()->routeIs('admin.vendors*') ? 'active' : '' }}">
-                    <i class="fas fa-truck"></i> Vendors
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.feedback.index') }}" class="nav-link {{ request()->routeIs('admin.feedback*') ? 'active' : '' }}">
-                    <i class="fas fa-comments"></i>
-                    Feedbacks
-                    @php
-                    $pendingCount = \App\Models\Feedback::where('is_published', false)->count();
-                    @endphp
-                    @if($pendingCount > 0)
-                    <span class="badge bg-warning text-dark ms-2">{{ $pendingCount }}</span>
-                    @endif
-                </a>
-            </li>
-            <!-- Subscription Section -->
-            <li style="padding: 0.5rem 20px 0.2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); pointer-events: none; margin-top: 0.5rem;">
-                Subscriptions
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.subscriptions.index') }}" class="nav-link {{ request()->is('admin/subscriptions*') ? 'active' : '' }}">
-                    <i class="fas fa-layer-group"></i> Plans
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.subscribers') }}" class="nav-link {{ request()->is('admin/subscribers*') ? 'active' : '' }}">
-                    <i class="fas fa-id-card"></i> Subscribers
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.subscription.settings') }}" class="nav-link {{ request()->is('admin/subscription-settings*') ? 'active' : '' }}">
-                    <i class="fas fa-sliders-h"></i> Settings
+            @if(Auth::user()->role === 'admin')
+                <li class="nav-item">
+                    <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.services') }}" class="nav-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
+                        <i class="fas fa-cut"></i>
+                        Services
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.bookings') }}" class="nav-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-check"></i>
+                        Bookings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.categories') }}" class="nav-link {{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
+                        <i class="fas fa-th-list"></i>
+                        Categories
+                    </a>
+                </li>
+                <li class="{{ request()->is('admin/users*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.users.index') }}" class="nav-link">
+                        <i class="fas fa-users"></i> Users
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.staff.index') }}" class="nav-link {{ request()->routeIs('admin.staff*') ? 'active' : '' }}">
+                        <i class="fas fa-user-tie"></i> Staff
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.roles.index') }}" class="nav-link {{ request()->routeIs('admin.roles*') ? 'active' : '' }}">
+                        <i class="fas fa-shield-alt"></i> Permissions
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0);" class="nav-link {{ request()->routeIs('admin.brands*', 'admin.inventory-categories*', 'admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="cursor: default;">
+                        <i class="fas fa-boxes"></i> Inventory Management
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.brands.index') }}" class="nav-link {{ request()->routeIs('admin.brands*') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
+                        <i class="fas fa-tag" style="font-size: 0.8rem; width: 15px;"></i> Brand
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.inventory-categories.index') }}" class="nav-link {{ request()->routeIs('admin.inventory-categories*') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
+                        <i class="fas fa-folder-open" style="font-size: 0.8rem; width: 15px;"></i> Inv Category
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.inventory.index') }}" class="nav-link {{ request()->routeIs('admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
+                        <i class="fas fa-list" style="font-size: 0.8rem; width: 15px;"></i> Inventory
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.vendors.index') }}" class="nav-link {{ request()->routeIs('admin.vendors*') ? 'active' : '' }}">
+                        <i class="fas fa-truck"></i> Vendors
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.feedback.index') }}" class="nav-link {{ request()->routeIs('admin.feedback*') ? 'active' : '' }}">
+                        <i class="fas fa-comments"></i>
+                        Feedbacks
+                        @php
+                        $pendingCount = \App\Models\Feedback::where('is_published', false)->count();
+                        @endphp
+                        @if($pendingCount > 0)
+                        <span class="badge bg-warning text-dark ms-2">{{ $pendingCount }}</span>
+                        @endif
+                    </a>
+                </li>
+                <!-- Subscription Section -->
+                <li style="padding: 0.5rem 20px 0.2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); pointer-events: none; margin-top: 0.5rem;">
+                    Subscriptions
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.subscriptions.index') }}" class="nav-link {{ request()->is('admin/subscriptions*') ? 'active' : '' }}">
+                        <i class="fas fa-layer-group"></i> Plans
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.subscribers') }}" class="nav-link {{ request()->is('admin/subscribers*') ? 'active' : '' }}">
+                        <i class="fas fa-id-card"></i> Subscribers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.subscription.settings') }}" class="nav-link {{ request()->is('admin/subscription-settings*') ? 'active' : '' }}">
+                        <i class="fas fa-sliders-h"></i> Settings
+                    </a>
+                </li>
+            @else
+                <!-- Customer Portal links matching admin dashboard structure -->
+                @php
+                    $activeTab = request()->query('tab', 'overview');
+                    if (session('status') === 'profile-updated' || session('status') === 'password-updated' || $errors->any() || $errors->updatePassword->any()) {
+                        $activeTab = 'profile';
+                    }
+                @endphp
+                <li class="nav-item">
+                    <a href="{{ route('dashboard', ['tab' => 'overview']) }}" class="nav-link {{ request()->routeIs('dashboard') && $activeTab === 'overview' ? 'active' : '' }}">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.services') }}" class="nav-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
+                        <i class="fas fa-cut"></i>
+                        Services
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.bookings') }}" class="nav-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-check"></i>
+                        Bookings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.categories') }}" class="nav-link {{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
+                        <i class="fas fa-th-list"></i>
+                        Categories
+                    </a>
+                </li>
+                <li class="{{ request()->is('admin/users*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.users.index') }}" class="nav-link">
+                        <i class="fas fa-users"></i> Users
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.staff.index') }}" class="nav-link {{ request()->routeIs('admin.staff*') ? 'active' : '' }}">
+                        <i class="fas fa-user-tie"></i> Staff
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="javascript:void(0);" class="nav-link {{ request()->routeIs('admin.brands*', 'admin.inventory-categories*', 'admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="cursor: default;">
+                        <i class="fas fa-boxes"></i> Inventory Management
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.brands.index') }}" class="nav-link {{ request()->routeIs('admin.brands*') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
+                        <i class="fas fa-tag" style="font-size: 0.8rem; width: 15px;"></i> Brand
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.inventory-categories.index') }}" class="nav-link {{ request()->routeIs('admin.inventory-categories*') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
+                        <i class="fas fa-folder-open" style="font-size: 0.8rem; width: 15px;"></i> Inv Category
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.inventory.index') }}" class="nav-link {{ request()->routeIs('admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
+                        <i class="fas fa-list" style="font-size: 0.8rem; width: 15px;"></i> Inventory
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.vendors.index') }}" class="nav-link {{ request()->routeIs('admin.vendors*') ? 'active' : '' }}">
+                        <i class="fas fa-truck"></i> Vendors
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.feedback.index') }}" class="nav-link {{ request()->routeIs('admin.feedback*') ? 'active' : '' }}">
+                        <i class="fas fa-comments"></i> Feedbacks
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('subscription.index') }}" class="nav-link {{ request()->routeIs('subscription*') ? 'active' : '' }}">
+                        <i class="fas fa-crown"></i> Subscriptions
+                    </a>
+                </li>
+            @endif
+
+            <li class="nav-item mt-4">
+                <a href="{{ Auth::user()->role === 'admin' ? route('profile.edit') : route('dashboard', ['tab' => 'profile']) }}" class="nav-link {{ request()->routeIs('profile.edit') || (request()->routeIs('dashboard') && request()->query('tab') === 'profile') ? 'active' : '' }}">
+                    <i class="fas fa-user-cog"></i> Profile Settings
                 </a>
             </li>
 
-
-            <li class="mt-4 nav-item">
+            <li class="nav-item">
                 <form method="POST" action="{{ route('logout') }}" class="nav-link" style="cursor: pointer;"
                     onclick="event.preventDefault(); this.closest('form').submit();">
                     @csrf
@@ -315,8 +402,9 @@
             <button class="btn btn-link text-dark border-0 p-0 me-3" id="sidenavToggle" style="font-size: 1.1rem; color: #2c2c2c !important; cursor: pointer;">
                 <i class="fas fa-bars"></i>
             </button>
-            <div class="user-info">
+            <div class="user-info d-flex align-items-center">
                 {{ Auth::user()->name }}
+                <span class="badge bg-warning text-dark ms-2" style="font-size: 0.85rem; text-transform: uppercase;">{{ ucfirst(Auth::user()->role) }}</span>
             </div>
         </div>
 

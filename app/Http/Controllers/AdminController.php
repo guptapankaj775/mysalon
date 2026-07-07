@@ -18,26 +18,56 @@ class AdminController extends Controller
 {
     public function index()
     {
+        $userId = Auth::id();
+        $isAdmin = Auth::user()->isAdmin();
+
         // Get today's bookings count
-        $todayBookings = Booking::whereDate('appointment_date', today())->count();
+        $todayBookingsQuery = Booking::whereDate('appointment_date', today());
+        if (!$isAdmin) {
+            $todayBookingsQuery->whereHas('service', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            });
+        }
+        $todayBookings = $todayBookingsQuery->count();
 
         // Get total revenue
-        $totalRevenue = Booking::where('payment_status', 'paid')->sum('total_price');
+        $totalRevenueQuery = Booking::where('payment_status', 'paid');
+        if (!$isAdmin) {
+            $totalRevenueQuery->whereHas('service', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            });
+        }
+        $totalRevenue = $totalRevenueQuery->sum('total_price');
 
         // Get total active services
-        $totalServices = Service::count();
+        $totalServicesQuery = Service::query();
+        if (!$isAdmin) {
+            $totalServicesQuery->where('user_id', $userId);
+        }
+        $totalServices = $totalServicesQuery->count();
 
         // Get total customers (unique customers from bookings)
-        $totalCustomers = Booking::distinct('email')->count('email');
+        $totalCustomersQuery = Booking::distinct('email');
+        if (!$isAdmin) {
+            $totalCustomersQuery->whereHas('service', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            });
+        }
+        $totalCustomers = $totalCustomersQuery->count('email');
 
         // Get recent bookings
-        $recentBookings = Booking::with(['service', 'category'])
-            ->orderBy('created_at', 'desc')
+        $recentBookingsQuery = Booking::with(['service', 'category']);
+        if (!$isAdmin) {
+            $recentBookingsQuery->whereHas('service', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            });
+        }
+        $recentBookings = $recentBookingsQuery->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
         // Get popular services
-        $popularServices = Service::query()
+        $popularServicesQuery = Service::query()
             ->select('services.*')
             ->withCount('bookings')
             ->with('category')
@@ -48,8 +78,11 @@ class AdminController extends Controller
                     ->where('payment_status', 'paid');
             }, 'revenue')
             ->orderByDesc('bookings_count')
-            ->take(5)
-            ->get();
+            ->take(5);
+        if (!$isAdmin) {
+            $popularServicesQuery->where('user_id', $userId);
+        }
+        $popularServices = $popularServicesQuery->get();
 
         return view('admin.index', compact(
             'todayBookings',
@@ -63,7 +96,7 @@ class AdminController extends Controller
 
     public function services()
     {
-        $services = Service::query()
+        $query = Service::query()
             ->select('services.*')
             ->withCount('bookings')
             ->with(['category', 'icon', 'inventories'])
@@ -72,8 +105,13 @@ class AdminController extends Controller
                     ->selectRaw('COALESCE(SUM(total_price), 0)')
                     ->whereColumn('bookings.service_id', 'services.id')
                     ->where('payment_status', 'paid');
-            }, 'revenue')
-            ->orderBy('services.name')
+            }, 'revenue');
+
+        if (!Auth::user()->isAdmin()) {
+            $query->where('user_id', Auth::id());
+        }
+
+        $services = $query->orderBy('services.name')
             ->get();
 
         return view('admin.services.index', compact('services'));
@@ -81,8 +119,16 @@ class AdminController extends Controller
 
     public function createService()
     {
-        $categories = ServiceCategory::all();
-        $inventories = Inventory::orderBy('item_name')->get();
+        $categoriesQuery = ServiceCategory::query();
+        $inventoriesQuery = Inventory::orderBy('item_name');
+
+        if (!Auth::user()->isAdmin()) {
+            $categoriesQuery->where('user_id', Auth::id());
+            $inventoriesQuery->where('user_id', Auth::id());
+        }
+
+        $categories = $categoriesQuery->get();
+        $inventories = $inventoriesQuery->get();
         return view('admin.services.create', compact('categories', 'inventories'));
     }
 
@@ -107,6 +153,7 @@ class AdminController extends Controller
         $inventoriesInput = $request->input('inventories', []);
         unset($validated['inventories']);
 
+        $validated['user_id'] = Auth::id();
         $service = Service::create($validated);
         $service->icon()->create(['image_path' => $iconPath]);
 
@@ -119,14 +166,30 @@ class AdminController extends Controller
 
     public function editService(Service $service)
     {
-        $categories = ServiceCategory::all();
-        $inventories = Inventory::orderBy('item_name')->get();
+        if (!Auth::user()->isAdmin() && $service->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this service.');
+        }
+
+        $categoriesQuery = ServiceCategory::query();
+        $inventoriesQuery = Inventory::orderBy('item_name');
+
+        if (!Auth::user()->isAdmin()) {
+            $categoriesQuery->where('user_id', Auth::id());
+            $inventoriesQuery->where('user_id', Auth::id());
+        }
+
+        $categories = $categoriesQuery->get();
+        $inventories = $inventoriesQuery->get();
         $service->load('inventories');
         return view('admin.services.edit', compact('service', 'categories', 'inventories'));
     }
 
     public function updateService(Request $request, Service $service)
     {
+        if (!Auth::user()->isAdmin() && $service->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this service.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -162,6 +225,10 @@ class AdminController extends Controller
 
     public function destroyService(Service $service)
     {
+        if (!Auth::user()->isAdmin() && $service->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this service.');
+        }
+
         $service->delete();
         return redirect()->route('admin.services')->with('success', 'Service deleted successfully');
     }
@@ -169,6 +236,12 @@ class AdminController extends Controller
     public function bookings(Request $request)
     {
         $query = Booking::with(['service', 'category']);
+
+        if (!Auth::user()->isAdmin()) {
+            $query->whereHas('service', function ($q) {
+                $q->where('user_id', Auth::id());
+            });
+        }
 
         // Apply status filter
         if ($request->filled('status')) {
@@ -183,12 +256,20 @@ class AdminController extends Controller
 
     public function showBooking(Booking $booking)
     {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this booking.');
+        }
+
         $booking->load(['service', 'category']);
         return view('admin.bookings.show', compact('booking'));
     }
 
     public function updateBookingStatus(Request $request, Booking $booking)
     {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this booking.');
+        }
+
         $validated = $request->validate([
             'status' => 'required|in:pending,confirmed,cancelled,completed',
             'payment_status' => 'required|in:pending,paid,failed'
@@ -200,6 +281,10 @@ class AdminController extends Controller
 
     public function confirmBooking(Booking $booking)
     {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this booking.');
+        }
+
         if ($booking->status !== 'pending' || $booking->payment_status !== 'paid') {
             return redirect()->back()->with('error', 'Only pending bookings with paid status can be confirmed.');
         }
@@ -214,6 +299,10 @@ class AdminController extends Controller
 
     public function rejectBooking(Booking $booking)
     {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this booking.');
+        }
+
         if ($booking->status !== 'pending') {
             return redirect()->back()->with('error', 'Only pending bookings can be rejected.');
         }
@@ -228,6 +317,10 @@ class AdminController extends Controller
 
     public function cancelBooking(Booking $booking)
     {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this booking.');
+        }
+
         if ($booking->status === 'cancelled') {
             return redirect()->back()->with('error', 'This booking is already cancelled.');
         }
@@ -242,6 +335,10 @@ class AdminController extends Controller
 
     public function completeBooking(Booking $booking)
     {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this booking.');
+        }
+
         if ($booking->status !== 'confirmed') {
             return redirect()->back()->with('error', 'Only confirmed bookings can be marked as completed.');
         }
@@ -257,7 +354,11 @@ class AdminController extends Controller
     // User Management Methods
     public function users()
     {
-        $users = User::orderBy('created_at', 'desc')->paginate(10);
+        $query = User::query();
+        if (!Auth::user()->isAdmin()) {
+            $query->where('created_by', Auth::id());
+        }
+        $users = $query->orderBy('created_at', 'desc')->paginate(10);
         return view('admin.users.index', compact('users'));
     }
 
@@ -282,6 +383,7 @@ class AdminController extends Controller
             'password' => Hash::make($validated['password']),
             'role'     => $validated['role'],
             'is_verified' => $request->boolean('is_verified'),
+            'created_by' => Auth::id(),
         ]);
 
         return redirect()
@@ -289,15 +391,20 @@ class AdminController extends Controller
             ->with('success', 'User created successfully.');
     }
 
-
-
     public function editUser(User $user)
     {
+        if (!Auth::user()->isAdmin() && $user->created_by !== Auth::id()) {
+            abort(403, 'Unauthorized access to this user.');
+        }
         return view('admin.users.edit', compact('user'));
     }
 
     public function updateUser(Request $request, User $user)
     {
+        if (!Auth::user()->isAdmin() && $user->created_by !== Auth::id()) {
+            abort(403, 'Unauthorized access to this user.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
@@ -325,6 +432,10 @@ class AdminController extends Controller
 
     public function toggleUserVerification(User $user)
     {
+        if (!Auth::user()->isAdmin() && $user->created_by !== Auth::id()) {
+            abort(403, 'Unauthorized access to this user.');
+        }
+
         if ($user->id === Auth::id()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'You cannot change verification for your own account.');
@@ -340,6 +451,10 @@ class AdminController extends Controller
 
     public function destroyUser(User $user)
     {
+        if (!Auth::user()->isAdmin() && $user->created_by !== Auth::id()) {
+            abort(403, 'Unauthorized access to this user.');
+        }
+
         if ($user->id === Auth::id()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'You cannot delete your own account.');
@@ -354,13 +469,21 @@ class AdminController extends Controller
     // Staff (Specialist) Management Methods
     public function staff()
     {
-        $staff = Specialist::with('services')->orderBy('created_at', 'desc')->paginate(10);
+        $query = Specialist::with('services');
+        if (!Auth::user()->isAdmin()) {
+            $query->where('user_id', Auth::id());
+        }
+        $staff = $query->orderBy('created_at', 'desc')->paginate(10);
         return view('admin.staff.index', compact('staff'));
     }
 
     public function createStaff()
     {
-        $services = Service::where('status', true)->get();
+        $servicesQuery = Service::where('status', true);
+        if (!Auth::user()->isAdmin()) {
+            $servicesQuery->where('user_id', Auth::id());
+        }
+        $services = $servicesQuery->get();
         return view('admin.staff.create', compact('services'));
     }
 
@@ -381,6 +504,7 @@ class AdminController extends Controller
             'name' => $validated['name'],
             'bio' => $validated['bio'] ?? null,
             'status' => $status,
+            'user_id' => Auth::id(),
         ];
 
         if ($request->hasFile('image')) {
@@ -399,13 +523,26 @@ class AdminController extends Controller
 
     public function editStaff(Specialist $specialist)
     {
-        $services = Service::where('status', true)->get();
+        if (!Auth::user()->isAdmin() && $specialist->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this staff member.');
+        }
+
+        $servicesQuery = Service::where('status', true);
+        if (!Auth::user()->isAdmin()) {
+            $servicesQuery->where('user_id', Auth::id());
+        }
+        $services = $servicesQuery->get();
+
         $specialist->load('services');
         return view('admin.staff.edit', compact('specialist', 'services'));
     }
 
     public function updateStaff(Request $request, Specialist $specialist)
     {
+        if (!Auth::user()->isAdmin() && $specialist->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this staff member.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:100',
             'bio' => 'nullable|string|max:1000',
@@ -443,6 +580,10 @@ class AdminController extends Controller
 
     public function destroyStaff(Specialist $specialist)
     {
+        if (!Auth::user()->isAdmin() && $specialist->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this staff member.');
+        }
+
         if ($specialist->image_path) {
             Storage::disk('public')->delete($specialist->image_path);
         }

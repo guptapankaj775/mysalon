@@ -11,17 +11,9 @@ use Illuminate\Support\Str;
 
 class SubscriptionController extends Controller
 {
-    /**
-     * Show plan selection page.
-     */
     public function index()
     {
         $user = Auth::user();
-
-        // If user already has an active plan, redirect to dashboard
-        if ($user->hasActivePlan()) {
-            return redirect()->route('dashboard')->with('info', 'You already have an active subscription.');
-        }
 
         $plans = SubscriptionPlan::active()->ordered()->get();
         $trialDays = SubscriptionSetting::trialDays();
@@ -41,11 +33,6 @@ class SubscriptionController extends Controller
         $user = Auth::user();
         $plan = SubscriptionPlan::findOrFail($request->plan_id);
 
-        // If user already has an active plan, redirect away
-        if ($user->hasActivePlan()) {
-            return redirect()->route('dashboard')->with('info', 'You already have an active subscription.');
-        }
-
         // Create a pending subscription
         $subscription = UserSubscription::create([
             'user_id'        => $user->id,
@@ -57,6 +44,9 @@ class SubscriptionController extends Controller
 
         // Free trial → activate immediately, skip payment
         if ($plan->is_trial || $plan->price == 0) {
+            // Deactivate other active plans
+            $user->subscriptions()->where('status', 'active')->update(['status' => 'expired']);
+
             $trialDays = SubscriptionSetting::trialDays();
             $subscription->update([
                 'status'         => 'active',
@@ -108,6 +98,9 @@ class SubscriptionController extends Controller
         $request->validate([
             'payment_method' => 'required|in:card,upi,netbanking',
         ]);
+
+        // Deactivate other active plans
+        $user->subscriptions()->where('status', 'active')->update(['status' => 'expired']);
 
         // Simulate payment success (mock gateway)
         $subscription->update([

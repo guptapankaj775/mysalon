@@ -45,6 +45,9 @@ class AppServiceProvider extends ServiceProvider
 
         foreach ($permissions as $permission) {
             Gate::define($permission, function ($user) use ($permission) {
+                if ($user->hasActivePlan() && !in_array($permission, ['manage_roles', 'manage_feedbacks'])) {
+                    return true;
+                }
                 return $user->hasPermission($permission);
             });
         }

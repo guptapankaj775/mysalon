@@ -14,7 +14,8 @@ class Specialist extends Model
         'name',
         'bio',
         'image_path',
-        'status'
+        'status',
+        'user_id'
     ];
 
     protected $casts = [

@@ -18,6 +18,10 @@ class InventoryController extends Controller
     {
         $query = Inventory::with(['creator', 'vendor', 'brand', 'category']);
 
+        if (!Auth::user()->isAdmin()) {
+            $query->where('user_id', Auth::id());
+        }
+
         // Apply Search Filter (Item Name or SKU)
         if ($request->filled('search')) {
             $search = $request->search;
@@ -28,7 +32,7 @@ class InventoryController extends Controller
         }
 
         // Apply Creator Filter
-        if ($request->filled('creator_id')) {
+        if (Auth::user()->isAdmin() && $request->filled('creator_id')) {
             $query->where('user_id', $request->creator_id);
         }
 
@@ -44,7 +48,7 @@ class InventoryController extends Controller
         $inventories = $query->orderBy('created_at', 'desc')->paginate(10);
 
         // Fetch all users for the filter dropdown
-        $users = User::orderBy('name')->get();
+        $users = Auth::user()->isAdmin() ? User::orderBy('name')->get() : collect([Auth::user()]);
 
         return view('admin.inventory.index', compact('inventories', 'users', 'stats'));
     }
@@ -54,9 +58,19 @@ class InventoryController extends Controller
      */
     public function create()
     {
-        $vendors = \App\Models\Vendor::where('status', true)->orderBy('name')->get();
-        $brands = \App\Models\Brand::where('status', true)->orderBy('name')->get();
-        $categories = \App\Models\InventoryCategory::where('status', true)->orderBy('name')->get();
+        $vendorsQuery = \App\Models\Vendor::where('status', true)->orderBy('name');
+        $brandsQuery = \App\Models\Brand::where('status', true)->orderBy('name');
+        $categoriesQuery = \App\Models\InventoryCategory::where('status', true)->orderBy('name');
+
+        if (!Auth::user()->isAdmin()) {
+            $vendorsQuery->where('user_id', Auth::id());
+            $brandsQuery->where('user_id', Auth::id());
+            $categoriesQuery->where('user_id', Auth::id());
+        }
+
+        $vendors = $vendorsQuery->get();
+        $brands = $brandsQuery->get();
+        $categories = $categoriesQuery->get();
         return view('admin.inventory.create', compact('vendors', 'brands', 'categories'));
     }
 
@@ -117,9 +131,23 @@ class InventoryController extends Controller
      */
     public function edit(Inventory $inventory)
     {
-        $vendors = \App\Models\Vendor::where('status', true)->orderBy('name')->get();
-        $brands = \App\Models\Brand::where('status', true)->orderBy('name')->get();
-        $categories = \App\Models\InventoryCategory::where('status', true)->orderBy('name')->get();
+        if (!Auth::user()->isAdmin() && $inventory->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this inventory item.');
+        }
+
+        $vendorsQuery = \App\Models\Vendor::where('status', true)->orderBy('name');
+        $brandsQuery = \App\Models\Brand::where('status', true)->orderBy('name');
+        $categoriesQuery = \App\Models\InventoryCategory::where('status', true)->orderBy('name');
+
+        if (!Auth::user()->isAdmin()) {
+            $vendorsQuery->where('user_id', Auth::id());
+            $brandsQuery->where('user_id', Auth::id());
+            $categoriesQuery->where('user_id', Auth::id());
+        }
+
+        $vendors = $vendorsQuery->get();
+        $brands = $brandsQuery->get();
+        $categories = $categoriesQuery->get();
         return view('admin.inventory.edit', compact('inventory', 'vendors', 'brands', 'categories'));
     }
 
@@ -128,6 +156,10 @@ class InventoryController extends Controller
      */
     public function update(Request $request, Inventory $inventory)
     {
+        if (!Auth::user()->isAdmin() && $inventory->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this inventory item.');
+        }
+
         $validated = $request->validate([
             'item_name'                   => 'required|string|max:255',
             'status'                      => 'boolean',
@@ -177,6 +209,10 @@ class InventoryController extends Controller
      */
     public function destroy(Inventory $inventory)
     {
+        if (!Auth::user()->isAdmin() && $inventory->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this inventory item.');
+        }
+
         $inventory->delete();
 
         return redirect()

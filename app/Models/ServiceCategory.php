@@ -16,7 +16,8 @@ class ServiceCategory extends Model
         'description',
         'long_description',
         'start_price',
-        'status'
+        'status',
+        'user_id'
     ];
 
     protected $casts = [

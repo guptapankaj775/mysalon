@@ -41,7 +41,15 @@ class ProfileController extends Controller
             $user->email_verified_at = null;
         }
 
+        if (!empty($validated['password'])) {
+            $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
+        }
+
         $user->save();
+
+        if (!empty($validated['password'])) {
+            return Redirect::back()->with('status', 'profile-updated')->with('password-status', 'password-updated');
+        }
 
         return Redirect::back()->with('status', 'profile-updated');
     }

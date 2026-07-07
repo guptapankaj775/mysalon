@@ -10,7 +10,11 @@ class InventoryCategoryController extends Controller
 {
     public function index()
     {
-        $categories = InventoryCategory::orderBy('name')->paginate(10);
+        $query = InventoryCategory::query();
+        if (!auth()->user()->isAdmin()) {
+            $query->where('user_id', auth()->id());
+        }
+        $categories = $query->orderBy('name')->paginate(10);
         return view('admin.inventory_categories.index', compact('categories'));
     }
 
@@ -28,6 +32,7 @@ class InventoryCategoryController extends Controller
         ]);
 
         $validated['status'] = $request->boolean('status');
+        $validated['user_id'] = auth()->id();
 
         InventoryCategory::create($validated);
 
@@ -36,11 +41,18 @@ class InventoryCategoryController extends Controller
 
     public function edit(InventoryCategory $inventoryCategory)
     {
+        if (!auth()->user()->isAdmin() && $inventoryCategory->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this category.');
+        }
         return view('admin.inventory_categories.edit', compact('inventoryCategory'));
     }
 
     public function update(Request $request, InventoryCategory $inventoryCategory)
     {
+        if (!auth()->user()->isAdmin() && $inventoryCategory->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this category.');
+        }
+
         $validated = $request->validate([
             'name'        => 'required|string|max:255|unique:inventory_categories,name,' . $inventoryCategory->id,
             'description' => 'nullable|string',
@@ -56,6 +68,10 @@ class InventoryCategoryController extends Controller
 
     public function destroy(InventoryCategory $inventoryCategory)
     {
+        if (!auth()->user()->isAdmin() && $inventoryCategory->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this category.');
+        }
+
         $inventoryCategory->delete();
         return redirect()->route('admin.inventory-categories.index')->with('success', 'Inventory category deleted successfully.');
     }
