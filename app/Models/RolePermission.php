@@ -9,5 +9,6 @@ class RolePermission extends Model
     protected $fillable = [
         'role',
         'permission',
+        'created_by',
     ];
 }

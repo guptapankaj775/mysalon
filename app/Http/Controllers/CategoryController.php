@@ -31,7 +31,15 @@ class CategoryController extends Controller
         ]);
 
         $validated['user_id'] = auth()->id();
-        ServiceCategory::create($validated);
+        $category = ServiceCategory::create($validated);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'category' => $category,
+                'message' => 'Category created successfully'
+            ]);
+        }
 
         return redirect()->route('admin.categories')->with('success', 'Category created successfully');
     }

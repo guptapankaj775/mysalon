@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -36,6 +37,7 @@ class User extends Authenticatable
         'is_verified',
         'created_by',
         'salon_name',
+        'slug',
         'salon_type',
         'salon_model',
         'franchisee_name',
@@ -129,7 +131,23 @@ class User extends Authenticatable
             return true;
         }
 
-        return RolePermission::where('role', $this->role)
+        $ownerId = $this->created_by ?? $this->id;
+
+        // Check if there are ANY customized role permissions for this salon (created_by) and role
+        $hasCustom = RolePermission::where('created_by', $ownerId)
+            ->where('role', $this->role)
+            ->exists();
+
+        if ($hasCustom) {
+            return RolePermission::where('created_by', $ownerId)
+                ->where('role', $this->role)
+                ->where('permission', $permission)
+                ->exists();
+        }
+
+        // Fall back to system defaults (created_by is null)
+        return RolePermission::whereNull('created_by')
+            ->where('role', $this->role)
             ->where('permission', $permission)
             ->exists();
     }
@@ -140,5 +158,27 @@ class User extends Authenticatable
     public function hasRole(string $role): bool
     {
         return $this->role === $role;
+    }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function ($user) {
+            if ($user->isDirty('salon_name') && $user->salon_name) {
+                if ($user->role === 'staff') {
+                    $user->slug = null;
+                    return;
+                }
+                $baseSlug = Str::slug($user->salon_name);
+                $slug = $baseSlug;
+                $count = 1;
+                while (static::where('slug', $slug)->where('id', '!=', $user->id)->exists()) {
+                    $slug = $baseSlug . '-' . $count++;
+                }
+                $user->slug = $slug;
+            }
+        });
     }
 }

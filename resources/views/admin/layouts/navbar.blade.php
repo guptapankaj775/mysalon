@@ -12,10 +12,12 @@
                         {{ Auth::user()->name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        @if(Auth::user()->role !== 'admin')
                         <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
+                        @endif
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf

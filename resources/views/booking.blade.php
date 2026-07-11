@@ -20,7 +20,7 @@
         <!-- Booking Form Section -->
         <section class="booking-section">
             <div class="container">
-                <form method="POST" action="{{ route('bookings.store') }}" class="booking-form">
+                <form method="POST" action="{{ isset($currentSalon) ? route('salon.bookings.store', ['salon' => $currentSalon->slug]) : route('bookings.store') }}" class="booking-form">
                     @csrf
                     <div class="card">
                         <div class="card-body">

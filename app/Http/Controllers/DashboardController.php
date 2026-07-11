@@ -11,10 +11,33 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user()->load('createdInventories');
+        $user = Auth::user();
+
+        $userSlug = $user->slug;
+        if (!$userSlug && $user->created_by) {
+            $owner = \App\Models\User::find($user->created_by);
+            if ($owner) {
+                $userSlug = $owner->slug;
+            }
+        }
+
+        // Redirect based on whether the user has a salon slug
+        $isSalonRoute = request()->attributes->get('is_salon_route', false);
+        if ($userSlug) {
+            if (!$isSalonRoute) {
+                return redirect()->route('salon.dashboard', ['salon' => $userSlug, 'tab' => request('tab')]);
+            }
+        } else {
+            if ($isSalonRoute) {
+                return redirect()->route('dashboard', ['tab' => request('tab')]);
+            }
+        }
+
+        $user->load('createdInventories');
 
         // Subscription status
-        $activeSubscription = $user->activeSubscription()->with('plan')->first();
+        $owner = $user->created_by ? \App\Models\User::find($user->created_by) : $user;
+        $activeSubscription = $owner ? $owner->activeSubscription()->with('plan')->first() : null;
         $hasActivePlan = $user->isAdmin() || ($activeSubscription !== null);
         $limitedFeatures = $hasActivePlan ? [] : SubscriptionSetting::limitedFeatures();
         $noticeMessage   = !$hasActivePlan ? SubscriptionSetting::noticeMessage() : null;

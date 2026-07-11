@@ -11,6 +11,10 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -20,6 +24,12 @@ Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Customer dashboard booking routes (global)
+    Route::get('/dashboard/available-services', [BookingController::class, 'dashboardServices'])->name('customer.services.book');
+    Route::get('/dashboard/bookings/create', [BookingController::class, 'dashboardCreateBooking'])->name('customer.bookings.create');
+    Route::post('/dashboard/bookings/store', [BookingController::class, 'dashboardStoreBooking'])->name('customer.bookings.store');
+
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
 
     // Subscription routes
@@ -34,8 +44,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
     // Admin routes
-    Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    // Admin routes closure
+    $adminRoutes = function () {
         Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+
+        // Booking creation routes for admin/staff
+        Route::middleware('can:create_bookings')->group(function () {
+            Route::get('/services/book', [AdminController::class, 'bookServices'])->name('admin.services.book');
+            Route::get('/bookings/create', [AdminController::class, 'createBooking'])->name('admin.bookings.create');
+            Route::post('/bookings/store', [AdminController::class, 'storeBooking'])->name('admin.bookings.store');
+        });
 
         // Bookings routes
         Route::middleware('can:manage_bookings')->group(function () {
@@ -45,7 +63,6 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/bookings/{booking}/cancel', [AdminController::class, 'cancelBooking'])->name('admin.bookings.cancel');
             Route::post('/bookings/{booking}/complete', [AdminController::class, 'completeBooking'])->name('admin.bookings.complete');
             Route::get('/bookings/{booking}', [AdminController::class, 'showBooking'])->name('admin.bookings.show');
-            Route::put('/bookings/{booking}/status', [AdminController::class, 'updateBookingStatus'])->name('admin.bookings.update-status');
         });
 
         // Services & Categories routes
@@ -129,7 +146,13 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/subscription-settings', [App\Http\Controllers\Admin\SubscriptionController::class, 'settings'])->name('admin.subscription.settings');
             Route::post('/subscription-settings', [App\Http\Controllers\Admin\SubscriptionController::class, 'updateSettings'])->name('admin.subscription.settings.update');
         });
-    });
+    };
+
+    // 1. Salon Scoped Admin Group (Merchants)
+    Route::middleware(['salon', 'auth', 'admin'])->prefix('{salon}/portal')->where(['salon' => '(?!admin$|login$|register$|forgot-password$|reset-password$|logout$|profile$|subscription$)[a-zA-Z0-9\-]+'])->group($adminRoutes);
+
+    // 2. Global Admin Group (fallback and Super Admin)
+    Route::middleware(['auth', 'admin'])->prefix('admin')->group($adminRoutes);
 
     // Booking routes
     Route::get('/booking', [BookingController::class, 'index'])->name('booking');
@@ -153,3 +176,55 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+// Salon-specific scoped routes
+Route::middleware(['salon'])->prefix('{salon}')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('salon.home');
+    Route::get('/about', [AboutController::class, 'index'])->name('salon.about');
+    Route::get('/services', [ServiceController::class, 'index'])->name('salon.services');
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('salon.reviews');
+
+    // Salon Scoped Auth Routes
+    Route::middleware('guest')->group(function () {
+        Route::get('register', [RegisteredUserController::class, 'create'])->name('salon.register');
+        Route::post('register', [RegisteredUserController::class, 'store']);
+        Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('salon.login');
+        Route::post('login', [AuthenticatedSessionController::class, 'store']);
+        Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('salon.password.request');
+        Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('salon.password.email');
+        Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('salon.password.reset');
+        Route::post('reset-password', [NewPasswordController::class, 'store'])->name('salon.password.store');
+    });
+
+    Route::middleware(['auth'])->group(function () {
+        Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('salon.logout');
+        
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('salon.dashboard');
+
+        // Customer dashboard booking routes (salon scoped)
+        Route::get('/dashboard/available-services', [BookingController::class, 'dashboardServices'])->name('salon.customer.services.book');
+        Route::get('/dashboard/bookings/create', [BookingController::class, 'dashboardCreateBooking'])->name('salon.customer.bookings.create');
+        Route::post('/dashboard/bookings/store', [BookingController::class, 'dashboardStoreBooking'])->name('salon.customer.bookings.store');
+        
+        // Salon Scoped Subscription routes
+        Route::get('/subscription', [SubscriptionController::class, 'index'])->name('salon.subscription.index');
+        Route::post('/subscription/select', [SubscriptionController::class, 'selectPlan'])->name('salon.subscription.select');
+        Route::get('/subscription/{subscription}/payment', [SubscriptionController::class, 'payment'])->name('salon.subscription.payment');
+        Route::post('/subscription/{subscription}/payment', [SubscriptionController::class, 'processPayment'])->name('salon.subscription.payment.process');
+        Route::get('/subscription/{subscription}/success', [SubscriptionController::class, 'success'])->name('salon.subscription.success');
+        
+        // Booking routes
+        Route::get('/booking', [BookingController::class, 'index'])->name('salon.booking');
+        Route::post('/bookings', [BookingController::class, 'store'])->name('salon.bookings.store');
+
+        // Payment routes
+        Route::get('/booking/{id}/payment', [BookingController::class, 'showPayment'])->name('salon.booking.payment');
+        Route::post('/booking/{id}/payment', [BookingController::class, 'processPayment'])->name('salon.booking.payment.process');
+        Route::get('/booking/{id}/payment/success', [BookingController::class, 'paymentSuccess'])->name('salon.booking.payment.success');
+        Route::get('/booking/{id}/invoice', [BookingController::class, 'showInvoice'])->name('salon.booking.invoice');
+
+        // Booking management routes
+        Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('salon.bookings.cancel');
+        Route::post('/bookings/{id}/reschedule', [BookingController::class, 'reschedule'])->name('salon.bookings.reschedule');
+    });
+});

@@ -20,7 +20,7 @@
             margin-bottom: 30px;
         }
 
-        .magento-accordion .accordion-item {
+        .magento-panel {
             border: 1px solid #e2e8f0;
             border-radius: 10px !important;
             margin-bottom: 20px;
@@ -29,33 +29,79 @@
             background: white;
         }
 
-        .magento-accordion .accordion-button {
-            background-color: #fafafa;
-            color: #2d3748;
+        .magento-panel-header {
+            background-color: #fdfaf2;
+            color: #bfa13d;
             font-weight: 600;
-            border: none;
-            outline: none;
+            border-bottom: 1px solid #f7edd4;
             padding: 18px 24px;
             font-size: 1.05rem;
             display: flex;
             align-items: center;
         }
 
-        .magento-accordion .accordion-button:not(.collapsed) {
-            background-color: #fdfaf2;
-            color: #bfa13d;
-            box-shadow: none;
-            border-bottom: 1px solid #f7edd4;
-        }
-
-        .magento-accordion .accordion-button i {
+        .magento-panel-header i {
             font-size: 1.15rem;
             width: 28px;
         }
 
-        .magento-accordion .accordion-body {
+        .magento-panel-body {
             padding: 25px 30px;
             background: white;
+        }
+
+        /* Profile settings inputs matching styling */
+        .form-control:not(textarea),
+        .form-select,
+        .input-group .btn {
+            background-color: #f9fafb !important;
+            border: 1px solid #e5e7eb !important;
+            color: #1f2937 !important;
+            font-size: 0.95rem !important;
+            height: 30px !important;
+            border-radius: 6px !important;
+            box-sizing: border-box !important;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .form-select {
+            padding: unset !important;
+            padding-left: 2px !important;
+        }
+
+        textarea.form-control {
+            background-color: #f9fafb !important;
+            border: 1px solid #e5e7eb !important;
+            color: #1f2937 !important;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.95rem;
+            border-radius: 6px !important;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .form-control:focus,
+        .form-select:focus,
+        textarea.form-control:focus {
+            background-color: #ffffff !important;
+            border-color: #D4AF37 !important;
+            box-shadow: none !important;
+            color: #1f2937 !important;
+            outline: none !important;
+        }
+
+        .input-group-text {
+            height: 30px !important;
+            font-size: 0.9rem !important;
+            border-radius: 6px 0 0 6px !important;
+            background-color: #f3f4f6 !important;
+            border: 1px solid #e5e7eb !important;
+        }
+
+        /* Adjust labels to match layout spacing */
+        .form-label {
+            font-size: 0.85rem !important;
+            margin-bottom: 4px !important;
+            color: #4b5563 !important;
         }
 
         /* Premium Gold Toggle Switch */
@@ -94,24 +140,18 @@
                     <a href="{{ route('admin.inventory.index') }}" class="btn btn-outline-secondary me-2">
                         <i class="fas fa-chevron-left me-1"></i> Back
                     </a>
-                    <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #D4AF37; border-color: #D4AF37;">
-                        <i class="fas fa-save me-1"></i> Save Item
-                    </button>
+                    
                 </div>
             </div>
 
             <div class="container">
-                <div class="accordion magento-accordion" id="inventoryFormAccordion">
+                <div class="magento-panel">
+                    <div class="magento-panel-header">
+                        <i class="fas fa-boxes text-warning me-2"></i> Inventory Item Information
+                    </div>
+                    <div class="magento-panel-body">
                     
-                    <!-- PANEL 1: General Information -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingGeneral">
-                          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGeneral" aria-expanded="true" aria-controls="collapseGeneral">
-                            <i class="fas fa-info-circle text-warning me-2"></i> General Information
-                          </button>
-                        </h2>
-                        <div id="collapseGeneral" class="accordion-collapse collapse show" aria-labelledby="headingGeneral">
-                          <div class="accordion-body">
+                    <!-- Section 1: General Information -->
                               <div class="row">
                                   <div class="col-md-6 mb-4">
                                       <label for="item_name" class="form-label fw-bold">Item Name <span class="text-danger">*</span></label>
@@ -180,19 +220,8 @@
                                       @enderror
                                   </div>
                               </div>
-                          </div>
-                        </div>
-                    </div>
-
-                    <!-- PANEL 2: Pricing & Tax -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingPricing">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePricing" aria-expanded="false" aria-controls="collapsePricing">
-                            <i class="fas fa-tags text-warning me-2"></i> Pricing & Tax
-                          </button>
-                        </h2>
-                        <div id="collapsePricing" class="accordion-collapse collapse" aria-labelledby="headingPricing">
-                          <div class="accordion-body">
+                          
+                            <h5 class="border-bottom pb-2 mb-3 mt-4 text-warning fw-bold"><i class="fas fa-tags text-warning me-2 me-2"></i> Pricing & Tax</h5>
                               <div class="row">
                                   <div class="col-md-3 mb-4">
                                       <label for="price" class="form-label fw-bold">Sale Price (Rs.) <span class="text-danger">*</span></label>
@@ -279,19 +308,8 @@
                                       @enderror
                                   </div>
                               </div>
-                          </div>
-                        </div>
-                    </div>
-
-                    <!-- PANEL 3: Purchase Details -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingPurchase">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePurchase" aria-expanded="false" aria-controls="collapsePurchase">
-                            <i class="fas fa-shopping-cart text-warning me-2"></i> Purchase Details
-                          </button>
-                        </h2>
-                        <div id="collapsePurchase" class="accordion-collapse collapse" aria-labelledby="headingPurchase">
-                          <div class="accordion-body">
+                          
+                            <h5 class="border-bottom pb-2 mb-3 mt-4 text-warning fw-bold"><i class="fas fa-shopping-cart text-warning me-2 me-2"></i> Purchase Details</h5>
                               <div class="row">
                                   <div class="col-md-3 mb-4">
                                       <label for="cost" class="form-label fw-bold">Pur. Rate (Cost Price)</label>
@@ -337,19 +355,8 @@
                                       @enderror
                                   </div>
                               </div>
-                          </div>
-                        </div>
-                    </div>
-
-                    <!-- PANEL 4: Stock & Quantity -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingStock">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseStock" aria-expanded="false" aria-controls="collapseStock">
-                            <i class="fas fa-cubes text-warning me-2"></i> Stock & Quantity
-                          </button>
-                        </h2>
-                        <div id="collapseStock" class="accordion-collapse collapse" aria-labelledby="headingStock">
-                          <div class="accordion-body">
+                          
+                            <h5 class="border-bottom pb-2 mb-3 mt-4 text-warning fw-bold"><i class="fas fa-cubes text-warning me-2 me-2"></i> Stock & Quantity</h5>
                               <div class="row">
                                   <div class="col-md-3 mb-4">
                                       <label class="form-label fw-bold d-block">Manage Stock</label>
@@ -387,19 +394,8 @@
                                       @enderror
                                   </div>
                               </div>
-                          </div>
-                        </div>
-                    </div>
-
-                    <!-- PANEL 5: Measurement & Specifications -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingMeasurement">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMeasurement" aria-expanded="false" aria-controls="collapseMeasurement">
-                            <i class="fas fa-balance-scale text-warning me-2"></i> Measurement & Specifications
-                          </button>
-                        </h2>
-                        <div id="collapseMeasurement" class="accordion-collapse collapse" aria-labelledby="headingMeasurement">
-                          <div class="accordion-body">
+                          
+                            <h5 class="border-bottom pb-2 mb-3 mt-4 text-warning fw-bold"><i class="fas fa-balance-scale text-warning me-2 me-2"></i> Measurement & Specifications</h5>
                               <div class="row">
                                   <div class="col-md-3 mb-4">
                                       <label for="size" class="form-label fw-bold">Size</label>
@@ -440,19 +436,8 @@
                                       @enderror
                                   </div>
                               </div>
-                          </div>
-                        </div>
-                    </div>
-
-                    <!-- PANEL 6: Supplier Association -->
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingSupplier">
-                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSupplier" aria-expanded="false" aria-controls="collapseSupplier">
-                            <i class="fas fa-truck-loading text-warning me-2"></i> Supplier Association
-                          </button>
-                        </h2>
-                        <div id="collapseSupplier" class="accordion-collapse collapse" aria-labelledby="headingSupplier">
-                          <div class="accordion-body">
+                          
+                            <h5 class="border-bottom pb-2 mb-3 mt-4 text-warning fw-bold"><i class="fas fa-truck-loading text-warning me-2 me-2"></i> Supplier Association</h5>
                               <div class="row">
                                   <div class="col-12">
                                       <label for="vendor_id" class="form-label fw-bold">Supplier / Vendor (Company Name)</label>
@@ -472,10 +457,18 @@
                                       @enderror
                                   </div>
                               </div>
-                          </div>
-                        </div>
-                    </div>
 
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                                <a href="{{ route('admin.inventory.index') }}" class="btn btn-outline-secondary">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #D4AF37; border-color: #D4AF37;">
+                                    <i class="fas fa-save me-1"></i> Save Item
+                                </button>
+                            </div>
+                          </div>
+                    </div>
                 </div>
             </div>
 
@@ -509,20 +502,7 @@
                 updateVendorGst();
             }
 
-            // Auto-expand panels on validation errors
-            @if ($errors->any())
-                const errorFields = document.querySelectorAll('.is-invalid, .invalid-feedback');
-                errorFields.forEach(function(el) {
-                    const accordionCollapse = el.closest('.accordion-collapse');
-                    if (accordionCollapse) {
-                        const bsCollapse = new bootstrap.Collapse(accordionCollapse, {
-                            toggle: false
-                        });
-                        bsCollapse.show();
-                    }
-                });
-            @endif
-        });
+            });
     </script>
     @endpush
     @endsection

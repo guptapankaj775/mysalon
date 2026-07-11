@@ -54,33 +54,68 @@
 
         /* Light theme input styles */
         .form-control:not(textarea),
+        .form-select,
+        .input-group .btn {
+            background-color: #f9fafb !important;
+            border: 1px solid #e5e7eb !important;
+            color: #1f2937 !important;
+            font-size: 0.95rem !important;
+            height: 30px !important;
+            border-radius: 6px !important;
+            box-sizing: border-box !important;
+            transition: all 0.2s ease-in-out;
+        }
+
         .form-select {
-            background-color: #ffffff !important;
-            border: 1px solid #ced4da !important;
-            color: #212529 !important;
-            padding: 0.20rem 0.55rem;
-            font-size: 0.95rem;
-            height: 30px;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
+            padding: unset !important;
+            padding-left: 2px !important;
         }
 
         textarea.form-control {
-            background-color: #ffffff !important;
-            border: 1px solid #ced4da !important;
-            color: #212529 !important;
-            padding: 0.375rem 0.75rem;
+            background-color: #f9fafb !important;
+            border: 1px solid #e5e7eb !important;
+            color: #1f2937 !important;
+            padding: 0.5rem 0.75rem;
             font-size: 0.95rem;
-            transition: all 0.3s ease;
+            border-radius: 6px !important;
+            transition: all 0.2s ease-in-out;
         }
 
         .form-control:focus,
-        .form-select:focus {
+        .form-select:focus,
+        textarea.form-control:focus {
             background-color: #ffffff !important;
             border-color: #D4AF37 !important;
-            box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25) !important;
-            color: #212529 !important;
-            outline: none;
+            box-shadow: none !important;
+            color: #1f2937 !important;
+            outline: none !important;
+        }
+
+        /* Input Group styling and button overrides */
+        .input-group {
+            flex-wrap: nowrap !important;
+        }
+
+        .input-group .btn {
+            background-color: #D4AF37 !important;
+            border-color: #D4AF37 !important;
+            color: #2c2c2c !important;
+            font-weight: 600 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            line-height: 1.5 !important;
+            white-space: nowrap !important;
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 6px !important;
+            border-bottom-right-radius: 6px !important;
+        }
+
+        .input-group .btn:hover {
+            background-color: #2c2c2c !important;
+            border-color: #2c2c2c !important;
+            color: #D4AF37 !important;
         }
 
         .form-control:disabled {
@@ -143,37 +178,43 @@
             border: 1px solid #D4AF37 !important;
             color: #D4AF37 !important;
             background: transparent !important;
-            padding: 0.7rem 1.1rem;
-            border-radius: 8px;
+            height: 38px !important;
+            padding: 0.375rem 1rem !important;
+            font-size: 0.95rem !important;
+            border-radius: 6px !important;
             font-weight: 600;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.2s ease-in-out;
         }
 
         .btn-verify-gst:hover {
             background: #D4AF37 !important;
-            color: #fff !important;
+            color: #2c2c2c !important;
         }
 
         .btn-save {
             background-color: #D4AF37 !important;
             color: #2c2c2c !important;
-            border: 2px solid #D4AF37 !important;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            font-weight: 700;
-            transition: all 0.3s ease;
+            border: 1px solid #D4AF37 !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px !important;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
         }
 
         .btn-save:hover {
-            background-color: transparent !important;
+            background-color: #2c2c2c !important;
             color: #D4AF37 !important;
-            border-color: #D4AF37 !important;
-            transform: translateY(-2px);
+            border-color: #2c2c2c !important;
         }
 
         .form-group label {
-            color: #2C2C2C !important;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
+            color: #000 !important;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            font-size: 0.875rem;
         }
 
         /* Light stats cards styling */
@@ -231,10 +272,10 @@
         /* Light section cards styling */
         .section-card {
             background: #ffffff !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
-            border-radius: 15px;
-            padding: 2rem;
+            border: 1px solid #e5e7eb !important;
+            box-shadow: none !important;
+            border-radius: 12px;
+            padding: 2.5rem;
             margin-bottom: 2rem;
         }
 
@@ -715,7 +756,7 @@
     @endphp
 
     <!-- Dashboard Section -->
-    <div class="container-fluid py-4">
+    <div class="container-fluid" style="margin: unset !important; padding: unset !important;">
         <div class="row">
             <div class="col-12">
                     <!-- Subscription Notice Banner -->
@@ -727,7 +768,7 @@
                         <div class="notice-text">
                             {{ $noticeMessage }}
                         </div>
-                        <a href="{{ route('subscription.index') }}" class="btn-subscribe">
+                        <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn-subscribe">
                             <i class="fas fa-crown me-1"></i>Subscribe
                         </a>
                     </div>
@@ -743,7 +784,7 @@
                             <strong style="color:#60a5fa;">{{ $activeSubscription->days_remaining }} day(s)</strong>.
                             Renew to keep full access.
                         </div>
-                        <a href="{{ route('subscription.index') }}" class="btn-subscribe" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff;">
+                        <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn-subscribe" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff;">
                             <i class="fas fa-sync me-1"></i>Renew
                         </a>
                     </div>
@@ -754,15 +795,23 @@
                         <div class="tab-pane fade {{ $activeTab === 'overview' ? 'show active' : '' }}" id="overview">
                             <div class="dashboard-header">
                                 <h2>My Dashboard</h2>
-                                @if(!in_array('booking', $limitedFeatures ?? []))
-                                <a href="{{ route('services') }}" class="btn btn-book-appointment">
-                                    <i class="fas fa-plus"></i> Book New Appointment
-                                </a>
-                                @else
-                                <a href="{{ route('subscription.index') }}" class="btn btn-book-appointment" style="background: rgba(0,0,0,0.03); border: 1px dashed rgba(0,0,0,0.15); color: #2C2C2C;">
-                                    <i class="fas fa-lock text-muted"></i> Subscribe to Book
-                                </a>
-                                @endif
+                                @can('create_bookings')
+                                    @if(!in_array('booking', $limitedFeatures ?? []))
+                                        @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by)
+                                        <a href="{{ route('admin.services.book') }}" class="btn btn-book-appointment">
+                                            <i class="fas fa-plus"></i> Book New Appointment
+                                        </a>
+                                        @else
+                                        <a href="{{ isset($currentSalon) ? route('salon.customer.services.book', ['salon' => $currentSalon->slug]) : route('customer.services.book') }}" class="btn btn-book-appointment">
+                                            <i class="fas fa-plus"></i> Book New Appointment
+                                        </a>
+                                        @endif
+                                    @else
+                                    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn btn-book-appointment" style="background: rgba(0,0,0,0.03); border: 1px dashed rgba(0,0,0,0.15); color: #2C2C2C;">
+                                        <i class="fas fa-lock text-muted"></i> Subscribe to Book
+                                    </a>
+                                    @endif
+                                @endcan
                             </div>
 
                             <!-- Quick Actions -->
@@ -813,7 +862,7 @@
                                 <div class="locked-overlay">
                                     <i class="fas fa-lock"></i>
                                     <p>Appointment history is locked.<br>Subscribe to view all your appointments.</p>
-                                    <a href="{{ route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
+                                    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
                                 </div>
                                 @endif
                                 <div class="card-header">
@@ -838,7 +887,7 @@
                                         </div>
                                         <div class="appointment-actions">
                                             @if($appointment->payment_status === 'paid')
-                                            <a href="{{ route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
                                                 <i class="fas fa-file-invoice me-1"></i> Invoice
                                             </a>
                                             @endif
@@ -856,9 +905,15 @@
                                     @empty
                                     <div class="py-4 text-center">
                                         <p>No upcoming appointments</p>
-                                        @if(!in_array('booking', $limitedFeatures ?? []))
-                                        <a href="{{ route('services') }}" class="mt-2 btn btn-primary">Book Now</a>
-                                        @endif
+                                        @can('create_bookings')
+                                            @if(!in_array('booking', $limitedFeatures ?? []))
+                                                @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by)
+                                                <a href="{{ route('admin.services.book') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                                @else
+                                                <a href="{{ isset($currentSalon) ? route('salon.customer.services.book', ['salon' => $currentSalon->slug]) : route('customer.services.book') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                                @endif
+                                            @endif
+                                        @endcan
                                     </div>
                                     @endforelse
                                 </div>
@@ -881,7 +936,7 @@
                                 <div class="locked-overlay" style="min-height: 200px;">
                                     <i class="fas fa-lock"></i>
                                     <p>Full appointment history is locked.<br>Subscribe to view all your appointments.</p>
-                                    <a href="{{ route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
+                                    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
                                 </div>
                                 @endif
 
@@ -902,7 +957,7 @@
                                         </div>
                                         <div class="appointment-actions">
                                             @if($appointment->payment_status === 'paid')
-                                            <a href="{{ route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
                                                 <i class="fas fa-file-invoice me-1"></i> Invoice
                                             </a>
                                             @endif
@@ -920,7 +975,13 @@
                                     @empty
                                     <div class="py-4 text-center">
                                         <p>No upcoming appointments</p>
-                                        <a href="{{ route('services') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                        @can('create_bookings')
+                                        @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by)
+                                        <a href="{{ route('admin.services.book') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                        @else
+                                        <a href="{{ isset($currentSalon) ? route('salon.customer.services.book', ['salon' => $currentSalon->slug]) : route('customer.services.book') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                        @endif
+                                        @endcan
                                     </div>
                                     @endforelse
                                 </div>
@@ -942,7 +1003,7 @@
                                         </div>
                                         <div class="appointment-actions">
                                             @if($appointment->payment_status === 'paid')
-                                            <a href="{{ route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
                                                 <i class="fas fa-file-invoice me-1"></i> Invoice
                                             </a>
                                             @endif
@@ -979,7 +1040,7 @@
                             </div>
                             @endif
 
-                             <div class="section-card py-3 mb-3 text-center">
+                             <!-- <div class="section-card p-1 text-center">
                                 <form id="profile-photo-form" action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @method('POST')
@@ -1012,15 +1073,16 @@
                                 @endif
                                 <h5 class="mt-2 mb-1" style="color: #2C2C2C; font-weight: 600;">{{ $user->name }}</h5>
                                 <p class="member-since text-muted mb-1" style="font-size: 0.85rem;">Member since {{ $user->created_at->format('F Y') }}</p>
-                            </div>
+                            </div> -->
 
                             <form id="profileForm" class="profile-form" method="POST" action="{{ route('profile.update') }}">
                                 @csrf
                                 @method('PATCH')
 
-                                <div class="section-card">
-                                    <div class="row g-3">
-                                        <div class="col-md-3">
+                                <div class="section-card" style="padding: 25px !important;">
+                                    <div class="row g-2">
+                                        <!-- Salon Name -->
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="salonName">Salon Name</label>
                                                 <input
@@ -1036,6 +1098,8 @@
                                                 @enderror
                                             </div>
                                         </div>
+
+                                        <!-- Salon Type -->
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="salonTypeSelect">Salon Type</label>
@@ -1077,6 +1141,9 @@
                                                 @enderror
                                             </div>
                                         </div>
+
+                                        
+                                        <!-- Salon Model -->
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="salonModelSelect">Salon Model</label>
@@ -1094,6 +1161,39 @@
                                                     <option value="Self Owned" {{ $currentModel === 'Self Owned' ? 'selected' : '' }}>Self Owned</option>
                                                 </select>
                                                 @error('salon_model')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- First Name -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="firstName">First Name</label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control @error('name') is-invalid @enderror"
+                                                    id="firstName"
+                                                    name="name"
+                                                    value="{{ old('name', $user->name) }}"
+                                                    required />
+                                                @error('name')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- Last Name -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="lastName">Last Name</label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control @error('last_name') is-invalid @enderror"
+                                                    id="lastName"
+                                                    name="last_name"
+                                                    value="{{ old('last_name', $user->last_name) }}" />
+                                                @error('last_name')
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -1117,7 +1217,7 @@
                                                 $allFranchisees[] = $currentFranchisee;
                                             }
                                         @endphp
-                                        <div class="col-md-3 {{ $showFranchisee ? '' : 'd-none' }}" id="franchiseeGroup">
+                                        <div class="col-md-2 {{ $showFranchisee ? '' : 'd-none' }}" id="franchiseeGroup">
                                             <div class="form-group">
                                                 <label for="franchiseeSelect">Franchisee Name</label>
                                                 <select
@@ -1148,37 +1248,8 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row g-3">
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="firstName">First Name</label>
-                                                <input
-                                                    type="text"
-                                                    class="form-control @error('name') is-invalid @enderror"
-                                                    id="firstName"
-                                                    name="name"
-                                                    value="{{ old('name', $user->name) }}"
-                                                    required />
-                                                @error('name')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="lastName">Last Name</label>
-                                                <input
-                                                    type="text"
-                                                    class="form-control @error('last_name') is-invalid @enderror"
-                                                    id="lastName"
-                                                    name="last_name"
-                                                    value="{{ old('last_name', $user->last_name) }}" />
-                                                @error('last_name')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
+
+                                        <!-- Email Address -->
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="email">Email Address</label>
@@ -1194,6 +1265,8 @@
                                                 @enderror
                                             </div>
                                         </div>
+
+                                        <!-- Phone Number -->
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="phone">Phone Number</label>
@@ -1208,7 +1281,9 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+
+                                        <!-- Location -->
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="locationInput">Location</label>
                                                 <div class="input-group">
@@ -1222,7 +1297,7 @@
                                                     <input type="hidden" name="latitude" id="latitudeInput" value="{{ old('latitude', $user->latitude) }}" />
                                                     <input type="hidden" name="longitude" id="longitudeInput" value="{{ old('longitude', $user->longitude) }}" />
                                                     <button type="button" class="btn btn-gold" id="btnDetectLocation" onclick="detectLocation()">
-                                                        <i class="fas fa-map-marker-alt" style="height: 30px !important;"></i> Auto Detect
+                                                        Auto Detect
                                                     </button>
                                                 </div>
                                                 @error('location')
@@ -1233,11 +1308,11 @@
                                     </div>
 
                                     <!-- Tax and Billing Section -->
-                                    <div class="border-top my-4 pt-4" style="border-color: rgba(0, 0, 0, 0.08) !important;">
-                                        <h5 class="mb-3" style="color: #D4AF37; font-weight: 600;">Tax & Billing</h5>
+                                    <div class="mb-2 border-bottom py-1" style="border-color: rgba(0, 0, 0, 0.08) !important;">
+                                        <h5 style="color: #D4AF37; font-weight: 600;">Tax & Billing</h5>
                                     </div>
-                                    <div class="row g-3">
-                                        <div class="col-md-10">
+                                    <div class="row g-2">
+                                        <div class="col-md-3">
                                             <input
                                                 type="text"
                                                 class="form-control @error('gst_number') is-invalid @enderror"
@@ -1250,9 +1325,9 @@
                                             @enderror
                                         </div>
                                         <div class="col-md-2 d-grid">
-                                            <button type="button" class="btn btn-verify-gst">Verify</button>
+                                            <button type="button" style="height: 30px !important;" class="btn btn-verify-gst">Verify</button>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-5">
                                             <div class="form-check">
                                                 <input
                                                     class="form-check-input"
@@ -1261,7 +1336,7 @@
                                                     name="has_no_gst"
                                                     value="1"
                                                     {{ old('has_no_gst', $user->has_no_gst) ? 'checked' : '' }}>
-                                                <label class="form-check-label text-white" for="hasNoGst">
+                                                <label class="form-check-label" for="hasNoGst">
                                                     I don't have a GST number
                                                 </label>
                                             </div>
@@ -1295,7 +1370,7 @@
                                                 class="form-control @error('billing_address') is-invalid @enderror"
                                                 id="billingAddress"
                                                 name="billing_address"
-                                                rows="4"
+                                                rows="2"
                                                 placeholder="Billing address">{{ old('billing_address', $user->billing_address) }}</textarea>
                                             @error('billing_address')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -1304,16 +1379,16 @@
                                     </div>
 
                                     <!-- Password Change Section -->
-                                    <div class="border-top my-4 pt-4" style="border-color: rgba(0, 0, 0, 0.08) !important;">
-                                        <h5 class="mb-3" style="color: #D4AF37; font-weight: 600;">Change Password</h5>
+                                    <div class="my-2 py-1 border-bottom" style="border-color: rgba(0, 0, 0, 0.08) !important;">
+                                        <h5 style="color: #D4AF37; font-weight: 600;">Change Password</h5>
                                     </div>
                                     @if (session('password-status') === 'password-updated' || session('status') === 'password-updated')
                                     <div class="alert alert-success">
                                         Password updated successfully.
                                     </div>
                                     @endif
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="currentPassword">Current Password</label>
                                                 <input
@@ -1326,7 +1401,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="newPassword">New Password</label>
                                                 <input
@@ -1339,7 +1414,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="confirmNewPassword">Confirm New Password</label>
                                                 <input
@@ -1374,7 +1449,7 @@
                                 <div class="locked-overlay">
                                     <i class="fas fa-lock"></i>
                                     <p>Inventory management is locked.<br>Subscribe to manage your inventory.</p>
-                                    <a href="{{ route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
+                                    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
                                 </div>
                                 @endif
                                 <div class="table-responsive">

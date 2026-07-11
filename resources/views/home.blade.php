@@ -7,7 +7,7 @@
             <div
                 class="row h-100 align-items-center justify-content-center">
                 <div class="text-center text-white col-lg-10 hero-content">
-                    <h1 class="mb-3">Welcome to Salon JC</h1>
+                    <h1 class="mb-3">Welcome to {{ isset($currentSalon) ? $currentSalon->salon_name : 'Salon JC' }}</h1>
                     <h2 class="mb-4">Your Premier Beauty Destination</h2>
                     <p class="mb-4 lead">
                         Experience luxury beauty services with our expert team of professionals.
@@ -25,8 +25,8 @@
                     </div>
                     <div
                         class="gap-4 mb-5 hero-cta d-flex justify-content-center align-items-center">
-                        <a href="{{ route('booking') }}" class="book-now-btn">Book Your Appointment Now</a>
-                        <a href="{{ route('services') }}" class="services-btn">View Our Services</a>
+                        <a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('booking') }}" class="book-now-btn">Book Your Appointment Now</a>
+                        <a href="{{ isset($currentSalon) ? route('salon.services', ['salon' => $currentSalon->slug]) : route('services') }}" class="services-btn">View Our Services</a>
                     </div>
                     <div class="hero-badges">
                         <div

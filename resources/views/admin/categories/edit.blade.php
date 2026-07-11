@@ -2,8 +2,8 @@
     @section('content')
     <div class="container">
         <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3">Edit Category</h1>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h4 class="h4">Edit Category</h4>
             <div class="actions">
                 <a href="{{ route('admin.categories') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Categories

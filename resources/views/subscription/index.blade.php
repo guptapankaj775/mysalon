@@ -402,7 +402,7 @@
     </div>
 
     <!-- Hidden form -->
-    <form id="plan-select-form" action="{{ route('subscription.select') }}" method="POST" style="display:none;">
+    <form id="plan-select-form" action="{{ isset($currentSalon) ? route('salon.subscription.select', ['salon' => $currentSalon->slug]) : route('subscription.select') }}" method="POST" style="display:none;">
         @csrf
         <input type="hidden" name="plan_id" id="selected-plan-id">
     </form>

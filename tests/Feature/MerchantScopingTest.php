@@ -339,3 +339,185 @@ test('merchant can only list and manage their own bookings', function () {
     $response = $this->actingAs($merchantA)->post("/admin/bookings/{$bookingB->id}/complete");
     $response->assertStatus(403);
 });
+
+test('admin role user can see all data across all merchants', function () {
+    // Create admin user
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $merchantA = setupMerchantUser(['manage_services', 'manage_inventory', 'manage_bookings', 'manage_vendors']);
+    $merchantB = setupMerchantUser(['manage_services', 'manage_inventory', 'manage_bookings', 'manage_vendors']);
+
+    // Create brands
+    $brandA = Brand::create(['name' => 'Brand Merchant A', 'user_id' => $merchantA->id, 'status' => true]);
+    $brandB = Brand::create(['name' => 'Brand Merchant B', 'user_id' => $merchantB->id, 'status' => true]);
+
+    // Create vendors
+    $vendorA = Vendor::create(['name' => 'Vendor Merchant A', 'user_id' => $merchantA->id, 'status' => true]);
+    $vendorB = Vendor::create(['name' => 'Vendor Merchant B', 'user_id' => $merchantB->id, 'status' => true]);
+
+    // Create categories
+    $catA = ServiceCategory::create(['name' => 'Cat Merchant A', 'description' => 'Desc', 'user_id' => $merchantA->id, 'status' => true]);
+    $catB = ServiceCategory::create(['name' => 'Cat Merchant B', 'description' => 'Desc', 'user_id' => $merchantB->id, 'status' => true]);
+
+    // Create services
+    $serviceA = Service::create([
+        'name' => 'Service Merchant A',
+        'description' => 'Desc',
+        'price' => 50,
+        'duration' => 30,
+        'category_id' => $catA->id,
+        'user_id' => $merchantA->id,
+        'status' => true
+    ]);
+    $serviceA->icon()->create(['image_path' => 'icon.svg']);
+
+    $serviceB = Service::create([
+        'name' => 'Service Merchant B',
+        'description' => 'Desc',
+        'price' => 50,
+        'duration' => 30,
+        'category_id' => $catB->id,
+        'user_id' => $merchantB->id,
+        'status' => true
+    ]);
+    $serviceB->icon()->create(['image_path' => 'icon.svg']);
+
+    // Create bookings
+    $bookingA = Booking::create([
+        'full_name' => 'Booking A',
+        'email' => 'a@test.com',
+        'phone' => '1234567890',
+        'appointment_date' => today(),
+        'appointment_time' => '10:00:00',
+        'service_id' => $serviceA->id,
+        'service_category_id' => $catA->id,
+        'base_price' => 50,
+        'total_price' => 50,
+        'payment_status' => 'pending',
+        'status' => 'pending'
+    ]);
+
+    $bookingB = Booking::create([
+        'full_name' => 'Booking B',
+        'email' => 'b@test.com',
+        'phone' => '1234567890',
+        'appointment_date' => today(),
+        'appointment_time' => '10:00:00',
+        'service_id' => $serviceB->id,
+        'service_category_id' => $catB->id,
+        'base_price' => 50,
+        'total_price' => 50,
+        'payment_status' => 'pending',
+        'status' => 'pending'
+    ]);
+
+    // Admin should see both brands
+    $response = $this->actingAs($admin)->get('/admin/brands');
+    $response->assertOk();
+    $response->assertSee('Brand Merchant A');
+    $response->assertSee('Brand Merchant B');
+
+    // Admin should see both vendors
+    $response = $this->actingAs($admin)->get('/admin/vendors');
+    $response->assertOk();
+    $response->assertSee('Vendor Merchant A');
+    $response->assertSee('Vendor Merchant B');
+
+    // Admin should see both service categories
+    $response = $this->actingAs($admin)->get('/admin/categories');
+    $response->assertOk();
+    $response->assertSee('Cat Merchant A');
+    $response->assertSee('Cat Merchant B');
+
+    // Admin should see both services
+    $response = $this->actingAs($admin)->get('/admin/services');
+    $response->assertOk();
+    $response->assertSee('Service Merchant A');
+    $response->assertSee('Service Merchant B');
+
+    // Admin should see both bookings
+    $response = $this->actingAs($admin)->get('/admin/bookings');
+    $response->assertOk();
+    $response->assertSee('Booking A');
+    $response->assertSee('Booking B');
+});
+
+test('merchant can quick-create a service category via AJAX', function () {
+    $merchant = setupMerchantUser(['manage_services']);
+
+    $response = $this->actingAs($merchant)
+        ->postJson('/admin/categories', [
+            'name' => 'AJAX Quick Category',
+            'description' => 'Created via AJAX modal',
+            'status' => true
+        ]);
+
+    $response->assertStatus(200);
+    $response->assertJson([
+        'success' => true,
+        'category' => [
+            'name' => 'AJAX Quick Category',
+            'description' => 'Created via AJAX modal',
+            'user_id' => $merchant->id
+        ],
+        'message' => 'Category created successfully'
+    ]);
+
+    $this->assertDatabaseHas('service_categories', [
+        'name' => 'AJAX Quick Category',
+        'user_id' => $merchant->id
+    ]);
+});
+
+test('merchant can access and store bookings under the admin layout', function () {
+    $merchant = setupMerchantUser(['manage_bookings', 'create_bookings']);
+    
+    $plan = \App\Models\SubscriptionPlan::firstOrCreate(
+        ['slug' => 'premium-plan'],
+        ['name' => 'Premium Plan', 'price' => 10.00, 'billing_cycle' => 'monthly', 'is_trial' => false, 'status' => true]
+    );
+    \App\Models\UserSubscription::create([
+        'user_id' => $merchant->id,
+        'plan_id' => $plan->id,
+        'status' => 'active',
+        'payment_status' => 'paid',
+        'amount_paid' => 10.00,
+        'starts_at' => now(),
+        'expires_at' => now()->addMonth(),
+    ]);
+
+    $category = ServiceCategory::create(['name' => 'Haircut', 'user_id' => $merchant->id, 'status' => true]);
+    $service = Service::create(['name' => 'Premium Cut', 'category_id' => $category->id, 'price' => 500.00, 'user_id' => $merchant->id, 'status' => true, 'duration' => 30]);
+
+    // 1. Render services selection page
+    $response = $this->actingAs($merchant)->get("/admin/services/book");
+    $response->assertOk();
+    $response->assertSee('Select Service to Book');
+    $response->assertSee('Premium Cut');
+
+    // 2. Render create form with service parameter
+    $response = $this->actingAs($merchant)->get("/admin/bookings/create?service=" . $service->id);
+    $response->assertOk();
+    $response->assertSee('Book New Appointment');
+
+    // 3. Submit booking form
+    $response = $this->actingAs($merchant)->post("/admin/bookings/store", [
+        'fullName' => 'Test Portal Customer',
+        'phone' => '1234567890',
+        'email' => 'customer@test.com',
+        'serviceCategory' => $category->id,
+        'service' => $service->id,
+        'appointmentDate' => now()->addDay()->format('Y-m-d'),
+        'appointmentTime' => '10:00',
+    ]);
+
+    $response->assertRedirect("/admin/bookings");
+
+    $this->assertDatabaseHas('bookings', [
+        'full_name' => 'Test Portal Customer',
+        'phone' => '1234567890',
+        'email' => 'customer@test.com',
+        'service_id' => $service->id,
+        'status' => 'confirmed',
+    ]);
+});

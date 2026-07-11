@@ -128,3 +128,71 @@ test('password can be updated optionally during profile update', function () {
 
     $this->assertTrue(\Illuminate\Support\Facades\Hash::check('new-password123', $user->refresh()->password));
 });
+
+test('admin users cannot access profile settings', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+
+    $response = $this->actingAs($admin)->get('/profile');
+    $response->assertStatus(403);
+
+    $response = $this->actingAs($admin)->patch('/profile', [
+        'name' => 'Admin User',
+        'email' => 'admin@example.com',
+        'salon_name' => 'Admin Salon',
+        'salon_type' => 'Hair Studio',
+        'salon_model' => 'Self Owned',
+    ]);
+    $response->assertStatus(403);
+});
+
+test('customer can access and store bookings under the dashboard layout', function () {
+    $customer = User::factory()->create(['role' => 'user']);
+    $salonOwner = User::factory()->create(['role' => 'user', 'slug' => 'beauty-lounge']);
+
+    $category = \App\Models\ServiceCategory::create([
+        'name' => 'Haircut',
+        'user_id' => $salonOwner->id,
+        'status' => true
+    ]);
+    $service = \App\Models\Service::create([
+        'name' => 'Premium Cut',
+        'category_id' => $category->id,
+        'price' => 500.00,
+        'user_id' => $salonOwner->id,
+        'status' => true,
+        'duration' => 30
+    ]);
+
+    // 1. Render services list inside the customer dashboard
+    $response = $this->actingAs($customer)->get("/beauty-lounge/dashboard/available-services");
+    $response->assertOk();
+    $response->assertSee('Select Service to Book');
+    $response->assertSee('Premium Cut');
+
+    // 2. Render booking create page under the customer dashboard
+    $response = $this->actingAs($customer)->get("/beauty-lounge/dashboard/bookings/create?service=" . $service->id);
+    $response->assertOk();
+    $response->assertSee('Book New Appointment');
+
+    // 3. Submit booking form
+    $response = $this->actingAs($customer)->post("/beauty-lounge/dashboard/bookings/store", [
+        'fullName' => 'Test Customer',
+        'phone' => '1234567890',
+        'email' => 'customer@test.com',
+        'serviceCategory' => $category->id,
+        'service' => $service->id,
+        'appointmentDate' => now()->addDay()->format('Y-m-d'),
+        'appointmentTime' => '10:00',
+    ]);
+
+    // Should redirect to payment step
+    $response->assertRedirect("/beauty-lounge/booking/1/payment");
+
+    $this->assertDatabaseHas('bookings', [
+        'full_name' => 'Test Customer',
+        'phone' => '1234567890',
+        'email' => 'customer@test.com',
+        'service_id' => $service->id,
+        'status' => 'pending',
+    ]);
+});

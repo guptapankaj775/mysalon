@@ -142,12 +142,24 @@ class AdminController extends Controller
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:service_categories,id',
             'status' => 'boolean',
-            'icon' => 'required|string|max:50',
+            'icon' => 'required',
             'inventories' => 'nullable|array',
             'inventories.*' => 'exists:inventories,id',
         ]);
 
-        $iconPath = $validated['icon'];
+        $iconPath = null;
+        if ($request->hasFile('icon')) {
+            $request->validate([
+                'icon' => 'image|mimes:svg,png,jpeg,jpg|max:1024'
+            ]);
+            $iconPath = $request->file('icon')->store('services/icons', 'public');
+        } else {
+            $request->validate([
+                'icon' => 'string|max:255'
+            ]);
+            $iconPath = $request->input('icon');
+        }
+
         unset($validated['icon']);
         
         $inventoriesInput = $request->input('inventories', []);
@@ -198,12 +210,24 @@ class AdminController extends Controller
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:service_categories,id',
             'status' => 'boolean',
-            'icon' => 'required|string|max:50',
+            'icon' => 'nullable',
             'inventories' => 'nullable|array',
             'inventories.*' => 'exists:inventories,id',
         ]);
 
-        $iconPath = $validated['icon'];
+        $iconPath = null;
+        if ($request->hasFile('icon')) {
+            $request->validate([
+                'icon' => 'image|mimes:svg,png,jpeg,jpg|max:1024'
+            ]);
+            $iconPath = $request->file('icon')->store('services/icons', 'public');
+        } elseif ($request->filled('icon') && is_string($request->input('icon'))) {
+            $request->validate([
+                'icon' => 'string|max:255'
+            ]);
+            $iconPath = $request->input('icon');
+        }
+
         unset($validated['icon']);
 
         $inventoriesInput = $request->input('inventories', []);
@@ -212,10 +236,17 @@ class AdminController extends Controller
         $service->update($validated);
 
         // Update or create icon
-        if ($service->icon) {
-            $service->icon->update(['image_path' => $iconPath]);
-        } else {
-            $service->icon()->create(['image_path' => $iconPath]);
+        if ($iconPath) {
+            // Delete old icon file if it exists and is a file path
+            if ($service->icon && (str_contains($service->icon->path, '/') || \Illuminate\Support\Str::endsWith($service->icon->path, ['.svg', '.png', '.jpg', '.jpeg']))) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($service->icon->path);
+            }
+
+            if ($service->icon) {
+                $service->icon->update(['image_path' => $iconPath]);
+            } else {
+                $service->icon()->create(['image_path' => $iconPath]);
+            }
         }
 
         $service->inventories()->sync($inventoriesInput);
@@ -227,6 +258,11 @@ class AdminController extends Controller
     {
         if (!Auth::user()->isAdmin() && $service->user_id !== Auth::id()) {
             abort(403, 'Unauthorized access to this service.');
+        }
+
+        // Delete icon file if it exists and is a file path
+        if ($service->icon && (str_contains($service->icon->path, '/') || \Illuminate\Support\Str::endsWith($service->icon->path, ['.svg', '.png', '.jpg', '.jpeg']))) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($service->icon->path);
         }
 
         $service->delete();
@@ -484,7 +520,24 @@ class AdminController extends Controller
             $servicesQuery->where('user_id', Auth::id());
         }
         $services = $servicesQuery->get();
-        return view('admin.staff.create', compact('services'));
+
+        // Get unique job categories from existing specialists
+        $defaultCategories = ['Hair', 'Makeup', 'Pedicure', 'Nail Art'];
+        $specialistsQuery = Specialist::query();
+        if (!Auth::user()->isAdmin()) {
+            $specialistsQuery->where('user_id', Auth::id());
+        }
+        $existingCategories = $specialistsQuery->whereNotNull('job_category')
+            ->get()
+            ->pluck('job_category')
+            ->flatten()
+            ->unique()
+            ->filter()
+            ->toArray();
+
+        $jobCategories = array_values(array_unique(array_merge($defaultCategories, $existingCategories)));
+
+        return view('admin.staff.create', compact('services', 'jobCategories'));
     }
 
     public function storeStaff(Request $request)
@@ -496,15 +549,51 @@ class AdminController extends Controller
             'status' => 'boolean',
             'services' => 'nullable|array',
             'services.*' => 'exists:services,id',
+            'mobile_no' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:100',
+            'password' => 'nullable|string|min:8',
+            'job_category' => 'nullable|array',
+            'job_category.*' => 'string|max:50',
+            'home_address' => 'nullable|string|max:500',
+            'religion' => 'nullable|string|max:50',
         ]);
 
         $status = $request->has('status');
+
+        // Create login user if email and password are provided
+        if (!empty($validated['email'])) {
+            // Verify email doesn't exist
+            if (\App\Models\User::where('email', $validated['email'])->exists()) {
+                return back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
+            }
+
+            if (!empty($validated['password'])) {
+                \App\Models\User::create([
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'phone' => $validated['mobile_no'] ?? null,
+                    'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
+                    'role' => 'staff',
+                    'created_by' => Auth::id(),
+                    'is_verified' => true,
+                    'salon_name' => Auth::user()->salon_name,
+                    'slug' => Auth::user()->slug,
+                    'salon_type' => Auth::user()->salon_type,
+                    'salon_model' => Auth::user()->salon_model,
+                ]);
+            }
+        }
 
         $specialistData = [
             'name' => $validated['name'],
             'bio' => $validated['bio'] ?? null,
             'status' => $status,
             'user_id' => Auth::id(),
+            'mobile_no' => $validated['mobile_no'] ?? null,
+            'email' => $validated['email'] ?? null,
+            'job_category' => $validated['job_category'] ?? null,
+            'home_address' => $validated['home_address'] ?? null,
+            'religion' => $validated['religion'] ?? null,
         ];
 
         if ($request->hasFile('image')) {
@@ -533,8 +622,24 @@ class AdminController extends Controller
         }
         $services = $servicesQuery->get();
 
+        // Get unique job categories from existing specialists
+        $defaultCategories = ['Hair', 'Makeup', 'Pedicure', 'Nail Art'];
+        $specialistsQuery = Specialist::query();
+        if (!Auth::user()->isAdmin()) {
+            $specialistsQuery->where('user_id', Auth::id());
+        }
+        $existingCategories = $specialistsQuery->whereNotNull('job_category')
+            ->get()
+            ->pluck('job_category')
+            ->flatten()
+            ->unique()
+            ->filter()
+            ->toArray();
+
+        $jobCategories = array_values(array_unique(array_merge($defaultCategories, $existingCategories)));
+
         $specialist->load('services');
-        return view('admin.staff.edit', compact('specialist', 'services'));
+        return view('admin.staff.edit', compact('specialist', 'services', 'jobCategories'));
     }
 
     public function updateStaff(Request $request, Specialist $specialist)
@@ -550,14 +655,74 @@ class AdminController extends Controller
             'status' => 'boolean',
             'services' => 'nullable|array',
             'services.*' => 'exists:services,id',
+            'mobile_no' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:100',
+            'password' => 'nullable|string|min:8',
+            'job_category' => 'nullable|array',
+            'job_category.*' => 'string|max:50',
+            'home_address' => 'nullable|string|max:500',
+            'religion' => 'nullable|string|max:50',
         ]);
 
         $status = $request->has('status');
+
+        $oldEmail = $specialist->email;
+
+        // Find existing login user if any
+        $staffUser = null;
+        if ($oldEmail) {
+            $staffUser = \App\Models\User::where('email', $oldEmail)->where('role', 'staff')->where('created_by', Auth::id())->first();
+        }
+
+        if (!empty($validated['email'])) {
+            // Verify new email isn't taken by another user
+            if ($validated['email'] !== $oldEmail && \App\Models\User::where('email', $validated['email'])->exists()) {
+                return back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
+            }
+
+            if ($staffUser) {
+                $updateData = [
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'phone' => $validated['mobile_no'] ?? null,
+                ];
+                if (!empty($validated['password'])) {
+                    $updateData['password'] = \Illuminate\Support\Facades\Hash::make($validated['password']);
+                }
+                $staffUser->update($updateData);
+            } else {
+                if (!empty($validated['password'])) {
+                    \App\Models\User::create([
+                        'name' => $validated['name'],
+                        'email' => $validated['email'],
+                        'phone' => $validated['mobile_no'] ?? null,
+                        'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
+                        'role' => 'staff',
+                        'created_by' => Auth::id(),
+                        'is_verified' => true,
+                        'salon_name' => Auth::user()->salon_name,
+                        'slug' => Auth::user()->slug,
+                        'salon_type' => Auth::user()->salon_type,
+                        'salon_model' => Auth::user()->salon_model,
+                    ]);
+                }
+            }
+        } else {
+            // If email cleared, delete login user
+            if ($staffUser) {
+                $staffUser->delete();
+            }
+        }
 
         $specialistData = [
             'name' => $validated['name'],
             'bio' => $validated['bio'] ?? null,
             'status' => $status,
+            'mobile_no' => $validated['mobile_no'] ?? null,
+            'email' => $validated['email'] ?? null,
+            'job_category' => $validated['job_category'] ?? null,
+            'home_address' => $validated['home_address'] ?? null,
+            'religion' => $validated['religion'] ?? null,
         ];
 
         if ($request->hasFile('image')) {
@@ -587,7 +752,142 @@ class AdminController extends Controller
         if ($specialist->image_path) {
             Storage::disk('public')->delete($specialist->image_path);
         }
+
+        // Delete corresponding login user if exists
+        if ($specialist->email) {
+            \App\Models\User::where('email', $specialist->email)->where('role', 'staff')->where('created_by', Auth::id())->delete();
+        }
+
         $specialist->delete();
         return redirect()->route('admin.staff.index')->with('success', 'Staff member deleted successfully');
+    }
+
+    public function bookServices()
+    {
+        \Illuminate\Support\Facades\Gate::authorize('create_bookings');
+
+        $salon = request()->attributes->get('salon');
+        $ownerId = $salon ? $salon->id : Auth::id();
+
+        $categoriesQuery = \App\Models\ServiceCategory::query()->with(['services' => function ($query) use ($ownerId) {
+            $query->where('status', true)->with(['images', 'icon']);
+            if ($ownerId) {
+                $query->where('user_id', $ownerId);
+            }
+        }]);
+
+        if ($ownerId) {
+            $categoriesQuery->where('user_id', $ownerId);
+        }
+
+        $categories = $categoriesQuery->get();
+
+        return view('admin.services.book', compact('categories'));
+    }
+
+    public function createBooking(Request $request)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('create_bookings');
+
+        $salon = request()->attributes->get('salon');
+        $ownerId = $salon ? $salon->id : Auth::id();
+
+        $categoriesQuery = \App\Models\ServiceCategory::query();
+        if ($ownerId) {
+            $categoriesQuery->where('user_id', $ownerId);
+        }
+        $categories = $categoriesQuery->get();
+
+        $selectedCategory = null;
+        $selectedService = null;
+        $services = collect();
+
+        // If category is selected, get its services
+        if ($request->has('serviceCategory')) {
+            $selectedCategory = \App\Models\ServiceCategory::find($request->serviceCategory);
+            if ($selectedCategory) {
+                $servicesQuery = \App\Models\Service::where('category_id', $selectedCategory->id);
+                if ($ownerId) {
+                    $servicesQuery->where('user_id', $ownerId);
+                }
+                $services = $servicesQuery->get();
+            }
+        }
+
+        // If service is specified in URL
+        if ($request->has('service')) {
+            $selectedService = \App\Models\Service::find($request->service);
+            if ($selectedService) {
+                $selectedCategory = $selectedService->category;
+                $servicesQuery = \App\Models\Service::where('category_id', $selectedCategory->id);
+                if ($ownerId) {
+                    $servicesQuery->where('user_id', $ownerId);
+                }
+                $services = $servicesQuery->get();
+            }
+        }
+
+        // Generate time slots
+        $timeSlots = [];
+        $start = new \DateTime('09:00');
+        $end = new \DateTime('20:00');
+        $interval = new \DateInterval('PT30M');
+        $current = clone $start;
+
+        while ($current <= $end) {
+            $timeSlots[] = $current->format('H:i');
+            $current->add($interval);
+        }
+
+        return view('admin.bookings.create', compact(
+            'categories',
+            'services',
+            'timeSlots',
+            'selectedService',
+            'selectedCategory'
+        ));
+    }
+
+    public function storeBooking(Request $request)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('create_bookings');
+
+        $request->validate([
+            'fullName' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email',
+            'serviceCategory' => 'required|exists:service_categories,id',
+            'service' => 'required|exists:services,id',
+            'appointmentDate' => 'required|date|after_or_equal:today',
+            'appointmentTime' => 'required',
+        ]);
+
+        $service = \App\Models\Service::findOrFail($request->service);
+        $basePrice = $service->price;
+        $serviceFee = $basePrice * 0.03; // 3% service fee
+        $totalPrice = $basePrice + $serviceFee;
+
+        // Try to find if user with this email already exists
+        $customerUser = \App\Models\User::where('email', $request->email)->first();
+
+        \App\Models\Booking::create([
+            'user_id' => $customerUser ? $customerUser->id : null,
+            'full_name' => $request->fullName,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'service_category_id' => $request->serviceCategory,
+            'service_id' => $request->service,
+            'appointment_date' => $request->appointmentDate,
+            'appointment_time' => $request->appointmentTime,
+            'base_price' => $basePrice,
+            'addons_price' => $serviceFee,
+            'total_price' => $totalPrice,
+            'status' => 'confirmed', // bookings created by merchant/staff are auto-confirmed!
+            'payment_status' => 'paid', // assumed paid for portal bookings
+            'payment_method' => 'cash', // assume cash payment on-counter
+            'transaction_id' => 'PORTAL-' . strtoupper(uniqid()),
+        ]);
+
+        return redirect()->route('admin.bookings')->with('success', 'Booking created successfully.');
     }
 }

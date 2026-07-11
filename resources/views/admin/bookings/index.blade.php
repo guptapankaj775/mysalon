@@ -100,10 +100,10 @@
     @endpush
 
     @section('content')
-    <div class="bookings-page">
+    <div class="bookings-page" style="padding: unset !important;">
         <div class="container-fluid">
-            <div class="mb-4 d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">Manage Bookings</h2>
+            <div class="mb-2 d-flex justify-content-between align-items-center">
+                <h4 class="h4">Manage Bookings</h4>
             </div>
 
             <div class="filter-card">
@@ -136,7 +136,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <!-- <th>ID</th> -->
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Phone</th>
@@ -152,7 +152,7 @@
                         <tbody>
                             @forelse($bookings as $booking)
                             <tr>
-                                <td>#{{ $booking->id }}</td>
+                                <!-- <td>#{{ $booking->id }}</td> -->
                                 <td>{{ $booking->full_name }}</td>
                                 <td>{{ $booking->email }}</td>
                                 <td>+{{ $booking->phone }}</td>

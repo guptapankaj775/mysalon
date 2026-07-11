@@ -159,7 +159,7 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             border-radius: 8px;
         }
 
@@ -190,6 +190,11 @@
                 margin-left: 0;
             }
         }
+
+        /* Global Table Cell Font Size */
+        table td, .table td, table th, .table th {
+            font-size: 14px !important;
+        }
     </style>
     @stack('styles')
 </head>
@@ -197,7 +202,7 @@
 <body>
     <nav class="sidenav">
         <div class="sidenav-header">
-            <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}" class="sidenav-brand"> 
+            <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : (Auth::user()->slug ? route('salon.dashboard', ['salon' => Auth::user()->slug]) : route('dashboard')) }}" class="sidenav-brand"> 
                 <i class="fas fa-spa me-2" style="color: #D4AF37;"></i>
                 <span style="color: #D4AF37;">SalonJC</span> 
                 @if(Auth::user()->role === 'admin') Admin @else Portal @endif
@@ -309,39 +314,57 @@
                     }
                 @endphp
                 <li class="nav-item">
-                    <a href="{{ route('dashboard', ['tab' => 'overview']) }}" class="nav-link {{ request()->routeIs('dashboard') && $activeTab === 'overview' ? 'active' : '' }}">
+                    <a href="{{ Auth::user()->slug ? route('salon.dashboard', ['salon' => Auth::user()->slug, 'tab' => 'overview']) : route('dashboard', ['tab' => 'overview']) }}" class="nav-link {{ (request()->routeIs('dashboard') || request()->routeIs('salon.dashboard')) && $activeTab === 'overview' ? 'active' : '' }}">
                         <i class="fas fa-home"></i>
                         Dashboard
                     </a>
                 </li>
+                @can('manage_services')
                 <li class="nav-item">
                     <a href="{{ route('admin.services') }}" class="nav-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
                         <i class="fas fa-cut"></i>
                         Services
                     </a>
                 </li>
+                @endcan
+                @can('manage_bookings')
                 <li class="nav-item">
                     <a href="{{ route('admin.bookings') }}" class="nav-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
                         <i class="fas fa-calendar-check"></i>
                         Bookings
                     </a>
                 </li>
+                @endcan
+                @can('manage_services')
                 <li class="nav-item">
                     <a href="{{ route('admin.categories') }}" class="nav-link {{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
                         <i class="fas fa-th-list"></i>
                         Categories
                     </a>
                 </li>
+                @endcan
+                @can('manage_users')
                 <li class="{{ request()->is('admin/users*') ? 'active' : '' }}">
                     <a href="{{ route('admin.users.index') }}" class="nav-link">
                         <i class="fas fa-users"></i> Users
                     </a>
                 </li>
+                @endcan
+                @can('manage_staff')
                 <li class="nav-item">
                     <a href="{{ route('admin.staff.index') }}" class="nav-link {{ request()->routeIs('admin.staff*') ? 'active' : '' }}">
                         <i class="fas fa-user-tie"></i> Staff
                     </a>
                 </li>
+                @endcan
+                @can('manage_roles')
+                <li class="nav-item">
+                    <a href="{{ route('admin.roles.index') }}" class="nav-link {{ request()->routeIs('admin.roles*') ? 'active' : '' }}">
+                        <i class="fas fa-shield-alt"></i> Permissions
+                    </a>
+                </li>
+                @endcan
+                @can('manage_inventory')
                 <li class="nav-item">
                     <a href="javascript:void(0);" class="nav-link {{ request()->routeIs('admin.brands*', 'admin.inventory-categories*', 'admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="cursor: default;">
                         <i class="fas fa-boxes"></i> Inventory Management
@@ -362,32 +385,40 @@
                         <i class="fas fa-list" style="font-size: 0.8rem; width: 15px;"></i> Inventory
                     </a>
                 </li>
+                @endcan
+                @can('manage_vendors')
                 <li class="nav-item">
                     <a href="{{ route('admin.vendors.index') }}" class="nav-link {{ request()->routeIs('admin.vendors*') ? 'active' : '' }}">
                         <i class="fas fa-truck"></i> Vendors
                     </a>
                 </li>
+                @endcan
+                @can('manage_feedbacks')
                 <li class="nav-item">
                     <a href="{{ route('admin.feedback.index') }}" class="nav-link {{ request()->routeIs('admin.feedback*') ? 'active' : '' }}">
                         <i class="fas fa-comments"></i> Feedbacks
                     </a>
                 </li>
-
+                @endcan
+                @if(Auth::user()->role === 'merchant')
                 <li class="nav-item">
-                    <a href="{{ route('subscription.index') }}" class="nav-link {{ request()->routeIs('subscription*') ? 'active' : '' }}">
+                    <a href="{{ Auth::user()->slug ? route('salon.subscription.index', ['salon' => Auth::user()->slug]) : route('subscription.index') }}" class="nav-link {{ (request()->routeIs('subscription*') || request()->routeIs('salon.subscription.index')) ? 'active' : '' }}">
                         <i class="fas fa-crown"></i> Subscriptions
                     </a>
                 </li>
+                @endif
             @endif
 
-            <li class="nav-item mt-4">
-                <a href="{{ Auth::user()->role === 'admin' ? route('profile.edit') : route('dashboard', ['tab' => 'profile']) }}" class="nav-link {{ request()->routeIs('profile.edit') || (request()->routeIs('dashboard') && request()->query('tab') === 'profile') ? 'active' : '' }}">
+            @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'staff')
+            <li class="nav-item {{ Auth::user()->role === 'merchant' ? 'mt-4' : '' }}">
+                <a href="{{ route('dashboard', ['tab' => 'profile']) }}" class="nav-link {{ (request()->routeIs('dashboard') && request()->query('tab') === 'profile') ? 'active' : '' }}">
                     <i class="fas fa-user-cog"></i> Profile Settings
                 </a>
             </li>
+            @endif
 
-            <li class="nav-item">
-                <form method="POST" action="{{ route('logout') }}" class="nav-link" style="cursor: pointer;"
+            <li class="nav-item {{ Auth::user()->role === 'admin' ? 'mt-4' : '' }}">
+                <form method="POST" action="{{ Auth::user()->slug ? route('salon.logout', ['salon' => Auth::user()->slug]) : route('logout') }}" class="nav-link" style="cursor: pointer;"
                     onclick="event.preventDefault(); this.closest('form').submit();">
                     @csrf
                     <i class="fas fa-sign-out-alt"></i>

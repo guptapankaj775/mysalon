@@ -187,3 +187,31 @@ test('deleting inventory cleans up service_inventory pivot mappings', function (
         'inventory_id' => $inventory->id
     ]);
 });
+
+test('admins can store service with uploaded icon image', function () {
+    \Illuminate\Support\Facades\Storage::fake('public');
+
+    $admin = User::factory()->create(['role' => 'admin']);
+    $category = ServiceCategory::create(['name' => 'Hair Care', 'status' => true]);
+
+    $file = \Illuminate\Http\UploadedFile::fake()->create('icon.png', 100, 'image/png');
+
+    $response = $this->actingAs($admin)->post('/admin/services', [
+        'name' => 'Icon Upload Service',
+        'description' => 'A service with file icon',
+        'duration' => 60,
+        'price' => 1200.00,
+        'category_id' => $category->id,
+        'status' => '1',
+        'icon' => $file,
+    ]);
+
+    $response->assertRedirect('/admin/services');
+
+    $service = Service::where('name', 'Icon Upload Service')->first();
+    $this->assertNotNull($service);
+    $this->assertNotNull($service->icon);
+    $this->assertStringContainsString('services/icons/', $service->icon->path);
+
+    \Illuminate\Support\Facades\Storage::disk('public')->assertExists($service->icon->path);
+});

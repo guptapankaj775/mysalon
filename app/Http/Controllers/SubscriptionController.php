@@ -56,10 +56,18 @@ class SubscriptionController extends Controller
                 'amount_paid'    => 0,
             ]);
 
+            $salon = request()->attributes->get('salon');
+            if ($salon) {
+                return redirect()->route('salon.subscription.success', ['salon' => $salon->slug, 'subscription' => $subscription->id]);
+            }
             return redirect()->route('subscription.success', ['subscription' => $subscription->id]);
         }
 
         // Paid plan → go to mock payment
+        $salon = request()->attributes->get('salon');
+        if ($salon) {
+            return redirect()->route('salon.subscription.payment', ['salon' => $salon->slug, 'subscription' => $subscription->id]);
+        }
         return redirect()->route('subscription.payment', ['subscription' => $subscription->id]);
     }
 
@@ -76,6 +84,10 @@ class SubscriptionController extends Controller
         }
 
         if ($subscription->status !== 'pending') {
+            $salon = request()->attributes->get('salon');
+            if ($salon) {
+                return redirect()->route('salon.dashboard', ['salon' => $salon->slug]);
+            }
             return redirect()->route('dashboard');
         }
 
@@ -111,6 +123,10 @@ class SubscriptionController extends Controller
             'payment_reference' => 'MOCK-' . strtoupper(Str::random(10)),
         ]);
 
+        $salon = request()->attributes->get('salon');
+        if ($salon) {
+            return redirect()->route('salon.subscription.success', ['salon' => $salon->slug, 'subscription' => $subscription->id]);
+        }
         return redirect()->route('subscription.success', ['subscription' => $subscription->id]);
     }
 

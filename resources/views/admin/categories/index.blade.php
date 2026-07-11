@@ -1,9 +1,22 @@
 <x-admin-layout>
+    @push('styles')
+    <style>
+        .action-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+    </style>
+    @endpush
+
     @section('content')
-    <div class="container">
+    <div class="container" style="padding: unset !important;">
         <!-- Page Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3">Service Categories</h1>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h4 class="h4">Service Categories</h4>
             <div class="actions">
                 <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Add New Category
@@ -37,10 +50,10 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="btn-group">
+                                    <div class="d-flex gap-2">
                                         <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                            class="btn btn-sm btn-outline-primary">
-                                            Edit
+                                            class="btn btn-sm btn-outline-dark action-btn">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('admin.categories.destroy', $category->id) }}"
                                             method="POST"
@@ -48,8 +61,8 @@
                                             class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger ms-2">
-                                                Delete
+                                            <button type="submit" class="btn btn-sm btn-outline-danger action-btn">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
                                     </div>

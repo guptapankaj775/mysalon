@@ -10,6 +10,6 @@
     </div>
 
     @if($showBookButton)
-    <a href="{{ route('booking') }}?service={{ $serviceId }}" class="btn btn-book">Book Now</a>
+    <a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('booking') }}?service={{ $serviceId }}" class="btn btn-book">Book Now</a>
     @endif
 </div>

@@ -8,5 +8,5 @@
         <span>Starting at</span>
         <span class="price">Rs. {{ number_format($startPrice, 2) }}</span>
     </div>
-    <a href="{{ route('services') }}#{{ $categoryId }}" class="service-btn">View Services</a>
+    <a href="{{ isset($currentSalon) ? route('salon.services', ['salon' => $currentSalon->slug]) : route('services') }}#{{ $categoryId }}" class="service-btn">View Services</a>
 </div>

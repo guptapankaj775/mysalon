@@ -15,11 +15,17 @@ class Specialist extends Model
         'bio',
         'image_path',
         'status',
-        'user_id'
+        'user_id',
+        'mobile_no',
+        'email',
+        'job_category',
+        'home_address',
+        'religion',
     ];
 
     protected $casts = [
-        'status' => 'boolean'
+        'status' => 'boolean',
+        'job_category' => 'array',
     ];
 
     public function services(): BelongsToMany

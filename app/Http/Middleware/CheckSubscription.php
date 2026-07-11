@@ -45,7 +45,8 @@ class CheckSubscription
         }
 
         // Check subscription
-        if (!$user->hasActivePlan()) {
+        $owner = $user->created_by ? \App\Models\User::find($user->created_by) : $user;
+        if (!$owner || !$owner->hasActivePlan()) {
             // For dashboard, allow but mark as limited
             if ($routeName === 'dashboard') {
                 return $next($request);

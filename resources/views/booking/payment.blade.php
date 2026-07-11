@@ -1,4 +1,8 @@
+@if(Auth::check())
+<x-admin-layout>
+@else
 <x-app-layout>
+@endif
     @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/booking.css') }}">
     <style>
@@ -62,7 +66,7 @@
                                 </div>
 
                                 <!-- Payment Form -->
-                                <form method="POST" action="{{ route('booking.payment.process', $booking->id) }}" class="payment-form">
+                                <form method="POST" action="{{ isset($currentSalon) ? route('salon.booking.payment.process', ['salon' => $currentSalon->slug, 'id' => $booking->id]) : route('booking.payment.process', $booking->id) }}" class="payment-form">
                                     @csrf
                                     <div class="row g-3">
                                         <div class="col-12">
@@ -256,6 +260,9 @@
                 }
             });
         });
-    </script>
     @endpush
+@if(Auth::check())
+</x-admin-layout>
+@else
 </x-app-layout>
+@endif

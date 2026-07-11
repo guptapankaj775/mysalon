@@ -273,7 +273,7 @@
 }
 
 .form-group label {
-    color: var(--light-color);
+    color: #000 !important;
     margin-bottom: 0.5rem;
     display: block;
 }
