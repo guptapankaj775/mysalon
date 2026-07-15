@@ -9,6 +9,12 @@
             </a>
         </li>
 
+        <li class="{{ request()->is('admin/pos*') ? 'active' : '' }}">
+            <a href="{{ route('admin.pos') }}" class="nav-link">
+                <i class="fas fa-cash-register text-warning"></i> POS
+            </a>
+        </li>
+
         <li class="{{ request()->is('admin/users*') ? 'active' : '' }}">
             <a href="{{ route('admin.users.index') }}" class="nav-link">
                 <i class="fas fa-users"></i> Users

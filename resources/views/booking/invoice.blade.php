@@ -117,6 +117,16 @@
             text-transform: uppercase;
         }
 
+        .badge-pending {
+            background-color: #ffc107;
+            color: #1a1a1a;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
         .invoice-summary {
             background-color: #FAFAFA;
             border-radius: 10px;
@@ -201,6 +211,13 @@
             .badge-paid {
                 background-color: #28A745 !important;
                 color: #FFFFFF !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .badge-pending {
+                background-color: #ffc107 !important;
+                color: #1a1a1a !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -364,11 +381,21 @@
                 <div class="col-md-6 mt-3 mt-md-0">
                     <div class="section-title">Payment Information</div>
                     <div class="d-flex align-items-center mb-3">
-                        <span class="badge-paid me-3"><i class="fas fa-check-circle me-1"></i> Paid</span>
-                        <span class="text-muted"><i class="far fa-credit-card me-1"></i> {{ ucfirst(str_replace('_', ' ', $booking->payment_method)) }}</span>
+                        @if($booking->payment_method === 'pay_at_shop')
+                            <span class="badge-pending me-3"><i class="fas fa-clock me-1"></i> Pay at Shop</span>
+                            <span class="text-muted"><i class="fas fa-store me-1"></i> Pay at Salon</span>
+                        @else
+                            <span class="badge-paid me-3"><i class="fas fa-check-circle me-1"></i> Paid</span>
+                            <span class="text-muted"><i class="far fa-credit-card me-1"></i> {{ ucfirst(str_replace('_', ' ', $booking->payment_method)) }}</span>
+                        @endif
                     </div>
-                    <p class="mb-1 text-muted"><strong>Transaction ID:</strong> <code>{{ $booking->transaction_id }}</code></p>
-                    <p class="mb-0 text-muted"><strong>Date/Time Paid:</strong> {{ $booking->updated_at->format('Y-m-d H:i:s') }}</p>
+                    @if($booking->payment_method === 'pay_at_shop')
+                        <p class="mb-1 text-muted"><strong>Reference ID:</strong> <code>{{ $booking->transaction_id }}</code></p>
+                        <p class="mb-0 text-muted"><strong>Date/Time Booked:</strong> {{ $booking->created_at->format('Y-m-d H:i:s') }}</p>
+                    @else
+                        <p class="mb-1 text-muted"><strong>Transaction ID:</strong> <code>{{ $booking->transaction_id }}</code></p>
+                        <p class="mb-0 text-muted"><strong>Date/Time Paid:</strong> {{ $booking->updated_at->format('Y-m-d H:i:s') }}</p>
+                    @endif
                 </div>
                 <div class="col-md-6">
                     <div class="invoice-summary">
@@ -381,7 +408,11 @@
                             <span>Rs. {{ number_format($booking->addons_price, 2) }}</span>
                         </div>
                         <div class="summary-row">
-                            <span>Total Amount Paid:</span>
+                            @if($booking->payment_method === 'pay_at_shop')
+                                <span>Total Amount Due:</span>
+                            @else
+                                <span>Total Amount Paid:</span>
+                            @endif
                             <span>Rs. {{ number_format($booking->total_price, 2) }}</span>
                         </div>
                     </div>
@@ -396,9 +427,15 @@
 
     <!-- Action Bar -->
     <div class="action-bar mb-5">
+        @if(auth()->check())
         <a href="{{ isset($currentSalon) ? route('salon.dashboard', ['salon' => $currentSalon->slug]) : route('dashboard') }}" class="btn btn-outline-secondary px-4 fw-semibold">
             <i class="fas fa-arrow-left me-2"></i>Dashboard
         </a>
+        @else
+        <a href="{{ isset($currentSalon) ? route('salon.home', ['salon' => $currentSalon->slug]) : route('home') }}" class="btn btn-outline-secondary px-4 fw-semibold">
+            <i class="fas fa-home me-2"></i>Home
+        </a>
+        @endif
         <div class="d-flex gap-2">
             <button id="download-pdf" class="btn btn-gold px-4 text-dark fw-bold">
                 <i class="fas fa-file-pdf me-2"></i>Download PDF

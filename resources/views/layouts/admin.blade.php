@@ -174,6 +174,13 @@
                             </a>
                         </li>
 
+                        <!-- POS -->
+                        <li class="nav-item">
+                            <a href="{{ route('admin.pos') }}" class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}">
+                                <i class="fas fa-cash-register"></i> POS
+                            </a>
+                        </li>
+
                         <!-- services_dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.services*', 'admin.categories*') ? 'active' : '' }}" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -251,10 +258,15 @@
 
                         <!-- admin_reports_dropdown -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.reports.sales*', 'admin.feedback*') ? 'active' : '' }}" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.reports.sales*', 'admin.feedback*', 'admin.pos.history*') ? 'active' : '' }}" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-chart-bar"></i> Reports
                             </a>
                             <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="reportsDropdown">
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.pos.history*') ? 'active' : '' }}" href="{{ route('admin.pos.history') }}">
+                                        <i class="fas fa-history text-warning"></i> POS History
+                                    </a>
+                                </li>
                                 @can('view_sales_reports')
                                 <li>
                                     <a class="dropdown-item {{ request()->routeIs('admin.reports.sales*') ? 'active' : '' }}" href="{{ Auth::user()->slug ? route('admin.reports.sales', ['salon' => Auth::user()->slug]) : route('admin.reports.sales') }}">
@@ -310,6 +322,13 @@
                         <li class="nav-item">
                             <a href="{{ Auth::user()->slug ? route('salon.dashboard', ['salon' => Auth::user()->slug, 'tab' => 'overview']) : route('dashboard', ['tab' => 'overview']) }}" class="nav-link {{ (request()->routeIs('dashboard') || request()->routeIs('salon.dashboard')) && $activeTab === 'overview' ? 'active' : '' }}">
                                 <i class="fas fa-home"></i> Dashboard
+                            </a>
+                        </li>
+
+                        <!-- POS -->
+                        <li class="nav-item">
+                            <a href="{{ Auth::user()->slug ? route('admin.pos', ['salon' => Auth::user()->slug]) : route('admin.pos') }}" class="nav-link {{ request()->routeIs('admin.pos*') ? 'active' : '' }}">
+                                <i class="fas fa-cash-register"></i> POS
                             </a>
                         </li>
 
@@ -409,12 +428,17 @@
                         @endif
 
                         <!-- merchant_reports_dropdown -->
-                        @if(Auth::user()->can('view_sales_reports') || Auth::user()->can('manage_feedbacks'))
+                        @if(Auth::user()->can('view_sales_reports') || Auth::user()->can('manage_feedbacks') || Auth::user()->role === 'user')
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.reports.sales*', 'admin.feedback*') ? 'active' : '' }}" href="#" id="merchantReportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.reports.sales*', 'admin.feedback*', 'admin.pos.history*') ? 'active' : '' }}" href="#" id="merchantReportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-chart-bar"></i> Reports
                             </a>
                             <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="merchantReportsDropdown">
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.pos.history*') ? 'active' : '' }}" href="{{ Auth::user()->slug ? route('admin.pos.history', ['salon' => Auth::user()->slug]) : route('admin.pos.history') }}">
+                                        <i class="fas fa-history text-warning"></i> POS History
+                                    </a>
+                                </li>
                                 @can('view_sales_reports')
                                 <li>
                                     <a class="dropdown-item {{ request()->routeIs('admin.reports.sales*') ? 'active' : '' }}" href="{{ Auth::user()->slug ? route('admin.reports.sales', ['salon' => Auth::user()->slug]) : route('admin.reports.sales') }}">
