@@ -32,7 +32,6 @@ class RolePermissionSeeder extends Seeder
             ],
             'staff' => [
                 'manage_bookings',
-                'manage_inventory',
             ]
         ];
 

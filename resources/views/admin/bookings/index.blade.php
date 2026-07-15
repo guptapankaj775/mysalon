@@ -41,6 +41,21 @@
             color: #1565c0;
         }
 
+        .status-assigned {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .status-in_progress {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .status-closed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
         .btn-action {
             padding: 0.4rem;
             font-size: 14px;
@@ -104,6 +119,11 @@
         <div class="container-fluid">
             <div class="mb-2 d-flex justify-content-between align-items-center">
                 <h4 class="h4">Manage Bookings</h4>
+                @can('create_bookings')
+                <a href="{{ route('admin.bookings.create') }}" class="btn btn-warning text-dark fw-bold" style="background-color: #D4AF37; border-color: #D4AF37;">
+                    <i class="fas fa-plus me-1"></i> Add New Booking
+                </a>
+                @endcan
             </div>
 
             <div class="filter-card">
@@ -210,7 +230,16 @@
                                             </button>
                                         </form>
                                         @endif
-                                        @if($booking->status !== 'cancelled' && $booking->status !== 'completed')
+                                        @if($booking->status === 'closed')
+                                        <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $booking->id]) : route('booking.invoice', $booking->id) }}"
+                                            target="_blank"
+                                            class="btn btn-outline-warning btn-action text-dark"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-title="View Invoice">
+                                            <i class="fas fa-file-invoice text-warning"></i>
+                                        </a>
+                                        @endif
+                                        @if(Auth::user()->role !== 'staff' && $booking->status !== 'cancelled' && $booking->status !== 'completed' && $booking->status !== 'closed' && $booking->status !== 'in_progress')
                                         <form action="{{ route('admin.bookings.cancel', $booking->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             <button type="submit"

@@ -502,13 +502,16 @@ test('merchant can access and store bookings under the admin layout', function (
 
     // 3. Submit booking form
     $response = $this->actingAs($merchant)->post("/admin/bookings/store", [
+        'customer_type' => 'new',
         'fullName' => 'Test Portal Customer',
         'phone' => '1234567890',
         'email' => 'customer@test.com',
-        'serviceCategory' => $category->id,
-        'service' => $service->id,
         'appointmentDate' => now()->addDay()->format('Y-m-d'),
         'appointmentTime' => '10:00',
+        'staff_id' => $merchant->id,
+        'services' => [
+            ['service_id' => $service->id]
+        ]
     ]);
 
     $response->assertRedirect("/admin/bookings");
@@ -518,6 +521,6 @@ test('merchant can access and store bookings under the admin layout', function (
         'phone' => '1234567890',
         'email' => 'customer@test.com',
         'service_id' => $service->id,
-        'status' => 'confirmed',
+        'status' => 'assigned',
     ]);
 });

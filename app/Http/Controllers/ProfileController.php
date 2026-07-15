@@ -58,11 +58,17 @@ class ProfileController extends Controller
             $user->password = \Illuminate\Support\Facades\Hash::make($validated['password']);
         }
 
-        $slugChanged = $user->isDirty('slug');
+        $slugChanged = $user->isDirty('slug') || $user->isDirty('salon_name');
         $user->save();
 
         if (!empty($validated['password'])) {
             if ($slugChanged && $user->slug) {
+                $refererPath = $request->headers->get('referer') ? parse_url($request->headers->get('referer'), PHP_URL_PATH) : null;
+                if ($refererPath === '/profile') {
+                    return Redirect::route('profile.edit')
+                        ->with('status', 'profile-updated')
+                        ->with('password-status', 'password-updated');
+                }
                 return Redirect::route('salon.dashboard', ['salon' => $user->slug])
                     ->with('status', 'profile-updated')
                     ->with('password-status', 'password-updated');
@@ -71,6 +77,10 @@ class ProfileController extends Controller
         }
 
         if ($slugChanged && $user->slug) {
+            $refererPath = $request->headers->get('referer') ? parse_url($request->headers->get('referer'), PHP_URL_PATH) : null;
+            if ($refererPath === '/profile') {
+                return Redirect::route('profile.edit')->with('status', 'profile-updated');
+            }
             return Redirect::route('salon.dashboard', ['salon' => $user->slug])->with('status', 'profile-updated');
         }
 

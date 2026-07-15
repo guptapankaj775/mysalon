@@ -46,14 +46,17 @@ class Booking extends Model
         static::updated(function ($booking) {
             if ($booking->wasChanged('payment_status') && $booking->payment_status === 'paid') {
                 $invoiceNumber = 'INV-BOOK-' . $booking->id;
-                SalesInvoice::firstOrCreate(
-                    ['invoice_number' => $invoiceNumber],
-                    [
+                $invoice = SalesInvoice::where('invoice_number', $invoiceNumber)->first();
+                if ($invoice) {
+                    $invoice->update(['status' => 'paid']);
+                } else {
+                    SalesInvoice::create([
+                        'invoice_number' => $invoiceNumber,
                         'customer_name' => $booking->full_name,
                         'amount' => $booking->total_price,
                         'status' => 'paid',
-                    ]
-                );
+                    ]);
+                }
             }
         });
     }
@@ -76,5 +79,55 @@ class Booking extends Model
     public function feedback()
     {
         return $this->hasOne(Feedback::class);
+    }
+
+    public function bookingServices()
+    {
+        return $this->hasMany(BookingService::class);
+    }
+
+    public function updateStatusFromServices()
+    {
+        $services = $this->bookingServices()->get();
+        if ($services->isEmpty()) {
+            return;
+        }
+
+        $totalCount = $services->count();
+        $completedCount = $services->where('status', 'completed')->count();
+        $inProgressCount = $services->where('status', 'in_progress')->count();
+
+        $newStatus = 'pending';
+
+        if ($completedCount === $totalCount) {
+            $newStatus = 'closed';
+        } elseif ($inProgressCount > 0 || $completedCount > 0) {
+            $newStatus = 'in_progress';
+        } else {
+            $assignedCount = $services->whereNotNull('staff_id')->count();
+            if ($assignedCount > 0) {
+                $newStatus = 'assigned';
+            }
+        }
+
+        if ($this->status !== 'cancelled' && $this->status !== 'closed') {
+            $this->status = $newStatus;
+            
+            if ($newStatus === 'closed') {
+                $this->completed_at = now();
+                
+                $invoiceNumber = 'INV-BOOK-' . $this->id;
+                SalesInvoice::firstOrCreate(
+                    ['invoice_number' => $invoiceNumber],
+                    [
+                        'customer_name' => $this->full_name,
+                        'amount' => $this->total_price,
+                        'status' => $this->payment_status === 'paid' ? 'paid' : 'pending',
+                    ]
+                );
+            }
+            
+            $this->save();
+        }
     }
 }

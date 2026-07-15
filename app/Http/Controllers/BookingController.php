@@ -222,15 +222,20 @@ class BookingController extends Controller
 
     public function showInvoice($id)
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::with('service')->findOrFail($id);
 
         // Check if the user is authorized to view this invoice
-        if ($booking->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+        $ownerId = auth()->user()->created_by ?: auth()->id();
+        $isAuthorized = ($booking->user_id === auth()->id()) ||
+                        auth()->user()->isAdmin() ||
+                        ($booking->service && $booking->service->user_id === $ownerId);
+
+        if (!$isAuthorized) {
             abort(403, 'Unauthorized action.');
         }
 
-        // Only allow viewing invoice if the payment is paid
-        if ($booking->payment_status !== 'paid') {
+        // Only allow viewing invoice if the payment is paid OR booking is completed/closed
+        if ($booking->payment_status !== 'paid' && !in_array($booking->status, ['closed', 'completed'])) {
             $salon = request()->attributes->get('salon');
             if ($salon) {
                 return redirect()->route('salon.dashboard', ['salon' => $salon->slug])
@@ -246,9 +251,13 @@ class BookingController extends Controller
             [
                 'customer_name' => $booking->full_name,
                 'amount' => $booking->total_price,
-                'status' => 'paid',
+                'status' => $booking->payment_status === 'paid' ? 'paid' : 'pending',
             ]
         );
+
+        if ($salesInvoice->status !== ($booking->payment_status === 'paid' ? 'paid' : 'pending')) {
+            $salesInvoice->update(['status' => $booking->payment_status === 'paid' ? 'paid' : 'pending']);
+        }
 
         return view('booking.invoice', compact('booking', 'salesInvoice'));
     }

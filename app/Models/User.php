@@ -160,6 +160,11 @@ class User extends Authenticatable
         return $this->role === $role;
     }
 
+    public function assignedServices()
+    {
+        return $this->hasMany(BookingService::class, 'staff_id');
+    }
+
     /**
      * The "booted" method of the model.
      */

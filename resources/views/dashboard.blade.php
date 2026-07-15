@@ -797,12 +797,8 @@
                                 <h2>My Dashboard</h2>
                                 @can('create_bookings')
                                     @if(!in_array('booking', $limitedFeatures ?? []))
-                                        @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by)
-                                        <a href="{{ route('admin.services.book') }}" class="btn btn-book-appointment">
-                                            <i class="fas fa-plus"></i> Book New Appointment
-                                        </a>
-                                        @else
-                                        <a href="{{ isset($currentSalon) ? route('salon.customer.services.book', ['salon' => $currentSalon->slug]) : route('customer.services.book') }}" class="btn btn-book-appointment">
+                                        @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by || Auth::user()->hasActivePlan())
+                                        <a href="{{ route('admin.bookings.create') }}" class="btn btn-book-appointment">
                                             <i class="fas fa-plus"></i> Book New Appointment
                                         </a>
                                         @endif
@@ -907,10 +903,8 @@
                                         <p>No upcoming appointments</p>
                                         @can('create_bookings')
                                             @if(!in_array('booking', $limitedFeatures ?? []))
-                                                @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by)
-                                                <a href="{{ route('admin.services.book') }}" class="mt-2 btn btn-primary">Book Now</a>
-                                                @else
-                                                <a href="{{ isset($currentSalon) ? route('salon.customer.services.book', ['salon' => $currentSalon->slug]) : route('customer.services.book') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                                @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by || Auth::user()->hasActivePlan())
+                                                <a href="{{ route('admin.bookings.create') }}" class="mt-2 btn btn-primary">Book Now</a>
                                                 @endif
                                             @endif
                                         @endcan
@@ -976,10 +970,8 @@
                                     <div class="py-4 text-center">
                                         <p>No upcoming appointments</p>
                                         @can('create_bookings')
-                                        @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by)
-                                        <a href="{{ route('admin.services.book') }}" class="mt-2 btn btn-primary">Book Now</a>
-                                        @else
-                                        <a href="{{ isset($currentSalon) ? route('salon.customer.services.book', ['salon' => $currentSalon->slug]) : route('customer.services.book') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                        @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by || Auth::user()->hasActivePlan())
+                                        <a href="{{ route('admin.bookings.create') }}" class="mt-2 btn btn-primary">Book Now</a>
                                         @endif
                                         @endcan
                                     </div>
@@ -1037,6 +1029,12 @@
                             @if (session('status') === 'profile-updated')
                             <div class="alert alert-success">
                                 Profile details updated successfully.
+                            </div>
+                            @endif
+
+                            @if($errors->any() && !$errors->updatePassword->any() && !$errors->userDeletion->any() && session('status') !== 'profile-updated')
+                            <div class="alert alert-danger">
+                                {{ $errors->first() }}
                             </div>
                             @endif
 

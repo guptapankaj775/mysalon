@@ -35,9 +35,9 @@ class ProfileUpdateRequest extends FormRequest
             'location' => ['nullable', 'string', 'max:500'],
             'latitude' => ['nullable', 'numeric'],
             'longitude' => ['nullable', 'numeric'],
-            'salon_name' => ['required', 'string', 'max:255'],
-            'salon_type' => ['required', 'string', 'max:255'],
-            'salon_model' => ['required', 'string', 'in:Franchisee,Self Owned'],
+            'salon_name' => ['nullable', 'string', 'max:255'],
+            'salon_type' => ['nullable', 'string', 'max:255'],
+            'salon_model' => ['nullable', 'string', 'in:Franchisee,Self Owned'],
             'franchisee_name' => [
                 Rule::requiredIf(fn () => $this->input('salon_model') === 'Franchisee'),
                 'nullable',

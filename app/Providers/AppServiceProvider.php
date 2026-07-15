@@ -41,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
             'create_bookings',
             'view_history',
             'edit_profile',
+            'view_sales_reports',
         ];
 
         foreach ($permissions as $permission) {

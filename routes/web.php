@@ -11,6 +11,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -24,11 +25,6 @@ Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // Customer dashboard booking routes (global)
-    Route::get('/dashboard/available-services', [BookingController::class, 'dashboardServices'])->name('customer.services.book');
-    Route::get('/dashboard/bookings/create', [BookingController::class, 'dashboardCreateBooking'])->name('customer.bookings.create');
-    Route::post('/dashboard/bookings/store', [BookingController::class, 'dashboardStoreBooking'])->name('customer.bookings.store');
 
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
 
@@ -53,6 +49,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/services/book', [AdminController::class, 'bookServices'])->name('admin.services.book');
             Route::get('/bookings/create', [AdminController::class, 'createBooking'])->name('admin.bookings.create');
             Route::post('/bookings/store', [AdminController::class, 'storeBooking'])->name('admin.bookings.store');
+            Route::get('/bookings/check-staff-availability', [AdminController::class, 'checkStaffAvailability'])->name('admin.bookings.check-staff-availability');
+            Route::get('/bookings/available-slots', [AdminController::class, 'getAvailableSlots'])->name('admin.bookings.available-slots');
         });
 
         // Bookings routes
@@ -63,6 +61,13 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/bookings/{booking}/cancel', [AdminController::class, 'cancelBooking'])->name('admin.bookings.cancel');
             Route::post('/bookings/{booking}/complete', [AdminController::class, 'completeBooking'])->name('admin.bookings.complete');
             Route::get('/bookings/{booking}', [AdminController::class, 'showBooking'])->name('admin.bookings.show');
+            
+            // Staff service workflow
+            Route::post('/bookings/services/{id}/start', [AdminController::class, 'startService'])->name('admin.bookings.services.start');
+            Route::post('/bookings/services/{id}/complete', [AdminController::class, 'completeService'])->name('admin.bookings.services.complete');
+            Route::post('/bookings/{booking}/services/start', [AdminController::class, 'startBookingServices'])->name('admin.bookings.all-services.start');
+            Route::post('/bookings/{booking}/services/complete', [AdminController::class, 'completeBookingServices'])->name('admin.bookings.all-services.complete');
+            Route::get('/reports/sales', [ReportController::class, 'salesReport'])->name('admin.reports.sales')->middleware('can:view_sales_reports');
         });
 
         // Services & Categories routes
@@ -201,11 +206,7 @@ Route::middleware(['salon'])->prefix('{salon}')->group(function () {
         
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('salon.dashboard');
 
-        // Customer dashboard booking routes (salon scoped)
-        Route::get('/dashboard/available-services', [BookingController::class, 'dashboardServices'])->name('salon.customer.services.book');
-        Route::get('/dashboard/bookings/create', [BookingController::class, 'dashboardCreateBooking'])->name('salon.customer.bookings.create');
-        Route::post('/dashboard/bookings/store', [BookingController::class, 'dashboardStoreBooking'])->name('salon.customer.bookings.store');
-        
+
         // Salon Scoped Subscription routes
         Route::get('/subscription', [SubscriptionController::class, 'index'])->name('salon.subscription.index');
         Route::post('/subscription/select', [SubscriptionController::class, 'selectPlan'])->name('salon.subscription.select');

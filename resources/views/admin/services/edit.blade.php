@@ -4,7 +4,7 @@
         .services-page {
             background: #f8f9fa;
             min-height: calc(100vh - 60px);
-            padding-bottom: 50px;
+            padding-bottom: 15px;
         }
 
         /* Sticky Action Bar like Magento 2 */
@@ -14,10 +14,10 @@
             top: 0;
             z-index: 1000;
             background: white;
-            padding: 15px 30px;
+            padding: 8px 20px;
             border-bottom: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
         }
 
         .magento-accordion .accordion-item {
@@ -83,25 +83,25 @@
             background-color: #f9fafb !important;
             border: 1px solid #e5e7eb !important;
             color: #1f2937 !important;
-            font-size: 0.95rem !important;
-            height: 30px !important;
-            border-radius: 6px !important;
+            font-size: 0.8rem !important;
+            height: 24px !important;
+            border-radius: 4px !important;
             box-sizing: border-box !important;
             transition: all 0.2s ease-in-out;
+            padding: 2px 6px !important;
         }
 
         .form-select {
-            padding: unset !important;
-            padding-left: 2px !important;
+            padding: 0px 24px 0px 6px !important;
         }
 
         textarea.form-control {
             background-color: #f9fafb !important;
             border: 1px solid #e5e7eb !important;
             color: #1f2937 !important;
-            padding: 0.5rem 0.75rem;
-            font-size: 0.95rem;
-            border-radius: 6px !important;
+            padding: 4px 6px !important;
+            font-size: 0.8rem !important;
+            border-radius: 4px !important;
             transition: all 0.2s ease-in-out;
         }
 
@@ -116,17 +116,41 @@
         }
 
         .input-group-text {
-            height: 30px !important;
-            font-size: 0.9rem !important;
-            border-radius: 6px 0 0 6px !important;
+            height: 24px !important;
+            font-size: 0.75rem !important;
+            border-radius: 4px 0 0 4px !important;
             background-color: #f3f4f6 !important;
             border: 1px solid #e5e7eb !important;
+            padding: 2px 6px !important;
+        }
+
+        .input-group .btn {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            height: 24px !important;
+            border-radius: 0 4px 4px 0 !important;
+        }
+
+        input[type="file"] {
+            padding: 0px 4px !important;
+            line-height: 22px !important;
+        }
+
+        input[type="file"]::file-selector-button {
+            height: 22px !important;
+            padding: 0px 6px !important;
+            font-size: 0.75rem !important;
+            margin-top: -1px !important;
+            border: none !important;
+            background: #e5e7eb !important;
+            border-radius: 3px !important;
         }
 
         /* Adjust labels to match layout spacing */
         .form-label {
-            font-size: 0.85rem !important;
-            margin-bottom: 4px !important;
+            font-size: 0.75rem !important;
+            margin-bottom: 2px !important;
             color: #4b5563 !important;
         }
 
@@ -134,8 +158,11 @@
         .inventory-list-container {
             display: flex !important;
             flex-flow: row wrap !important;
-            gap: 12px 24px !important;
+            gap: 6px 12px !important;
             background-color: #f9fafb !important;
+            max-height: 110px !important;
+            overflow-y: auto;
+            border-radius: 8px;
         }
 
         .inventory-item-row {
@@ -199,15 +226,17 @@
             @method('PUT')
 
             <!-- Magento Sticky Action Bar -->
-            <div class="magento-sticky-header d-flex justify-content-between align-items-center mb-4">
+            <div class="magento-sticky-header d-flex justify-content-between align-items-center mb-2">
                 <div>
-                    <span class="text-muted small uppercase fw-bold">Service Catalog</span>
-                    <h4 class="h4 mb-0 fw-bold">Edit Service: {{ $service->name }}</h4>
+                    <h5 class="mb-0 fw-bold" style="font-size: 1.15rem; color: #2d3748;">Edit Service: {{ $service->name }}</h5>
                 </div>
-                <div class="actions">
-                    <a href="{{ route('admin.services') }}" class="btn btn-outline-secondary me-2">
+                <div class="actions d-flex gap-2">
+                    <a href="{{ route('admin.services') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center" style="height: 30px; font-size: 0.85rem;">
                         <i class="fas fa-chevron-left me-1"></i> Back
                     </a>
+                    <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm d-flex align-items-center" style="background-color: #D4AF37; border-color: #D4AF37; height: 30px; font-size: 0.85rem;">
+                        <i class="fas fa-save me-1"></i> Save
+                    </button>
                 </div>
             </div>
 
@@ -225,7 +254,7 @@
                                 <div class="row px-3 py-2">
                                     
                                     <!-- SECTION 1: General Info -->
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-3 mb-2">
                                         <label for="name" class="form-label fw-bold">Service Name</label>
                                         <input type="text" class="form-control border-gold-focus @error('name') is-invalid @enderror"
                                             id="name" name="name" value="{{ old('name', $service->name) }}" required>
@@ -234,7 +263,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-3 mb-2">
                                         <label for="category_id" class="form-label fw-bold">Category</label>
                                         <div class="input-group">
                                             <select class="form-select border-gold-focus @error('category_id') is-invalid @enderror"
@@ -256,7 +285,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-3 mb-2">
                                         <label for="icon" class="form-label fw-bold">Service Icon (SVG/PNG)</label>
                                         <div class="input-group">
                                             @if($service->icon && (str_contains($service->icon->path, '/') || \Illuminate\Support\Str::endsWith($service->icon->path, ['.svg', '.png', '.jpg', '.jpeg'])))
@@ -276,7 +305,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-3 mb-2">
                                         <label class="form-label fw-bold d-block">Active Status</label>
                                         <div class="form-check form-switch form-switch-gold ps-0 d-flex align-items-center" style="height: 30px;">
                                             <input class="form-check-input ms-0 me-3" type="checkbox" role="switch" id="status" name="status" value="1"
@@ -285,7 +314,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12 mb-3">
+                                    <div class="col-md-12 mb-2">
                                         <label for="description" class="form-label fw-bold">Description</label>
                                         <textarea class="form-control border-gold-focus @error('description') is-invalid @enderror"
                                             id="description" name="description" rows="2" required>{{ old('description', $service->description) }}</textarea>
@@ -294,7 +323,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-md-6 mb-4">
+                                    <div class="col-md-6 mb-2">
                                         <label for="price" class="form-label fw-bold">Price (Rs.)</label>
                                         <div class="input-group">
                                             <span class="input-group-text bg-light">Rs.</span>
@@ -306,7 +335,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6 mb-4">
+                                    <div class="col-md-6 mb-2">
                                         <label for="duration" class="form-label fw-bold">Duration (minutes)</label>
                                         <div class="input-group">
                                             <input type="number" class="form-control border-gold-focus @error('duration') is-invalid @enderror"
@@ -318,9 +347,9 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-12 mb-4">
+                                    <div class="col-md-12 mb-2">
                                         <label class="form-label fw-bold">Key Included Steps / Highlights</label>
-                                        <div class="features-container mb-3">
+                                        <div class="features-container mb-2">
                                             @forelse($service->features ?? [] as $feature)
                                             <div class="input-group mb-2 feature-row">
                                                 <input type="text" class="form-control border-gold-focus" name="features[]" value="{{ $feature }}" required>
@@ -340,7 +369,7 @@
                                     </div>
 
                                     <div class="col-md-12 mb-2">
-                                        <div class="mb-3">
+                                        <div class="mb-2">
                                             <label class="form-label fw-bold">Search & Map Products Used</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
@@ -348,7 +377,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="card border-0 p-2 inventory-list-container" style="max-height: 250px; overflow-y: auto; border-radius: 8px;">
+                                        <div class="card border-0 p-2 inventory-list-container">
                                             @forelse($inventories as $inventory)
                                             <div class="form-check inventory-item-row">
                                                 <input class="form-check-input border-2" type="checkbox" name="inventories[]" value="{{ $inventory->id }}"
@@ -372,14 +401,8 @@
                                             </div>
                                             @endforelse
                                         </div>
-                                        <!-- <div class="form-text text-muted mt-2">Select the products that are used or consumed during this service.</div> -->
                                     </div>
 
-                                    <div class="col-md-12 mb-2 d-flex justify-content-end align-items-center">
-                                        <button type="submit" class="btn btn-warning text-dark fw-bold px-4 y-2" style="background-color: #D4AF37; border-color: #D4AF37; font-size: 1.05rem;">
-                                            <i class="fas fa-save me-1"></i> Update
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>

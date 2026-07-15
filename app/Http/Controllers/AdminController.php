@@ -18,6 +18,10 @@ class AdminController extends Controller
 {
     public function index()
     {
+        if (Auth::user()->role === 'staff') {
+            return $this->staffDashboard();
+        }
+
         $userId = Auth::id();
         $isAdmin = Auth::user()->isAdmin();
 
@@ -274,8 +278,9 @@ class AdminController extends Controller
         $query = Booking::with(['service', 'category']);
 
         if (!Auth::user()->isAdmin()) {
-            $query->whereHas('service', function ($q) {
-                $q->where('user_id', Auth::id());
+            $ownerId = Auth::user()->created_by ?: Auth::id();
+            $query->whereHas('service', function ($q) use ($ownerId) {
+                $q->where('user_id', $ownerId);
             });
         }
 
@@ -292,7 +297,7 @@ class AdminController extends Controller
 
     public function showBooking(Booking $booking)
     {
-        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== (Auth::user()->created_by ?: Auth::id())) {
             abort(403, 'Unauthorized access to this booking.');
         }
 
@@ -302,7 +307,7 @@ class AdminController extends Controller
 
     public function updateBookingStatus(Request $request, Booking $booking)
     {
-        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== (Auth::user()->created_by ?: Auth::id())) {
             abort(403, 'Unauthorized access to this booking.');
         }
 
@@ -317,8 +322,12 @@ class AdminController extends Controller
 
     public function confirmBooking(Booking $booking)
     {
-        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== (Auth::user()->created_by ?: Auth::id())) {
             abort(403, 'Unauthorized access to this booking.');
+        }
+
+        if (in_array($booking->status, ['in_progress', 'completed', 'closed'])) {
+            return redirect()->back()->with('error', 'Cannot update a booking that has already started.');
         }
 
         if ($booking->status !== 'pending' || $booking->payment_status !== 'paid') {
@@ -335,8 +344,12 @@ class AdminController extends Controller
 
     public function rejectBooking(Booking $booking)
     {
-        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== (Auth::user()->created_by ?: Auth::id())) {
             abort(403, 'Unauthorized access to this booking.');
+        }
+
+        if (in_array($booking->status, ['in_progress', 'completed', 'closed'])) {
+            return redirect()->back()->with('error', 'Cannot update a booking that has already started.');
         }
 
         if ($booking->status !== 'pending') {
@@ -353,8 +366,16 @@ class AdminController extends Controller
 
     public function cancelBooking(Booking $booking)
     {
-        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+        if (Auth::user()->role === 'staff') {
+            abort(403, 'Staff members are not allowed to cancel bookings.');
+        }
+
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== (Auth::user()->created_by ?: Auth::id())) {
             abort(403, 'Unauthorized access to this booking.');
+        }
+
+        if (in_array($booking->status, ['in_progress', 'completed', 'closed'])) {
+            return redirect()->back()->with('error', 'Cannot update a booking that has already started.');
         }
 
         if ($booking->status === 'cancelled') {
@@ -371,8 +392,12 @@ class AdminController extends Controller
 
     public function completeBooking(Booking $booking)
     {
-        if (!Auth::user()->isAdmin() && $booking->service->user_id !== Auth::id()) {
+        if (!Auth::user()->isAdmin() && $booking->service->user_id !== (Auth::user()->created_by ?: Auth::id())) {
             abort(403, 'Unauthorized access to this booking.');
+        }
+
+        if (in_array($booking->status, ['in_progress', 'completed', 'closed'])) {
+            return redirect()->back()->with('error', 'Cannot update a booking that has already started.');
         }
 
         if ($booking->status !== 'confirmed') {
@@ -502,12 +527,38 @@ class AdminController extends Controller
             ->with('user_deleted', 'User deleted successfully.');
     }
 
+    private function syncSpecialistsForOwner($ownerId)
+    {
+        if (!$ownerId) {
+            return;
+        }
+
+        $staffUsers = \App\Models\User::where('role', 'staff')
+            ->where('created_by', $ownerId)
+            ->get();
+
+        foreach ($staffUsers as $su) {
+            \App\Models\Specialist::firstOrCreate(
+                ['email' => $su->email],
+                [
+                    'name' => $su->name,
+                    'user_id' => $ownerId,
+                    'status' => true,
+                    'mobile_no' => $su->phone,
+                ]
+            );
+        }
+    }
+
     // Staff (Specialist) Management Methods
     public function staff()
     {
+        $ownerId = Auth::user()->created_by ?: Auth::id();
+        $this->syncSpecialistsForOwner($ownerId);
+
         $query = Specialist::with('services');
         if (!Auth::user()->isAdmin()) {
-            $query->where('user_id', Auth::id());
+            $query->where('user_id', $ownerId);
         }
         $staff = $query->orderBy('created_at', 'desc')->paginate(10);
         return view('admin.staff.index', compact('staff'));
@@ -767,7 +818,7 @@ class AdminController extends Controller
         \Illuminate\Support\Facades\Gate::authorize('create_bookings');
 
         $salon = request()->attributes->get('salon');
-        $ownerId = $salon ? $salon->id : Auth::id();
+        $ownerId = $salon ? $salon->id : (Auth::user()->created_by ?: Auth::id());
 
         $categoriesQuery = \App\Models\ServiceCategory::query()->with(['services' => function ($query) use ($ownerId) {
             $query->where('status', true)->with(['images', 'icon']);
@@ -785,49 +836,103 @@ class AdminController extends Controller
         return view('admin.services.book', compact('categories'));
     }
 
+    public function staffDashboard()
+    {
+        $staffId = Auth::id();
+        $assignedServices = \App\Models\BookingService::with(['booking.user', 'service'])
+            ->where('staff_id', $staffId)
+            ->whereHas('booking', function ($q) {
+                $q->where('status', '!=', 'cancelled');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.staff.dashboard', compact('assignedServices'));
+    }
+
+    public function isStaffAvailable($staffId, $date, $time, $durationMinutes, $excludeBookingId = null)
+    {
+        $durationMinutes = (int) $durationMinutes;
+        $start = \Illuminate\Support\Carbon::parse("$date $time");
+        $end = (clone $start)->addMinutes($durationMinutes);
+
+        $assignedServices = \App\Models\BookingService::where('staff_id', $staffId)
+            ->whereHas('booking', function ($q) use ($date, $excludeBookingId) {
+                $q->where('appointment_date', $date)
+                  ->where('status', '!=', 'cancelled');
+                if ($excludeBookingId) {
+                    $q->where('id', '!=', $excludeBookingId);
+                }
+            })
+            ->with(['booking', 'service'])
+            ->get();
+
+        foreach ($assignedServices as $bs) {
+            $bStart = \Illuminate\Support\Carbon::parse($bs->booking->appointment_date . ' ' . $bs->booking->appointment_time);
+            $bEnd = (clone $bStart)->addMinutes($bs->service->duration);
+
+            if ($start < $bEnd && $end > $bStart) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function checkStaffAvailability(Request $request)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('create_bookings');
+
+        $request->validate([
+            'date' => 'required|date',
+            'time' => 'required',
+            'duration' => 'required|integer',
+            'booking_id' => 'nullable|integer',
+        ]);
+
+        $duration = $request->duration;
+
+        $salon = request()->attributes->get('salon');
+        $ownerId = $salon ? $salon->id : (Auth::user()->created_by ?: Auth::id());
+
+        $this->syncSpecialistsForOwner($ownerId);
+
+        $staffQuery = \App\Models\User::where('role', 'staff');
+        if ($ownerId) {
+            $staffQuery->where('created_by', $ownerId);
+            $specialistEmails = \App\Models\Specialist::where('user_id', $ownerId)->pluck('email')->filter();
+            $staffQuery->whereIn('email', $specialistEmails);
+        }
+        $allStaff = $staffQuery->get();
+
+        $availableStaff = $allStaff->filter(function ($staff) use ($request, $duration) {
+            return $this->isStaffAvailable(
+                $staff->id,
+                $request->date,
+                $request->time,
+                $duration,
+                $request->booking_id
+            );
+        })->values();
+
+        return response()->json($availableStaff);
+    }
+
     public function createBooking(Request $request)
     {
         \Illuminate\Support\Facades\Gate::authorize('create_bookings');
 
         $salon = request()->attributes->get('salon');
-        $ownerId = $salon ? $salon->id : Auth::id();
+        $ownerId = $salon ? $salon->id : (Auth::user()->created_by ?: Auth::id());
 
-        $categoriesQuery = \App\Models\ServiceCategory::query();
+        $customers = \App\Models\User::where('role', 'user')->orderBy('name')->get();
+
+        $servicesQuery = \App\Models\Service::where('status', true);
         if ($ownerId) {
-            $categoriesQuery->where('user_id', $ownerId);
+            $servicesQuery->where('user_id', $ownerId);
         }
-        $categories = $categoriesQuery->get();
+        $allServices = $servicesQuery->get();
 
-        $selectedCategory = null;
-        $selectedService = null;
-        $services = collect();
-
-        // If category is selected, get its services
-        if ($request->has('serviceCategory')) {
-            $selectedCategory = \App\Models\ServiceCategory::find($request->serviceCategory);
-            if ($selectedCategory) {
-                $servicesQuery = \App\Models\Service::where('category_id', $selectedCategory->id);
-                if ($ownerId) {
-                    $servicesQuery->where('user_id', $ownerId);
-                }
-                $services = $servicesQuery->get();
-            }
-        }
-
-        // If service is specified in URL
-        if ($request->has('service')) {
-            $selectedService = \App\Models\Service::find($request->service);
-            if ($selectedService) {
-                $selectedCategory = $selectedService->category;
-                $servicesQuery = \App\Models\Service::where('category_id', $selectedCategory->id);
-                if ($ownerId) {
-                    $servicesQuery->where('user_id', $ownerId);
-                }
-                $services = $servicesQuery->get();
-            }
-        }
-
-        // Generate time slots
         $timeSlots = [];
         $start = new \DateTime('09:00');
         $end = new \DateTime('20:00');
@@ -839,13 +944,9 @@ class AdminController extends Controller
             $current->add($interval);
         }
 
-        return view('admin.bookings.create', compact(
-            'categories',
-            'services',
-            'timeSlots',
-            'selectedService',
-            'selectedCategory'
-        ));
+        $preselectedServiceId = $request->query('service');
+
+        return view('admin.bookings.create', compact('customers', 'allServices', 'timeSlots', 'preselectedServiceId'));
     }
 
     public function storeBooking(Request $request)
@@ -853,41 +954,222 @@ class AdminController extends Controller
         \Illuminate\Support\Facades\Gate::authorize('create_bookings');
 
         $request->validate([
-            'fullName' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email',
-            'serviceCategory' => 'required|exists:service_categories,id',
-            'service' => 'required|exists:services,id',
-            'appointmentDate' => 'required|date|after_or_equal:today',
+            'customer_type' => 'required|in:existing,new',
+            'customer_id' => 'required_if:customer_type,existing|exists:users,id',
+            'fullName' => 'required_if:customer_type,new|nullable|string|max:255',
+            'phone' => 'required_if:customer_type,new|nullable|string|max:20',
+            'email' => 'required_if:customer_type,new|nullable|email',
+            'appointmentDate' => 'required|date',
             'appointmentTime' => 'required',
+            'staff_id' => 'required|exists:users,id',
+            'services' => 'required|array|min:1',
+            'services.*.service_id' => 'required|exists:services,id',
         ]);
 
-        $service = \App\Models\Service::findOrFail($request->service);
-        $basePrice = $service->price;
-        $serviceFee = $basePrice * 0.03; // 3% service fee
+        if ($request->customer_type === 'new') {
+            $existingUser = \App\Models\User::where('email', $request->email)->first();
+            if ($existingUser) {
+                return redirect()->back()->withInput()->with('error', 'A customer with this email already exists. Please select them from the existing customer list.');
+            }
+
+            $customerUser = \App\Models\User::create([
+                'name' => $request->fullName,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'password' => \Illuminate\Support\Facades\Hash::make(\Illuminate\Support\Str::random(16)),
+                'role' => 'user',
+            ]);
+        } else {
+            $customerUser = \App\Models\User::findOrFail($request->customer_id);
+        }
+
+        $staff = \App\Models\User::findOrFail($request->staff_id);
+
+        $selectedServices = [];
+        $basePrice = 0;
+        $totalDuration = 0;
+
+        foreach ($request->services as $srvData) {
+            $service = \App\Models\Service::findOrFail($srvData['service_id']);
+            $selectedServices[] = $service;
+            $basePrice += $service->price;
+            $totalDuration += $service->duration;
+        }
+
+        if (!$this->isStaffAvailable($staff->id, $request->appointmentDate, $request->appointmentTime, $totalDuration)) {
+            return redirect()->back()->withInput()->with('error', "Staff member {$staff->name} is not available (overlaps with another booking) for the selected services combined duration of {$totalDuration} minutes.");
+        }
+
+        $serviceFee = $basePrice * 0.03;
         $totalPrice = $basePrice + $serviceFee;
 
-        // Try to find if user with this email already exists
-        $customerUser = \App\Models\User::where('email', $request->email)->first();
+        $firstService = $selectedServices[0];
 
-        \App\Models\Booking::create([
-            'user_id' => $customerUser ? $customerUser->id : null,
-            'full_name' => $request->fullName,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'service_category_id' => $request->serviceCategory,
-            'service_id' => $request->service,
+        $booking = Booking::create([
+            'user_id' => $customerUser->id,
+            'full_name' => $customerUser->name,
+            'phone' => $customerUser->phone,
+            'email' => $customerUser->email,
+            'service_category_id' => $firstService->category_id,
+            'service_id' => $firstService->id,
             'appointment_date' => $request->appointmentDate,
             'appointment_time' => $request->appointmentTime,
+            'stylist_id' => $staff->id,
+            'special_requirements' => $request->requirements,
             'base_price' => $basePrice,
             'addons_price' => $serviceFee,
             'total_price' => $totalPrice,
-            'status' => 'confirmed', // bookings created by merchant/staff are auto-confirmed!
-            'payment_status' => 'paid', // assumed paid for portal bookings
-            'payment_method' => 'cash', // assume cash payment on-counter
-            'transaction_id' => 'PORTAL-' . strtoupper(uniqid()),
+            'status' => 'pending',
+            'payment_status' => 'pending',
         ]);
 
+        foreach ($selectedServices as $srv) {
+            \App\Models\BookingService::create([
+                'booking_id' => $booking->id,
+                'service_id' => $srv->id,
+                'staff_id' => $staff->id,
+                'status' => 'assigned',
+            ]);
+        }
+
+        $booking->updateStatusFromServices();
+
         return redirect()->route('admin.bookings')->with('success', 'Booking created successfully.');
+    }
+
+    public function startService($id)
+    {
+        $bs = \App\Models\BookingService::findOrFail($id);
+        
+        if (Auth::user()->role === 'staff' && $bs->staff_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this service.');
+        }
+
+        $bs->update([
+            'status' => 'in_progress',
+            'started_at' => now(),
+        ]);
+
+        $bs->booking->updateStatusFromServices();
+
+        return redirect()->back()->with('success', 'Service started successfully.');
+    }
+
+    public function completeService($id)
+    {
+        $bs = \App\Models\BookingService::findOrFail($id);
+        
+        if (Auth::user()->role === 'staff' && $bs->staff_id !== Auth::id()) {
+            abort(403, 'Unauthorized access to this service.');
+        }
+
+        $bs->update([
+            'status' => 'completed',
+            'completed_at' => now(),
+        ]);
+
+        $bs->booking->updateStatusFromServices();
+
+        return redirect()->back()->with('success', 'Service completed successfully.');
+    }
+
+    public function startBookingServices(Booking $booking)
+    {
+        $staffId = Auth::id();
+
+        $services = $booking->bookingServices()
+            ->where('staff_id', $staffId)
+            ->where('status', 'assigned')
+            ->get();
+
+        if ($services->isEmpty()) {
+            return redirect()->back()->with('error', 'No assigned services to start for this booking.');
+        }
+
+        foreach ($services as $bs) {
+            $bs->update([
+                'status' => 'in_progress',
+                'started_at' => now(),
+            ]);
+        }
+
+        $booking->updateStatusFromServices();
+
+        return redirect()->back()->with('success', 'Booking services started successfully.');
+    }
+
+    public function completeBookingServices(Booking $booking)
+    {
+        $staffId = Auth::id();
+
+        $services = $booking->bookingServices()
+            ->where('staff_id', $staffId)
+            ->where('status', 'in_progress')
+            ->get();
+
+        if ($services->isEmpty()) {
+            return redirect()->back()->with('error', 'No in-progress services to complete for this booking.');
+        }
+
+        foreach ($services as $bs) {
+            $bs->update([
+                'status' => 'completed',
+                'completed_at' => now(),
+            ]);
+        }
+
+        $booking->updateStatusFromServices();
+
+        return redirect()->back()->with('success', 'Booking services completed successfully.');
+    }
+
+    public function getAvailableSlots(Request $request)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('create_bookings');
+
+        $request->validate([
+            'date' => 'required|date',
+            'duration' => 'required|integer',
+        ]);
+
+        $date = $request->date;
+        $duration = $request->duration;
+
+        $salon = request()->attributes->get('salon');
+        $ownerId = $salon ? $salon->id : (Auth::user()->created_by ?: Auth::id());
+
+        $this->syncSpecialistsForOwner($ownerId);
+
+        $staffQuery = \App\Models\User::where('role', 'staff');
+        if ($ownerId) {
+            $staffQuery->where('created_by', $ownerId);
+            $specialistEmails = \App\Models\Specialist::where('user_id', $ownerId)->pluck('email')->filter();
+            $staffQuery->whereIn('email', $specialistEmails);
+        }
+        $allStaff = $staffQuery->get();
+
+        $timeSlots = [];
+        $start = new \DateTime('09:00');
+        $end = new \DateTime('20:00');
+        $interval = new \DateInterval('PT30M');
+        $current = clone $start;
+
+        while ($current <= $end) {
+            $timeSlots[] = $current->format('H:i');
+            $current->add($interval);
+        }
+
+        $availableSlots = [];
+
+        foreach ($timeSlots as $slot) {
+            foreach ($allStaff as $staff) {
+                if ($this->isStaffAvailable($staff->id, $date, $slot, $duration)) {
+                    $availableSlots[] = $slot;
+                    break;
+                }
+            }
+        }
+
+        return response()->json($availableSlots);
     }
 }
