@@ -1,8 +1,7 @@
-@if(Auth::check())
-<x-admin-layout>
-@else
-<x-app-layout>
-@endif
+@php
+    $layout = Auth::check() ? 'admin-layout' : 'app-layout';
+@endphp
+<x-dynamic-component :component="$layout">
     @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/booking.css') }}">
     <style>
@@ -126,7 +125,12 @@
                     <div class="success-icon">
                         <i class="fas fa-check"></i>
                     </div>
-                    <h1 class="success-message">Payment Successful!</h1>
+                    
+                    @if($booking->payment_method === 'pay_at_shop')
+                        <h1 class="success-message text-success">Booking Confirmed!</h1>
+                    @else
+                        <h1 class="success-message">Payment Successful!</h1>
+                    @endif
 
                     <div class="booking-card">
                         <div class="booking-details">
@@ -150,11 +154,19 @@
 
                                 <div class="col-md-6">
                                     <div class="detail-row">
-                                        <div class="detail-label">Amount Paid</div>
+                                        @if($booking->payment_method === 'pay_at_shop')
+                                            <div class="detail-label">Amount to Pay (at shop)</div>
+                                        @else
+                                            <div class="detail-label">Amount Paid</div>
+                                        @endif
                                         <div class="detail-value">Rs. {{number_format($booking->total_price, 2)}}</div>
                                     </div>
                                     <div class="detail-row">
-                                        <div class="detail-label">Transaction ID</div>
+                                        @if($booking->payment_method === 'pay_at_shop')
+                                            <div class="detail-label">Reference ID</div>
+                                        @else
+                                            <div class="detail-label">Transaction ID</div>
+                                        @endif
                                         <div class="detail-value">{{ $booking->transaction_id }}</div>
                                     </div>
                                     <div class="detail-row">
@@ -170,7 +182,11 @@
 
                     <div class="email-notification">
                         <i class="fas fa-envelope me-2"></i>
-                        A confirmation email has been sent to {{ $booking->email }}
+                        @if($booking->payment_method === 'pay_at_shop')
+                            Your booking has been confirmed! Please pay Rs. {{number_format($booking->total_price, 2)}} at the salon during your appointment. A confirmation email has been sent to {{ $booking->email }}.
+                        @else
+                            A confirmation email has been sent to {{ $booking->email }}.
+                        @endif
                     </div>
 
                     <p class="mt-4">Please arrive 10 minutes before your scheduled appointment time.</p>
@@ -187,8 +203,4 @@
         </div>
     </main>
     @endsection
-@if(Auth::check())
-</x-admin-layout>
-@else
-</x-app-layout>
-@endif
+</x-dynamic-component>

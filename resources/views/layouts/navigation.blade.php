@@ -49,7 +49,7 @@
                   </li>
                   @endauth
                   <li class="nav-item ms-lg-2">
-                      <a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('services') }}" class="nav-link book-now-nav">Book Now</a>
+                      <a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('booking') }}" class="nav-link book-now-nav">Book Now</a>
                   </li>
               </ul>
           </div>
