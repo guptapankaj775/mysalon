@@ -18,14 +18,14 @@
 </head>
 
 <body>
-    <a href="{{ url('/') }}" class="back-to-home">
+    <a href="{{ isset($currentSalon) ? route('salon.home', ['salon' => $currentSalon->slug]) : url('/') }}" class="back-to-home">
         <i class="fas fa-arrow-left me-2"></i>Back to Home
     </a>
     <section class="auth-section">
         <div class="container">
             <div class="auth-card">
                 <div class="logo">
-                    <h2>Salon<span>JC</span></h2>
+                    <h2>{{ isset($currentSalon) ? $currentSalon->salon_name : 'Salon' }}<span>{{ isset($currentSalon) ? '' : 'JC' }}</span></h2>
                 </div>
 
                 <div class="auth-header">
@@ -33,7 +33,7 @@
                     <p>Join SalonJC to book your appointments</p>
                 </div>
 
-                <form method="POST" action="{{ route('register') }}">
+                <form method="POST" action="{{ isset($currentSalon) ? route('salon.register', ['salon' => $currentSalon->slug]) : route('register') }}">
                     @csrf
 
                     <!-- Name -->
@@ -46,6 +46,58 @@
                                 placeholder="Enter your full name" required autofocus>
                         </div>
                         @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Salon Name -->
+                    <div class="mb-3">
+                        <label for="salon_name" class="form-label">Salon Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-store"></i></span>
+                            <input type="text" class="form-control @error('salon_name') is-invalid @enderror"
+                                id="salon_name" name="salon_name" value="{{ old('salon_name') }}"
+                                placeholder="e.g. Glamour Hair Studio" required>
+                        </div>
+                        @error('salon_name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Salon Type -->
+                    <div class="mb-3">
+                        <label for="salon_type" class="form-label">Salon Type</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-spa"></i></span>
+                            <select class="form-select @error('salon_type') is-invalid @enderror"
+                                id="salon_type" name="salon_type" required>
+                                <option value="" disabled {{ !old('salon_type') ? 'selected' : '' }}>Select Salon Type</option>
+                                <option value="Mens Salon" {{ old('salon_type') === 'Mens Salon' ? 'selected' : '' }}>Mens Salon</option>
+                                <option value="Female Salon" {{ old('salon_type') === 'Female Salon' ? 'selected' : '' }}>Female Salon</option>
+                                <option value="Unisex Salon" {{ old('salon_type') === 'Unisex Salon' ? 'selected' : '' }}>Unisex Salon</option>
+                                <option value="Makeup Studio" {{ old('salon_type') === 'Makeup Studio' ? 'selected' : '' }}>Makeup Studio</option>
+                                <option value="Academy + Salon" {{ old('salon_type') === 'Academy + Salon' ? 'selected' : '' }}>Academy + Salon</option>
+                                <option value="Academy" {{ old('salon_type') === 'Academy' ? 'selected' : '' }}>Academy</option>
+                            </select>
+                        </div>
+                        @error('salon_type')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Salon Model -->
+                    <div class="mb-3">
+                        <label for="salon_model" class="form-label">Salon Model</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                            <select class="form-select @error('salon_model') is-invalid @enderror"
+                                id="salon_model" name="salon_model" required>
+                                <option value="" disabled {{ !old('salon_model') ? 'selected' : '' }}>Select Salon Model</option>
+                                <option value="Franchisee" {{ old('salon_model') === 'Franchisee' ? 'selected' : '' }}>Franchisee</option>
+                                <option value="Self Owned" {{ old('salon_model') === 'Self Owned' ? 'selected' : '' }}>Self Owned</option>
+                            </select>
+                        </div>
+                        @error('salon_model')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -100,7 +152,7 @@
 
                     <div class="text-center">
                         <p class="mb-0">{{ __('Already have an account?') }}
-                            <a href="{{ route('login') }}">{{ __('Sign in') }}</a>
+                            <a href="{{ isset($currentSalon) ? route('salon.login', ['salon' => $currentSalon->slug]) : route('login') }}">{{ __('Sign in') }}</a>
                         </p>
                     </div>
                 </form>

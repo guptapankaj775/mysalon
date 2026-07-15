@@ -6,14 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <script>
-        (function() {
-            var sidebarState = localStorage.getItem('sidebar-collapsed');
-            if (sidebarState === 'true') {
-                document.documentElement.classList.add('sidebar-collapsed-state');
-            }
-        })();
-    </script>
 
     <title>{{ config('app.name', 'Laravel') }} - Admin</title>
 
@@ -36,11 +28,15 @@
 
     <style>
         /* Fix Tailwind conflict with Bootstrap collapse */
-        .collapse:not(.show) {
+        .collapse:not(.show):not(.navbar-collapse) {
             display: none !important;
         }
-        .collapse.show {
+        .collapse.show:not(.navbar-collapse) {
             display: block !important;
+            visibility: visible !important;
+        }
+        
+        .navbar-collapse {
             visibility: visible !important;
         }
 
@@ -71,255 +67,416 @@
             color: #E6B800;
         }
 
-        /* Sidebar Styles */
-        .sidenav {
-            width: 250px;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            background: #2C2C2C;
-            transition: 0.3s;
-            z-index: 1000;
-            overflow-y: auto;
+        /* Premium Top Navbar Styles */
+        .navbar-custom {
+            background-color: #2C2C2C !important;
+            border-bottom: 2px solid #D4AF37;
+            padding: 10px 20px;
         }
 
-        /* Custom Scrollbar for Sidebar */
-        .sidenav::-webkit-scrollbar {
-            width: 5px;
+        .navbar-custom .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-        .sidenav::-webkit-scrollbar-track {
-            background: #2C2C2C;
-        }
-
-        .sidenav::-webkit-scrollbar-thumb {
-            background: rgba(212, 175, 55, 0.3);
-            border-radius: 4px;
-        }
-
-        .sidenav::-webkit-scrollbar-thumb:hover {
-            background: rgba(212, 175, 55, 0.6);
-        }
-
-        .sidenav-header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidenav-brand {
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .nav-item {
-            position: relative;
-        }
-
-        .nav-link {
-            padding: 15px 20px;
-            color: rgba(255, 255, 255, 0.7);
+        .navbar-custom .nav-link {
+            color: rgba(255, 255, 255, 0.75) !important;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 6px 12px !important;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
             display: flex;
             align-items: center;
-            text-decoration: none;
-            transition: 0.3s;
+            gap: 6px;
         }
 
-        .nav-link:hover {
-            color: #D4AF37;
-            background: rgba(255, 255, 255, 0.05);
+        .navbar-custom .nav-link:hover,
+        .navbar-custom .nav-link:focus {
+            color: #D4AF37 !important;
+            background-color: rgba(255, 255, 255, 0.05);
         }
 
-        .nav-link.active {
-            color: #D4AF37;
-            background: rgba(212, 175, 55, 0.1);
-            border-left: 4px solid #D4AF37;
+        .navbar-custom .nav-link.active {
+            color: #D4AF37 !important;
+            background-color: rgba(212, 175, 55, 0.1);
         }
 
-        .nav-link i {
-            width: 20px;
-            margin-right: 10px;
+        /* Dropdown custom dark premium styling */
+        .dropdown-menu-custom {
+            background-color: #2C2C2C !important;
+            border: 1px solid rgba(212, 175, 55, 0.1) !important;
+            border-radius: 8px;
+            padding: 5px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+
+        .dropdown-menu-custom .dropdown-item {
+            color: rgba(255, 255, 255, 0.75) !important;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-menu-custom .dropdown-item:hover {
+            background-color: rgba(212, 175, 55, 0.1) !important;
+            color: #D4AF37 !important;
+        }
+
+        .dropdown-menu-custom .dropdown-item.active {
+            background-color: rgba(212, 175, 55, 0.15) !important;
+            color: #D4AF37 !important;
         }
 
         .main-content {
-            margin-left: 250px;
-            padding: 20px;
-            min-height: 100vh;
+            padding: 2px 30px 30px 30px;
+            min-height: calc(100vh - 65px);
             background: #F8F6F0;
             transition: 0.3s;
         }
 
-        .top-bar {
-            background: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            border-radius: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .sidenav {
-                transform: translateX(-100%);
-            }
-
-            .sidenav.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .main-content.pushed {
-                margin-left: 250px;
-            }
-        }
-
-        @media (min-width: 769px) {
-            html.sidebar-collapsed-state .sidenav {
-                transform: translateX(-250px);
-            }
-
-            html.sidebar-collapsed-state .main-content {
-                margin-left: 0;
-            }
+        /* Global Table Cell Font Size */
+        table td, .table td, table th, .table th {
+            font-size: 14px !important;
         }
     </style>
     @stack('styles')
 </head>
 
 <body>
-    <nav class="sidenav">
-        <div class="sidenav-header">
-            <a href="{{ route('admin.dashboard') }}" class="sidenav-brand"> <i class="fas fa-spa me-2" style="color: #D4AF37;"></i>
-                <span style="color: #D4AF37;">SalonJC</span> Admin
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container-fluid">
+            <!-- Brand Logo -->
+            <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : (Auth::user()->slug ? route('salon.dashboard', ['salon' => Auth::user()->slug]) : route('dashboard')) }}" class="navbar-brand d-flex align-items-center">
+                <i class="fas fa-spa me-2 text-warning" style="color: #D4AF37 !important;"></i>
+                <span style="color: #D4AF37; font-weight: 600;">SalonJC</span>
+                <span class="ms-2 text-white small opacity-75" style="font-size: 0.85rem;">
+                    @if(Auth::user()->role === 'admin') Admin @else Portal @endif
+                </span>
             </a>
-        </div>
-        <ul class="mt-4 nav flex-column">
-            <li class="nav-item">
-                <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <i class="fas fa-home"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.services') }}" class="nav-link {{ request()->routeIs('admin.services*') ? 'active' : '' }}">
-                    <i class="fas fa-cut"></i>
-                    Services
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.bookings') }}" class="nav-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
-                    <i class="fas fa-calendar-check"></i>
-                    Bookings
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.categories') }}" class="nav-link {{ request()->routeIs('admin.categories*') ? 'active' : '' }}">
-                    <i class="fas fa-th-list"></i>
-                    Categories
-                </a>
-            </li>
-            <li class="{{ request()->is('admin/users*') ? 'active' : '' }}">
-                <a href="{{ route('admin.users.index') }}" class="nav-link">
-                    <i class="fas fa-users"></i> Users
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.staff.index') }}" class="nav-link {{ request()->routeIs('admin.staff*') ? 'active' : '' }}">
-                    <i class="fas fa-user-tie"></i> Staff
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.roles.index') }}" class="nav-link {{ request()->routeIs('admin.roles*') ? 'active' : '' }}">
-                    <i class="fas fa-shield-alt"></i> Permissions
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="javascript:void(0);" class="nav-link {{ request()->routeIs('admin.brands*', 'admin.inventory-categories*', 'admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="cursor: default;">
-                    <i class="fas fa-boxes"></i> Inventory Management
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.brands.index') }}" class="nav-link {{ request()->routeIs('admin.brands*') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
-                    <i class="fas fa-tag" style="font-size: 0.8rem; width: 15px;"></i> Brand
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.inventory-categories.index') }}" class="nav-link {{ request()->routeIs('admin.inventory-categories*') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
-                    <i class="fas fa-folder-open" style="font-size: 0.8rem; width: 15px;"></i> Inv Category
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.inventory.index') }}" class="nav-link {{ request()->routeIs('admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" style="padding-left: 35px; font-size: 0.9rem;">
-                    <i class="fas fa-list" style="font-size: 0.8rem; width: 15px;"></i> Inventory
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.vendors.index') }}" class="nav-link {{ request()->routeIs('admin.vendors*') ? 'active' : '' }}">
-                    <i class="fas fa-truck"></i> Vendors
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.feedback.index') }}" class="nav-link {{ request()->routeIs('admin.feedback*') ? 'active' : '' }}">
-                    <i class="fas fa-comments"></i>
-                    Feedbacks
-                    @php
-                    $pendingCount = \App\Models\Feedback::where('is_published', false)->count();
-                    @endphp
-                    @if($pendingCount > 0)
-                    <span class="badge bg-warning text-dark ms-2">{{ $pendingCount }}</span>
+
+            <!-- Mobile Hamburger Menu Button -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar" aria-controls="topNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navbar Links -->
+            <div class="collapse navbar-collapse" id="topNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
+                    @if(Auth::user()->role === 'admin')
+                        <!-- Dashboard -->
+                        <li class="nav-item">
+                            <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                                <i class="fas fa-home"></i> Dashboard
+                            </a>
+                        </li>
+
+                        <!-- services_dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.services*', 'admin.categories*') ? 'active' : '' }}" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-cut"></i> Services
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="servicesDropdown">
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.services*') ? 'active' : '' }}" href="{{ route('admin.services') }}">
+                                        <i class="fas fa-list"></i> Services List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.categories*') ? 'active' : '' }}" href="{{ route('admin.categories') }}">
+                                        <i class="fas fa-th-list"></i> Service Categories
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Bookings -->
+                        <li class="nav-item">
+                            <a href="{{ route('admin.bookings') }}" class="nav-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
+                                <i class="fas fa-calendar-check"></i> Bookings
+                            </a>
+                        </li>
+
+                        <!-- admin_inventory_dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.inventory-categories*', 'admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit', 'admin.vendors*') ? 'active' : '' }}" href="#" id="adminInventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-boxes"></i> Inventory
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="adminInventoryDropdown">
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.inventory-categories*') ? 'active' : '' }}" href="{{ route('admin.inventory-categories.index') }}">
+                                        <i class="fas fa-folder-open"></i> Inv Category
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" href="{{ route('admin.inventory.index') }}">
+                                        <i class="fas fa-list"></i> Inventory
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider bg-secondary"></li>
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.vendors*') ? 'active' : '' }}" href="{{ route('admin.vendors.index') }}">
+                                        <i class="fas fa-truck"></i> Vendors
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- admin_team_dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->is('admin/users*') || request()->routeIs('admin.staff*', 'admin.roles*') ? 'active' : '' }}" href="#" id="teamDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-users"></i> Team
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="teamDropdown">
+                                <li>
+                                    <a class="dropdown-item {{ request()->is('admin/users*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                                        <i class="fas fa-users-cog"></i> Users List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.staff*') ? 'active' : '' }}" href="{{ route('admin.staff.index') }}">
+                                        <i class="fas fa-user-tie"></i> Staff Members
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.roles*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}">
+                                        <i class="fas fa-shield-alt"></i> Permissions & Roles
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- admin_reports_dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.reports.sales*', 'admin.feedback*') ? 'active' : '' }}" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-chart-bar"></i> Reports
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="reportsDropdown">
+                                @can('view_sales_reports')
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.reports.sales*') ? 'active' : '' }}" href="{{ Auth::user()->slug ? route('admin.reports.sales', ['salon' => Auth::user()->slug]) : route('admin.reports.sales') }}">
+                                        <i class="fas fa-chart-line"></i> Sales Report
+                                    </a>
+                                </li>
+                                @endcan
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.feedback*') ? 'active' : '' }}" href="{{ route('admin.feedback.index') }}">
+                                        <i class="fas fa-comments"></i> Feedbacks
+                                        @php
+                                        $pendingCount = \App\Models\Feedback::where('is_published', false)->count();
+                                        @endphp
+                                        @if($pendingCount > 0)
+                                        <span class="badge bg-warning text-dark ms-1">{{ $pendingCount }}</span>
+                                        @endif
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- admin_subscriptions_dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->is('admin/subscriptions*', 'admin/subscribers*', 'admin/subscription-settings*') ? 'active' : '' }}" href="#" id="adminSubscriptionsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-layer-group"></i> Subscriptions
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="adminSubscriptionsDropdown">
+                                <li>
+                                    <a class="dropdown-item {{ request()->is('admin/subscriptions*') ? 'active' : '' }}" href="{{ route('admin.subscriptions.index') }}">
+                                        <i class="fas fa-layer-group"></i> Plans
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request()->is('admin/subscribers*') ? 'active' : '' }}" href="{{ route('admin.subscribers') }}">
+                                        <i class="fas fa-id-card"></i> Subscribers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request()->is('admin/subscription-settings*') ? 'active' : '' }}" href="{{ route('admin.subscription.settings') }}">
+                                        <i class="fas fa-sliders-h"></i> Settings
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        @php
+                            $activeTab = request()->query('tab', 'overview');
+                            if (session('status') === 'profile-updated' || session('status') === 'password-updated' || $errors->any() || $errors->updatePassword->any()) {
+                                $activeTab = 'profile';
+                            }
+                        @endphp
+                        <!-- Dashboard -->
+                        <li class="nav-item">
+                            <a href="{{ Auth::user()->slug ? route('salon.dashboard', ['salon' => Auth::user()->slug, 'tab' => 'overview']) : route('dashboard', ['tab' => 'overview']) }}" class="nav-link {{ (request()->routeIs('dashboard') || request()->routeIs('salon.dashboard')) && $activeTab === 'overview' ? 'active' : '' }}">
+                                <i class="fas fa-home"></i> Dashboard
+                            </a>
+                        </li>
+
+                        <!-- merchant_services_dropdown -->
+                        @if(Auth::user()->can('manage_services'))
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.services*', 'admin.categories*') ? 'active' : '' }}" href="#" id="merchantServicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-cut"></i> Services
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="merchantServicesDropdown">
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.services*') ? 'active' : '' }}" href="{{ route('admin.services') }}">
+                                        <i class="fas fa-list"></i> Services List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.categories*') ? 'active' : '' }}" href="{{ route('admin.categories') }}">
+                                        <i class="fas fa-th-list"></i> Service Categories
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        @endif
+
+                        <!-- merchant_bookings_dropdown -->
+                        @can('manage_bookings')
+                        <li class="nav-item">
+                            <a href="{{ route('admin.bookings') }}" class="nav-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
+                                <i class="fas fa-calendar-check"></i> Bookings
+                            </a>
+                        </li>
+                        @endcan
+
+                        <!-- merchant_inventory_dropdown -->
+                        @if(Auth::user()->can('manage_inventory') || Auth::user()->can('manage_vendors'))
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.inventory-categories*', 'admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit', 'admin.vendors*') ? 'active' : '' }}" href="#" id="merchantInventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-boxes"></i> Inventory
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="merchantInventoryDropdown">
+                                @can('manage_inventory')
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.inventory-categories*') ? 'active' : '' }}" href="{{ route('admin.inventory-categories.index') }}">
+                                        <i class="fas fa-folder-open"></i> Inv Category
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.inventory.index', 'admin.inventory.create', 'admin.inventory.edit') ? 'active' : '' }}" href="{{ route('admin.inventory.index') }}">
+                                        <i class="fas fa-list"></i> Inventory Items
+                                    </a>
+                                </li>
+                                @endcan
+                                @if(Auth::user()->can('manage_inventory') && Auth::user()->can('manage_vendors'))
+                                <li><hr class="dropdown-divider bg-secondary"></li>
+                                @endif
+                                @can('manage_vendors')
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.vendors*') ? 'active' : '' }}" href="{{ route('admin.vendors.index') }}">
+                                        <i class="fas fa-truck"></i> Vendors
+                                    </a>
+                                </li>
+                                @endcan
+                            </ul>
+                        </li>
+                        @endif
+
+                        <!-- merchant_team_dropdown -->
+                        @if(Auth::user()->can('manage_users') || Auth::user()->can('manage_staff') || Auth::user()->can('manage_roles'))
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->is('admin/users*') || request()->routeIs('admin.staff*', 'admin.roles*') ? 'active' : '' }}" href="#" id="merchantTeamDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-users"></i> Team
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="merchantTeamDropdown">
+                                @can('manage_users')
+                                <li>
+                                    <a class="dropdown-item {{ request()->is('admin/users*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+                                        <i class="fas fa-users-cog"></i> Users List
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('manage_staff')
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.staff*') ? 'active' : '' }}" href="{{ route('admin.staff.index') }}">
+                                        <i class="fas fa-user-tie"></i> Staff Members
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('manage_roles')
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.roles*') ? 'active' : '' }}" href="{{ route('admin.roles.index') }}">
+                                        <i class="fas fa-shield-alt"></i> Permissions & Roles
+                                    </a>
+                                </li>
+                                @endcan
+                            </ul>
+                        </li>
+                        @endif
+
+                        <!-- merchant_reports_dropdown -->
+                        @if(Auth::user()->can('view_sales_reports') || Auth::user()->can('manage_feedbacks'))
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('admin.reports.sales*', 'admin.feedback*') ? 'active' : '' }}" href="#" id="merchantReportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-chart-bar"></i> Reports
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-dark" aria-labelledby="merchantReportsDropdown">
+                                @can('view_sales_reports')
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.reports.sales*') ? 'active' : '' }}" href="{{ Auth::user()->slug ? route('admin.reports.sales', ['salon' => Auth::user()->slug]) : route('admin.reports.sales') }}">
+                                        <i class="fas fa-chart-line"></i> Sales Report
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('manage_feedbacks')
+                                <li>
+                                    <a class="dropdown-item {{ request()->routeIs('admin.feedback*') ? 'active' : '' }}" href="{{ route('admin.feedback.index') }}">
+                                        <i class="fas fa-comments"></i> Feedbacks
+                                    </a>
+                                </li>
+                                @endcan
+                            </ul>
+                        </li>
+                        @endif
+
+                        <!-- merchant_subscriptions_dropdown -->
+                        @if(Auth::user()->role === 'merchant')
+                        <li class="nav-item">
+                            <a href="{{ Auth::user()->slug ? route('salon.subscription.index', ['salon' => Auth::user()->slug]) : route('subscription.index') }}" class="nav-link {{ (request()->routeIs('subscription*') || request()->routeIs('salon.subscription.index')) ? 'active' : '' }}">
+                                <i class="fas fa-crown"></i> Subscriptions
+                            </a>
+                        </li>
+                        @endif
                     @endif
-                </a>
-            </li>
-            <!-- Subscription Section -->
-            <li style="padding: 0.5rem 20px 0.2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); pointer-events: none; margin-top: 0.5rem;">
-                Subscriptions
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.subscriptions.index') }}" class="nav-link {{ request()->is('admin/subscriptions*') ? 'active' : '' }}">
-                    <i class="fas fa-layer-group"></i> Plans
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.subscribers') }}" class="nav-link {{ request()->is('admin/subscribers*') ? 'active' : '' }}">
-                    <i class="fas fa-id-card"></i> Subscribers
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('admin.subscription.settings') }}" class="nav-link {{ request()->is('admin/subscription-settings*') ? 'active' : '' }}">
-                    <i class="fas fa-sliders-h"></i> Settings
-                </a>
-            </li>
+                </ul>
 
-
-            <li class="mt-4 nav-item">
-                <form method="POST" action="{{ route('logout') }}" class="nav-link" style="cursor: pointer;"
-                    onclick="event.preventDefault(); this.closest('form').submit();">
-                    @csrf
-                    <i class="fas fa-sign-out-alt"></i>
-                    Logout
-                </form>
-            </li>
-        </ul>
+                <!-- User Dropdown & Profile Settings -->
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle fs-5 me-1 text-warning"></i>
+                            <span>{{ Auth::user()->name }}</span>
+                            <span class="badge bg-warning text-dark ms-2 small" style="font-size: 0.75rem; text-transform: uppercase;">{{ ucfirst(Auth::user()->role) }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-custom dropdown-menu-end dropdown-menu-dark" aria-labelledby="userDropdown">
+                            @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'staff')
+                            <li>
+                                <a class="dropdown-item" href="{{ route('dashboard', ['tab' => 'profile']) }}">
+                                    <i class="fas fa-user-cog"></i> Profile Settings
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider bg-secondary"></li>
+                            @endif
+                            <li>
+                                <form method="POST" action="{{ Auth::user()->slug ? route('salon.logout', ['salon' => Auth::user()->slug]) : route('logout') }}" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start" style="cursor: pointer;">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
 
     <div class="main-content">
-        <div class="top-bar">
-            <button class="btn btn-link text-dark border-0 p-0 me-3" id="sidenavToggle" style="font-size: 1.1rem; color: #2c2c2c !important; cursor: pointer;">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="user-info">
-                {{ Auth::user()->name }}
-            </div>
-        </div>
-
         @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -341,18 +498,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     @stack('scripts')
-    <script>
-        document.getElementById('sidenavToggle')?.addEventListener('click', function() {
-            var isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed-state');
-            localStorage.setItem('sidebar-collapsed', isCollapsed ? 'true' : 'false');
-
-            // Toggle active/pushed on mobile
-            if (window.innerWidth <= 768) {
-                document.querySelector('.sidenav').classList.toggle('active');
-                document.querySelector('.main-content').classList.toggle('pushed');
-            }
-        });
-    </script>
+    <!-- JavaScript -->
 </body>
 
 </html>

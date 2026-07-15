@@ -19,6 +19,10 @@ class VendorController extends Controller
 
         $query = Vendor::with(['group'])->withCount('inventories');
 
+        if (!auth()->user()->isAdmin()) {
+            $query->where('user_id', auth()->id());
+        }
+
         // Apply Search Filter
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -76,6 +80,7 @@ class VendorController extends Controller
         ]);
 
         $validated['status'] = $request->boolean('status', true);
+        $validated['user_id'] = auth()->id();
 
         if ($request->hasFile('logo')) {
             $path = $request->file('logo')->store('vendors', 'public');
@@ -96,6 +101,10 @@ class VendorController extends Controller
     {
         Gate::authorize('manage_vendors');
 
+        if (!auth()->user()->isAdmin() && $vendor->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this vendor.');
+        }
+
         return view('admin.vendors.edit', compact('vendor'));
     }
 
@@ -105,6 +114,10 @@ class VendorController extends Controller
     public function update(Request $request, Vendor $vendor)
     {
         Gate::authorize('manage_vendors');
+
+        if (!auth()->user()->isAdmin() && $vendor->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this vendor.');
+        }
 
         $validated = $request->validate([
             'name'          => 'required|string|max:255',
@@ -147,6 +160,10 @@ class VendorController extends Controller
     public function destroy(Vendor $vendor)
     {
         Gate::authorize('manage_vendors');
+
+        if (!auth()->user()->isAdmin() && $vendor->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this vendor.');
+        }
 
         // Delete associated logo if exists
         if ($vendor->logo_path) {

@@ -1,16 +1,15 @@
-<x-app-layout>
+<x-admin-layout>
     @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
-    <!-- Add Bootstrap CSS if not already included in the layout -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .profile-image {
             position: relative;
-            width: 120px;
-            height: 120px;
+            width: 90px;
+            height: 90px;
             margin: 0 auto;
             border-radius: 50%;
             overflow: hidden;
+            border: 2px solid #D4AF37;
         }
 
         .profile-image img {
@@ -19,19 +18,33 @@
             object-fit: cover;
         }
 
+        .profile-avatar-fallback {
+            width: 100%;
+            height: 100%;
+            background: #f8f9fa;
+            color: #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
         .upload-btn {
             position: absolute;
             bottom: 0;
             right: 0;
-            width: 35px;
-            height: 35px;
+            width: 28px;
+            height: 28px;
             background: #D4AF37;
             border: none;
             border-radius: 50%;
             color: #fff;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .upload-btn:hover {
@@ -39,41 +52,90 @@
             transform: scale(1.1);
         }
 
-        /* Dark theme input styles */
-        .form-control {
-            background-color: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+        /* Light theme input styles */
+        .form-control:not(textarea),
+        .form-select,
+        .input-group .btn {
+            background-color: #f9fafb !important;
+            border: 1px solid #e5e7eb !important;
+            color: #1f2937 !important;
+            font-size: 0.95rem !important;
+            height: 30px !important;
+            border-radius: 6px !important;
+            box-sizing: border-box !important;
+            transition: all 0.2s ease-in-out;
         }
 
-        .form-control:focus {
-            background-color: rgba(255, 255, 255, 0.12);
-            border-color: #D4AF37;
-            box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
-            color: #fff;
+        .form-select {
+            padding: unset !important;
+            padding-left: 2px !important;
+        }
+
+        textarea.form-control {
+            background-color: #f9fafb !important;
+            border: 1px solid #e5e7eb !important;
+            color: #1f2937 !important;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.95rem;
+            border-radius: 6px !important;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .form-control:focus,
+        .form-select:focus,
+        textarea.form-control:focus {
+            background-color: #ffffff !important;
+            border-color: #D4AF37 !important;
+            box-shadow: none !important;
+            color: #1f2937 !important;
+            outline: none !important;
+        }
+
+        /* Input Group styling and button overrides */
+        .input-group {
+            flex-wrap: nowrap !important;
+        }
+
+        .input-group .btn {
+            background-color: #D4AF37 !important;
+            border-color: #D4AF37 !important;
+            color: #2c2c2c !important;
+            font-weight: 600 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            line-height: 1.5 !important;
+            white-space: nowrap !important;
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 6px !important;
+            border-bottom-right-radius: 6px !important;
+        }
+
+        .input-group .btn:hover {
+            background-color: #2c2c2c !important;
+            border-color: #2c2c2c !important;
+            color: #D4AF37 !important;
         }
 
         .form-control:disabled {
-            background-color: rgba(255, 255, 255, 0.04);
-            border-color: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.6);
+            background-color: #e9ecef !important;
+            border-color: #ced4da !important;
+            color: #6c757d !important;
         }
 
         .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: #6c757d !important;
         }
 
         .form-check-input {
-            background-color: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.25);
+            background-color: #ffffff !important;
+            border-color: rgba(0, 0, 0, 0.25) !important;
         }
 
         .form-check-input:checked {
-            background-color: #D4AF37;
-            border-color: #D4AF37;
+            background-color: #D4AF37 !important;
+            border-color: #D4AF37 !important;
         }
 
         .tax-billing-header {
@@ -88,7 +150,7 @@
             display: flex;
             align-items: center;
             gap: 0.65rem;
-            color: #fff;
+            color: #2C2C2C !important;
             font-weight: 700;
         }
 
@@ -113,70 +175,53 @@
         }
 
         .btn-verify-gst {
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: #fff;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 0.7rem 1.1rem;
-            border-radius: 8px;
+            border: 1px solid #D4AF37 !important;
+            color: #D4AF37 !important;
+            background: transparent !important;
+            height: 38px !important;
+            padding: 0.375rem 1rem !important;
+            font-size: 0.95rem !important;
+            border-radius: 6px !important;
             font-weight: 600;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.2s ease-in-out;
         }
 
         .btn-verify-gst:hover {
-            border-color: #D4AF37;
-            color: #D4AF37;
+            background: #D4AF37 !important;
+            color: #2c2c2c !important;
         }
 
         .btn-save {
-            background-color: var(--primary-color) !important;
-            color: var(--dark-color) !important;
-            border: 2px solid var(--primary-color) !important;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            font-weight: 700;
-            transition: all 0.3s ease;
+            background-color: #D4AF37 !important;
+            color: #2c2c2c !important;
+            border: 1px solid #D4AF37 !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px !important;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
         }
 
         .btn-save:hover {
-            background-color: transparent !important;
-            color: var(--primary-color) !important;
-            border-color: var(--primary-color) !important;
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 575.98px) {
-            .dashboard-header {
-                align-items: stretch;
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .profile-header-actions {
-                width: 100%;
-            }
-
-            .profile-header-actions .btn-save {
-                width: 100%;
-            }
-
-            .tax-billing-header {
-                align-items: stretch;
-                flex-direction: column;
-            }
-
-            .tax-billing-actions {
-                justify-content: space-between;
-            }
+            background-color: #2c2c2c !important;
+            color: #D4AF37 !important;
+            border-color: #2c2c2c !important;
         }
 
         .form-group label {
-            color: #fff;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
+            color: #000 !important;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            font-size: 0.875rem;
         }
 
-        /* Stats cards styling */
+        /* Light stats cards styling */
         .action-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: #ffffff !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
             border-radius: 15px;
             padding: 1.5rem;
             height: 100%;
@@ -191,7 +236,7 @@
 
         .action-card:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
         }
 
         .action-icon {
@@ -211,25 +256,73 @@
         }
 
         .action-card h4 {
-            font-size: 1.5rem;
-            color: #fff;
+            font-size: 2.2rem !important;
+            color: #D4AF37 !important;
             margin: 0.5rem 0;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .action-card p {
-            color: rgba(255, 255, 255, 0.7);
+            color: #6c757d !important;
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
-        /* Status badges */
+        /* Light section cards styling */
+        .section-card {
+            background: #ffffff !important;
+            border: 1px solid #e5e7eb !important;
+            box-shadow: none !important;
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-header h3 {
+            color: #2C2C2C !important;
+            font-weight: 600;
+        }
+
+        /* Light appointment items */
+        .appointment-item {
+            background: #fdfdfd !important;
+            border: 1px solid rgba(0, 0, 0, 0.05) !important;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            color: #2C2C2C !important;
+        }
+
+        .appointment-item:hover {
+            background: #f8f9fa !important;
+        }
+
+        .appointment-info h4 {
+            color: #2C2C2C !important;
+        }
+
+        .appointment-info p {
+            color: #6c757d !important;
+        }
+
+        .appointment-date .month {
+            color: #6c757d !important;
+        }
+
+        .dashboard-header h2 {
+            color: #2C2C2C !important;
+            font-weight: 600;
+        }
+
+        /* Status colors */
         .status {
             display: inline-block;
-            padding: 4px 8px;
+            padding: 4px 12px;
             border-radius: 12px;
             font-size: 0.8rem;
-            font-weight: 500;
+            font-weight: 600;
             margin-top: 8px;
         }
 
@@ -260,6 +353,7 @@
             border: none;
             padding: 8px 16px;
             border-radius: 20px;
+            font-weight: 500;
             transition: all 0.3s ease;
         }
 
@@ -274,6 +368,7 @@
             border: none;
             padding: 8px 16px;
             border-radius: 20px;
+            font-weight: 500;
             transition: all 0.3s ease;
         }
 
@@ -282,23 +377,9 @@
             color: white;
         }
 
-        .btn-review {
-            background: #e8f5e9;
-            color: #2e7d32;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-review:hover {
-            background: #43a047;
-            color: white;
-        }
-
         .btn-gold {
             background-color: #D4AF37 !important;
-            color: #111 !important;
+            color: #2c2c2c !important;
             border: 1px solid #D4AF37 !important;
             font-weight: 600;
             padding: 0.75rem 1.5rem;
@@ -306,11 +387,11 @@
         }
 
         .btn-gold:hover {
-            background-color: #E6B800 !important;
-            border-color: #E6B800 !important;
-            color: #111 !important;
-            transform: translateY(-1px);
-        /* Locked feature overlay */
+            background-color: #2c2c2c !important;
+            border-color: #2c2c2c !important;
+            color: #D4AF37 !important;
+        }
+
         .locked-section {
             position: relative;
         }
@@ -318,7 +399,7 @@
         .locked-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(10,10,15,0.82);
+            background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(4px);
             border-radius: 15px;
             display: flex;
@@ -331,20 +412,21 @@
 
         .locked-overlay i {
             font-size: 2.5rem;
-            color: rgba(212,175,55,0.6);
+            color: rgba(212, 175, 55, 0.8);
         }
 
         .locked-overlay p {
-            color: rgba(255,255,255,0.6);
+            color: #2c2c2c;
             font-size: 0.95rem;
             margin: 0;
             text-align: center;
             padding: 0 1rem;
+            font-weight: 500;
         }
 
         .locked-overlay .btn-unlock {
             background: linear-gradient(135deg, #D4AF37, #B8860B);
-            color: #000;
+            color: #fff;
             font-weight: 700;
             padding: 0.55rem 1.5rem;
             border-radius: 8px;
@@ -353,10 +435,9 @@
             font-size: 0.9rem;
         }
 
-        /* Subscription notice banner */
         .subscription-notice {
-            background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(239,68,68,0.08));
-            border: 1px solid rgba(245,158,11,0.35);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+            border: 1px solid rgba(212, 175, 55, 0.35);
             border-radius: 14px;
             padding: 1rem 1.5rem;
             margin-bottom: 1.5rem;
@@ -368,29 +449,29 @@
         .subscription-notice .notice-icon {
             width: 42px;
             height: 42px;
-            background: rgba(245,158,11,0.2);
+            background: rgba(212, 175, 55, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             font-size: 1.1rem;
-            color: #fbbf24;
+            color: #B8860B;
         }
 
         .subscription-notice .notice-text {
             flex: 1;
-            color: rgba(255,255,255,0.85);
+            color: #2c2c2c;
             font-size: 0.9rem;
         }
 
         .subscription-notice .notice-text strong {
-            color: #fbbf24;
+            color: #B8860B;
         }
 
         .subscription-notice .btn-subscribe {
             background: linear-gradient(135deg, #D4AF37, #B8860B);
-            color: #000;
+            color: #fff;
             font-weight: 700;
             padding: 0.5rem 1.25rem;
             border-radius: 8px;
@@ -399,24 +480,34 @@
             font-size: 0.85rem;
         }
 
-        /* Trial expiry badge */
         .trial-expiry-badge {
-            background: rgba(34,197,94,0.12);
-            border: 1px solid rgba(34,197,94,0.25);
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.25);
             border-radius: 50px;
             padding: 0.3rem 0.9rem;
             font-size: 0.8rem;
-            color: #4ade80;
+            color: #16a34a;
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
             margin-top: 0.5rem;
+            font-weight: 500;
         }
 
-        .trial-expiry-badge.expiring {
-            background: rgba(239,68,68,0.12);
-            border-color: rgba(239,68,68,0.25);
-            color: #f87171;
+        .btn-book-appointment {
+            background: #D4AF37;
+            color: #2c2c2c;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            border: 2px solid #D4AF37;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-book-appointment:hover {
+            background: transparent;
+            color: #D4AF37;
+            transform: translateY(-2px);
         }
     </style>
     @endpush
@@ -527,6 +618,130 @@
                 { enableHighAccuracy: true, timeout: 10000 }
             );
         }
+
+        function handleSalonTypeChange(selectElement) {
+            var customInput = document.getElementById('salonTypeCustom');
+            var customGroup = document.getElementById('salonTypeCustomGroup');
+            if (selectElement.value === 'custom') {
+                customGroup.classList.remove('d-none');
+                customInput.setAttribute('name', 'salon_type');
+                selectElement.removeAttribute('name');
+                customInput.value = '';
+                customInput.focus();
+            } else {
+                customGroup.classList.add('d-none');
+                customInput.removeAttribute('name');
+                selectElement.setAttribute('name', 'salon_type');
+            }
+        }
+
+        function saveCustomSalonType() {
+            var selectElement = document.getElementById('salonTypeSelect');
+            var customInput = document.getElementById('salonTypeCustom');
+            var customGroup = document.getElementById('salonTypeCustomGroup');
+            var customVal = customInput.value.trim();
+
+            if (customVal === '') {
+                alert('Please enter a custom salon type.');
+                return;
+            }
+
+            // Check if option already exists
+            var exists = false;
+            for (var i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value.toLowerCase() === customVal.toLowerCase()) {
+                    selectElement.selectedIndex = i;
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists) {
+                // Create new option
+                var newOption = document.createElement('option');
+                newOption.value = customVal;
+                newOption.text = customVal;
+                
+                // Insert before the last option (+ Add Custom Type...)
+                selectElement.add(newOption, selectElement.options[selectElement.options.length - 1]);
+                selectElement.value = customVal;
+            }
+
+            // Switch name attribute back to select element
+            selectElement.setAttribute('name', 'salon_type');
+            customInput.removeAttribute('name');
+            
+            // Hide the custom input group
+            customGroup.classList.add('d-none');
+        }
+
+        function handleSalonModelChange(selectElement) {
+            var franchiseeGroup = document.getElementById('franchiseeGroup');
+            var franchiseeSelect = document.getElementById('franchiseeSelect');
+            var franchiseeCustom = document.getElementById('franchiseeCustom');
+            var franchiseeCustomGroup = document.getElementById('franchiseeCustomGroup');
+
+            if (selectElement.value === 'Franchisee') {
+                franchiseeGroup.classList.remove('d-none');
+                franchiseeSelect.setAttribute('name', 'franchisee_name');
+            } else {
+                franchiseeGroup.classList.add('d-none');
+                franchiseeSelect.removeAttribute('name');
+                franchiseeCustom.removeAttribute('name');
+                franchiseeSelect.value = '';
+                franchiseeCustom.value = '';
+                franchiseeCustomGroup.classList.add('d-none');
+            }
+        }
+
+        function handleFranchiseeChange(selectElement) {
+            var customInput = document.getElementById('franchiseeCustom');
+            var customGroup = document.getElementById('franchiseeCustomGroup');
+            if (selectElement.value === 'custom') {
+                customGroup.classList.remove('d-none');
+                customInput.setAttribute('name', 'franchisee_name');
+                selectElement.removeAttribute('name');
+                customInput.value = '';
+                customInput.focus();
+            } else {
+                customGroup.classList.add('d-none');
+                customInput.removeAttribute('name');
+                selectElement.setAttribute('name', 'franchisee_name');
+            }
+        }
+
+        function saveCustomFranchisee() {
+            var selectElement = document.getElementById('franchiseeSelect');
+            var customInput = document.getElementById('franchiseeCustom');
+            var customGroup = document.getElementById('franchiseeCustomGroup');
+            var customVal = customInput.value.trim();
+
+            if (customVal === '') {
+                alert('Please enter a franchisee name.');
+                return;
+            }
+
+            var exists = false;
+            for (var i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value.toLowerCase() === customVal.toLowerCase()) {
+                    selectElement.selectedIndex = i;
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists) {
+                var newOption = document.createElement('option');
+                newOption.value = customVal;
+                newOption.text = customVal;
+                selectElement.add(newOption, selectElement.options[selectElement.options.length - 1]);
+                selectElement.value = customVal;
+            }
+
+            selectElement.setAttribute('name', 'franchisee_name');
+            customInput.removeAttribute('name');
+            customGroup.classList.add('d-none');
+        }
     </script>
     @endpush
 
@@ -534,82 +749,16 @@
 
     @section('content')
     @php
-    $showProfileTab = session('status') === 'profile-updated' || session('status') === 'password-updated' || $errors->any() || $errors->updatePassword->any();
+    $activeTab = request()->query('tab', 'overview');
+    if (session('status') === 'profile-updated' || session('status') === 'password-updated' || $errors->any() || $errors->updatePassword->any()) {
+        $activeTab = 'profile';
+    }
     @endphp
 
     <!-- Dashboard Section -->
-    <section class="dashboard-section">
-        <div class="container">
-            <div class="row">
-                <!-- Sidebar -->
-                <div class="col-lg-3">
-                    <div class="dashboard-sidebar">
-                        <div class="text-center user-profile">
-                            <form id="profile-photo-form" action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                @method('POST')
-                                <div class="profile-image">
-                                    <img
-                                        src="{{ $user->profile_photo ? Storage::url($user->profile_photo) : asset('assets/img/default-avatar.jpg') }}"
-                                        alt="Profile"
-                                        class="img-fluid rounded-circle" />
-                                    <input type="file" name="profile_photo" id="profile_photo" class="d-none" accept="image/*" onchange="this.form.submit()">
-                                    <button type="button" class="upload-btn" title="Change Photo" onclick="document.getElementById('profile_photo').click();">
-                                        <i class="fas fa-camera"></i>
-                                    </button>
-                                </div>
-                            </form>
-                            @if(session('success'))
-                            <div class="mt-2 alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                            @endif
-                            @if($errors->any())
-                            <div class="mt-2 alert alert-danger">
-                                {{ $errors->first() }}
-                            </div>
-                            @endif
-                            <h4 class="mt-3">{{ $user->name }}</h4>
-                            <p class="member-since">Member since {{ $user->created_at->format('F Y') }}</p>
-                        </div>
-                        <nav class="dashboard-nav">
-                            <ul class="nav flex-column">
-                                <li class="nav-item">
-                                    <a
-                                        class="nav-link {{ $showProfileTab ? '' : 'active' }}"
-                                        href="#overview"
-                                        data-bs-toggle="tab">
-                                        <i class="fas fa-th-large"></i> Dashboard Overview
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a
-                                        class="nav-link"
-                                        href="#appointments"
-                                        data-bs-toggle="tab">
-                                        <i class="fas fa-calendar-alt"></i> My Appointments
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a
-                                        class="nav-link"
-                                        href="#inventory"
-                                        data-bs-toggle="tab">
-                                        <i class="fas fa-boxes"></i> My Created Inventory
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link {{ $showProfileTab ? 'active' : '' }}" href="#profile" data-bs-toggle="tab">
-                                        <i class="fas fa-user-edit"></i> Profile Settings
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-
-                <!-- Main Content -->
-                <div class="col-lg-9">
+    <div class="container-fluid" style="margin: unset !important; padding: unset !important;">
+        <div class="row">
+            <div class="col-12">
                     <!-- Subscription Notice Banner -->
                     @if(!$hasActivePlan && $noticeMessage)
                     <div class="subscription-notice">
@@ -619,7 +768,7 @@
                         <div class="notice-text">
                             {{ $noticeMessage }}
                         </div>
-                        <a href="{{ route('subscription.index') }}" class="btn-subscribe">
+                        <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn-subscribe">
                             <i class="fas fa-crown me-1"></i>Subscribe
                         </a>
                     </div>
@@ -635,7 +784,7 @@
                             <strong style="color:#60a5fa;">{{ $activeSubscription->days_remaining }} day(s)</strong>.
                             Renew to keep full access.
                         </div>
-                        <a href="{{ route('subscription.index') }}" class="btn-subscribe" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff;">
+                        <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn-subscribe" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff;">
                             <i class="fas fa-sync me-1"></i>Renew
                         </a>
                     </div>
@@ -643,18 +792,22 @@
 
                     <div class="tab-content">
                         <!-- Overview Tab -->
-                        <div class="tab-pane fade {{ $showProfileTab ? '' : 'show active' }}" id="overview">
+                        <div class="tab-pane fade {{ $activeTab === 'overview' ? 'show active' : '' }}" id="overview">
                             <div class="dashboard-header">
                                 <h2>My Dashboard</h2>
-                                @if(!in_array('booking', $limitedFeatures ?? []))
-                                <a href="{{ route('services') }}" class="btn btn-book-appointment">
-                                    <i class="fas fa-plus"></i> Book New Appointment
-                                </a>
-                                @else
-                                <a href="{{ route('subscription.index') }}" class="btn btn-book-appointment" style="background: rgba(255,255,255,0.08); border: 1px dashed rgba(255,255,255,0.2);">
-                                    <i class="fas fa-lock"></i> Subscribe to Book
-                                </a>
-                                @endif
+                                @can('create_bookings')
+                                    @if(!in_array('booking', $limitedFeatures ?? []))
+                                        @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by || Auth::user()->hasActivePlan())
+                                        <a href="{{ route('admin.bookings.create') }}" class="btn btn-book-appointment">
+                                            <i class="fas fa-plus"></i> Book New Appointment
+                                        </a>
+                                        @endif
+                                    @else
+                                    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn btn-book-appointment" style="background: rgba(0,0,0,0.03); border: 1px dashed rgba(0,0,0,0.15); color: #2C2C2C;">
+                                        <i class="fas fa-lock text-muted"></i> Subscribe to Book
+                                    </a>
+                                    @endif
+                                @endcan
                             </div>
 
                             <!-- Quick Actions -->
@@ -705,7 +858,7 @@
                                 <div class="locked-overlay">
                                     <i class="fas fa-lock"></i>
                                     <p>Appointment history is locked.<br>Subscribe to view all your appointments.</p>
-                                    <a href="{{ route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
+                                    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
                                 </div>
                                 @endif
                                 <div class="card-header">
@@ -730,7 +883,7 @@
                                         </div>
                                         <div class="appointment-actions">
                                             @if($appointment->payment_status === 'paid')
-                                            <a href="{{ route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
                                                 <i class="fas fa-file-invoice me-1"></i> Invoice
                                             </a>
                                             @endif
@@ -748,9 +901,13 @@
                                     @empty
                                     <div class="py-4 text-center">
                                         <p>No upcoming appointments</p>
-                                        @if(!in_array('booking', $limitedFeatures ?? []))
-                                        <a href="{{ route('services') }}" class="mt-2 btn btn-primary">Book Now</a>
-                                        @endif
+                                        @can('create_bookings')
+                                            @if(!in_array('booking', $limitedFeatures ?? []))
+                                                @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by || Auth::user()->hasActivePlan())
+                                                <a href="{{ route('admin.bookings.create') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                                @endif
+                                            @endif
+                                        @endcan
                                     </div>
                                     @endforelse
                                 </div>
@@ -758,7 +915,7 @@
                         </div>
 
                         <!-- Appointments Tab -->
-                        <div class="tab-pane fade" id="appointments">
+                        <div class="tab-pane fade {{ $activeTab === 'appointments' ? 'show active' : '' }}" id="appointments">
                             <div class="dashboard-header">
                                 <h2>My Appointments</h2>
                                 <div class="appointment-filters">
@@ -773,7 +930,7 @@
                                 <div class="locked-overlay" style="min-height: 200px;">
                                     <i class="fas fa-lock"></i>
                                     <p>Full appointment history is locked.<br>Subscribe to view all your appointments.</p>
-                                    <a href="{{ route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
+                                    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
                                 </div>
                                 @endif
 
@@ -794,7 +951,7 @@
                                         </div>
                                         <div class="appointment-actions">
                                             @if($appointment->payment_status === 'paid')
-                                            <a href="{{ route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
                                                 <i class="fas fa-file-invoice me-1"></i> Invoice
                                             </a>
                                             @endif
@@ -812,7 +969,11 @@
                                     @empty
                                     <div class="py-4 text-center">
                                         <p>No upcoming appointments</p>
-                                        <a href="{{ route('services') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                        @can('create_bookings')
+                                        @if(Auth::user()->isAdmin() || Auth::user()->role === 'merchant' || Auth::user()->role === 'staff' || Auth::user()->created_by || Auth::user()->hasActivePlan())
+                                        <a href="{{ route('admin.bookings.create') }}" class="mt-2 btn btn-primary">Book Now</a>
+                                        @endif
+                                        @endcan
                                     </div>
                                     @endforelse
                                 </div>
@@ -834,7 +995,7 @@
                                         </div>
                                         <div class="appointment-actions">
                                             @if($appointment->payment_status === 'paid')
-                                            <a href="{{ route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
                                                 <i class="fas fa-file-invoice me-1"></i> Invoice
                                             </a>
                                             @endif
@@ -861,29 +1022,152 @@
                         </div>
 
                         <!-- Profile Tab -->
-                        <div class="tab-pane fade {{ $showProfileTab ? 'show active' : '' }}" id="profile">
+                        <div class="tab-pane fade {{ $activeTab === 'profile' ? 'show active' : '' }}" id="profile">
                             <div class="dashboard-header">
                                 <h2>Profile Settings</h2>
-                                <div class="profile-header-actions">
-                                    <button type="submit" form="profileForm" class="btn btn-save">
-                                        Save Profile
-                                    </button>
-                                </div>
                             </div>
                             @if (session('status') === 'profile-updated')
                             <div class="alert alert-success">
                                 Profile details updated successfully.
                             </div>
                             @endif
+
+                            @if($errors->any() && !$errors->updatePassword->any() && !$errors->userDeletion->any() && session('status') !== 'profile-updated')
+                            <div class="alert alert-danger">
+                                {{ $errors->first() }}
+                            </div>
+                            @endif
+
+                             <!-- <div class="section-card p-1 text-center">
+                                <form id="profile-photo-form" action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    @method('POST')
+                                    <div class="profile-image mb-2">
+                                        @if($user->profile_photo)
+                                            <img
+                                                src="{{ Storage::url($user->profile_photo) }}"
+                                                alt="Profile"
+                                                class="img-fluid rounded-circle" />
+                                        @else
+                                            <div class="profile-avatar-fallback">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                        @endif
+                                        <input type="file" name="profile_photo" id="profile_photo" class="d-none" accept="image/*" onchange="this.form.submit()">
+                                        <button type="button" class="upload-btn" title="Change Photo" onclick="document.getElementById('profile_photo').click();">
+                                            <i class="fas fa-camera"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                                @if(session('success') && session('status') !== 'profile-updated')
+                                <div class="mt-2 alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                                @endif
+                                @if($errors->any() && !$errors->updatePassword->any() && !$errors->userDeletion->any() && session('status') !== 'profile-updated')
+                                <div class="mt-2 alert alert-danger">
+                                    {{ $errors->first() }}
+                                </div>
+                                @endif
+                                <h5 class="mt-2 mb-1" style="color: #2C2C2C; font-weight: 600;">{{ $user->name }}</h5>
+                                <p class="member-since text-muted mb-1" style="font-size: 0.85rem;">Member since {{ $user->created_at->format('F Y') }}</p>
+                            </div> -->
+
                             <form id="profileForm" class="profile-form" method="POST" action="{{ route('profile.update') }}">
                                 @csrf
                                 @method('PATCH')
 
-                                <div class="section-card">
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
+                                <div class="section-card" style="padding: 25px !important;">
+                                    <div class="row g-2">
+                                        <!-- Salon Name -->
+                                        <div class="col-md-2">
                                             <div class="form-group">
-                                                <label for="firstName">Name</label>
+                                                <label for="salonName">Salon Name</label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control @error('salon_name') is-invalid @enderror"
+                                                    id="salonName"
+                                                    name="salon_name"
+                                                    value="{{ old('salon_name', $user->salon_name) }}"
+                                                    placeholder="e.g. Glamour Hair Studio"
+                                                    required />
+                                                @error('salon_name')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- Salon Type -->
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="salonTypeSelect">Salon Type</label>
+                                                @php
+                                                    $defaultTypes = ['Mens Salon', 'Female Salon', 'Unisex Salon', 'Makeup Studio', 'Academy + Salon', 'Academy'];
+                                                    $currentType = old('salon_type', $user->salon_type);
+                                                    $allTypes = $defaultTypes;
+                                                    if ($currentType && !in_array($currentType, $defaultTypes)) {
+                                                        $allTypes[] = $currentType;
+                                                    }
+                                                @endphp
+                                                <select
+                                                    class="form-select @error('salon_type') is-invalid @enderror"
+                                                    id="salonTypeSelect"
+                                                    name="salon_type"
+                                                    onchange="handleSalonTypeChange(this)"
+                                                    required>
+                                                    <option value="" disabled {{ !$currentType ? 'selected' : '' }}>Select Salon Type</option>
+                                                    @foreach($allTypes as $type)
+                                                        <option value="{{ $type }}" {{ $currentType === $type ? 'selected' : '' }}>{{ $type }}</option>
+                                                    @endforeach
+                                                    <option value="custom">+ Add Custom Type...</option>
+                                                </select>
+                                                
+                                                <div id="salonTypeCustomGroup" class="input-group mt-2 d-none">
+                                                    <input
+                                                        type="text"
+                                                        class="form-control @error('salon_type') is-invalid @enderror"
+                                                        id="salonTypeCustom"
+                                                        placeholder="Enter custom salon type"
+                                                        onkeypress="if(event.key === 'Enter') { event.preventDefault(); saveCustomSalonType(); }" />
+                                                    <button type="button" class="btn btn-gold" id="btnSaveCustomType" onclick="saveCustomSalonType()" title="Save Custom Type">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </div>
+                                                
+                                                @error('salon_type')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        
+                                        <!-- Salon Model -->
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="salonModelSelect">Salon Model</label>
+                                                @php
+                                                    $currentModel = old('salon_model', $user->salon_model);
+                                                @endphp
+                                                <select
+                                                    class="form-select @error('salon_model') is-invalid @enderror"
+                                                    id="salonModelSelect"
+                                                    name="salon_model"
+                                                    onchange="handleSalonModelChange(this)"
+                                                    required>
+                                                    <option value="" disabled {{ !$currentModel ? 'selected' : '' }}>Select</option>
+                                                    <option value="Franchisee" {{ $currentModel === 'Franchisee' ? 'selected' : '' }}>Franchisee</option>
+                                                    <option value="Self Owned" {{ $currentModel === 'Self Owned' ? 'selected' : '' }}>Self Owned</option>
+                                                </select>
+                                                @error('salon_model')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- First Name -->
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="firstName">First Name</label>
                                                 <input
                                                     type="text"
                                                     class="form-control @error('name') is-invalid @enderror"
@@ -896,7 +1180,9 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+
+                                        <!-- Last Name -->
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="lastName">Last Name</label>
                                                 <input
@@ -910,7 +1196,59 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+
+                                        <!-- Franchisee Brand/Name Section, visible only when Salon Model is Franchisee -->
+                                        @php
+                                            $showFranchisee = $currentModel === 'Franchisee';
+                                            $currentFranchisee = old('franchisee_name', $user->franchisee_name);
+                                            
+                                            // Fetch other franchisees registered in the system
+                                            $dbFranchisees = \App\Models\User::where('salon_model', 'Franchisee')
+                                                ->whereNotNull('franchisee_name')
+                                                ->where('franchisee_name', '!=', '')
+                                                ->distinct()
+                                                ->pluck('franchisee_name')
+                                                ->toArray();
+                                            
+                                            $allFranchisees = $dbFranchisees;
+                                            if ($currentFranchisee && !in_array($currentFranchisee, $allFranchisees)) {
+                                                $allFranchisees[] = $currentFranchisee;
+                                            }
+                                        @endphp
+                                        <div class="col-md-2 {{ $showFranchisee ? '' : 'd-none' }}" id="franchiseeGroup">
+                                            <div class="form-group">
+                                                <label for="franchiseeSelect">Franchisee Name</label>
+                                                <select
+                                                    class="form-select @error('franchisee_name') is-invalid @enderror"
+                                                    id="franchiseeSelect"
+                                                    {!! $showFranchisee ? 'name="franchisee_name"' : '' !!}
+                                                    onchange="handleFranchiseeChange(this)">
+                                                    <option value="" disabled {{ !$currentFranchisee ? 'selected' : '' }}>Select Franchisee</option>
+                                                    @foreach($allFranchisees as $franchise)
+                                                        <option value="{{ $franchise }}" {{ $currentFranchisee === $franchise ? 'selected' : '' }}>{{ $franchise }}</option>
+                                                    @endforeach
+                                                    <option value="custom">+ Add New Franchisee...</option>
+                                                </select>
+
+                                                <div id="franchiseeCustomGroup" class="input-group mt-2 d-none">
+                                                    <input
+                                                        type="text"
+                                                        class="form-control @error('franchisee_name') is-invalid @enderror"
+                                                        id="franchiseeCustom"
+                                                        placeholder="Enter franchisee name"
+                                                        onkeypress="if(event.key === 'Enter') { event.preventDefault(); saveCustomFranchisee(); }" />
+                                                    <button type="button" class="btn btn-gold" id="btnSaveFranchisee" onclick="saveCustomFranchisee()" title="Save Franchisee">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </div>
+                                                @error('franchisee_name')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <!-- Email Address -->
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="email">Email Address</label>
                                                 <input
@@ -925,7 +1263,9 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+
+                                        <!-- Phone Number -->
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="phone">Phone Number</label>
                                                 <input
@@ -939,7 +1279,9 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-12">
+
+                                        <!-- Location -->
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="locationInput">Location</label>
                                                 <div class="input-group">
@@ -953,7 +1295,7 @@
                                                     <input type="hidden" name="latitude" id="latitudeInput" value="{{ old('latitude', $user->latitude) }}" />
                                                     <input type="hidden" name="longitude" id="longitudeInput" value="{{ old('longitude', $user->longitude) }}" />
                                                     <button type="button" class="btn btn-gold" id="btnDetectLocation" onclick="detectLocation()">
-                                                        <i class="fas fa-map-marker-alt me-1"></i> Auto Detect
+                                                        Auto Detect
                                                     </button>
                                                 </div>
                                                 @error('location')
@@ -961,25 +1303,14 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-12">
-                                            <button type="submit" class="btn btn-save">
-                                                Save Changes
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Tax and Billing Section -->
-                                <div class="mt-4 section-card">
-                                    <div class="tax-billing-header">
-                                        <div class="tax-billing-title">
-                                            <span class="tax-billing-dot"></span>
-                                            <span>Tax & Billing</span>
-                                        </div>
                                     </div>
 
-                                    <div class="row g-3">
-                                        <div class="col-md-10">
+                                    <!-- Tax and Billing Section -->
+                                    <div class="mb-2 border-bottom py-1" style="border-color: rgba(0, 0, 0, 0.08) !important;">
+                                        <h5 style="color: #D4AF37; font-weight: 600;">Tax & Billing</h5>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-md-3">
                                             <input
                                                 type="text"
                                                 class="form-control @error('gst_number') is-invalid @enderror"
@@ -992,9 +1323,9 @@
                                             @enderror
                                         </div>
                                         <div class="col-md-2 d-grid">
-                                            <button type="button" class="btn btn-verify-gst">Verify</button>
+                                            <button type="button" style="height: 30px !important;" class="btn btn-verify-gst">Verify</button>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-5">
                                             <div class="form-check">
                                                 <input
                                                     class="form-check-input"
@@ -1003,7 +1334,7 @@
                                                     name="has_no_gst"
                                                     value="1"
                                                     {{ old('has_no_gst', $user->has_no_gst) ? 'checked' : '' }}>
-                                                <label class="form-check-label text-white" for="hasNoGst">
+                                                <label class="form-check-label" for="hasNoGst">
                                                     I don't have a GST number
                                                 </label>
                                             </div>
@@ -1037,87 +1368,76 @@
                                                 class="form-control @error('billing_address') is-invalid @enderror"
                                                 id="billingAddress"
                                                 name="billing_address"
-                                                rows="4"
+                                                rows="2"
                                                 placeholder="Billing address">{{ old('billing_address', $user->billing_address) }}</textarea>
                                             @error('billing_address')
                                             <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                        <div class="col-12 text-end">
-                                            <button type="submit" class="btn btn-save">
-                                                Save Section
-                                            </button>
-                                        </div>
                                     </div>
-                                </div>
-                            </form>
 
-                            <!-- Password Change Section -->
-                            <div class="mt-4 section-card">
-                                <h3>Change Password</h3>
-                                @if (session('status') === 'password-updated')
-                                <div class="alert alert-success">
-                                    Password updated successfully.
-                                </div>
-                                @endif
-                                <form id="passwordForm" class="password-form" method="POST" action="{{ route('password.update') }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
+                                    <!-- Password Change Section -->
+                                    <div class="my-2 py-1 border-bottom" style="border-color: rgba(0, 0, 0, 0.08) !important;">
+                                        <h5 style="color: #D4AF37; font-weight: 600;">Change Password</h5>
+                                    </div>
+                                    @if (session('password-status') === 'password-updated' || session('status') === 'password-updated')
+                                    <div class="alert alert-success">
+                                        Password updated successfully.
+                                    </div>
+                                    @endif
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="currentPassword">Current Password</label>
                                                 <input
                                                     type="password"
-                                                    class="form-control @error('current_password', 'updatePassword') is-invalid @enderror"
+                                                    class="form-control @error('current_password') is-invalid @enderror"
                                                     id="currentPassword"
-                                                    name="current_password"
-                                                    required />
-                                                @error('current_password', 'updatePassword')
+                                                    name="current_password" />
+                                                @error('current_password')
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="newPassword">New Password</label>
                                                 <input
                                                     type="password"
-                                                    class="form-control @error('password', 'updatePassword') is-invalid @enderror"
+                                                    class="form-control @error('password') is-invalid @enderror"
                                                     id="newPassword"
-                                                    name="password"
-                                                    required />
-                                                @error('password', 'updatePassword')
+                                                    name="password" />
+                                                @error('password')
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="confirmNewPassword">Confirm New Password</label>
                                                 <input
                                                     type="password"
-                                                    class="form-control @error('password_confirmation', 'updatePassword') is-invalid @enderror"
+                                                    class="form-control @error('password_confirmation') is-invalid @enderror"
                                                     id="confirmNewPassword"
-                                                    name="password_confirmation"
-                                                    required />
-                                                @error('password_confirmation', 'updatePassword')
+                                                    name="password_confirmation" />
+                                                @error('password_confirmation')
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-12">
-                                            <button type="submit" class="btn btn-save">
-                                                Update Password
-                                            </button>
-                                        </div>
                                     </div>
-                                </form>
-                            </div>
+
+                                    <div class="mt-4 text-end">
+                                        <button type="submit" class="btn btn-save px-4">
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
 
                         <!-- Inventory Tab -->
-                        <div class="tab-pane fade" id="inventory">
+                        <div class="tab-pane fade {{ $activeTab === 'inventory' ? 'show active' : '' }}" id="inventory">
                             <div class="dashboard-header d-flex justify-content-between align-items-center">
                                 <h2>My Created Inventory</h2>
                             </div>
@@ -1127,13 +1447,13 @@
                                 <div class="locked-overlay">
                                     <i class="fas fa-lock"></i>
                                     <p>Inventory management is locked.<br>Subscribe to manage your inventory.</p>
-                                    <a href="{{ route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
+                                    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn-unlock">Unlock Now</a>
                                 </div>
                                 @endif
                                 <div class="table-responsive">
-                                    <table class="table" style="background: transparent; color: #fff;">
+                                    <table class="table align-middle">
                                         <thead>
-                                            <tr style="border-bottom: 2px solid rgba(255, 255, 255, 0.1); color: #D4AF37;">
+                                            <tr style="border-bottom: 2px solid rgba(0, 0, 0, 0.08); color: #D4AF37;">
                                                 <th class="py-3">Item Name</th>
                                                 <th class="py-3">SKU</th>
                                                 <th class="py-3">Quantity</th>
@@ -1143,12 +1463,11 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-
                                             @forelse($user->createdInventories as $item)
-                                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); vertical-align: middle;">
-                                                <td class="py-3 font-weight-bold" style="color: #fff;">{{ $item->item_name }}</td>
+                                            <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05); vertical-align: middle;">
+                                                <td class="py-3 font-weight-bold" style="color: #2c2c2c;">{{ $item->item_name }}</td>
                                                 <td class="py-3"><code>{{ $item->sku ?? '-' }}</code></td>
-                                                <td class="py-3" style="color: #fff;">{{ $item->quantity }}</td>
+                                                <td class="py-3" style="color: #2c2c2c;">{{ $item->quantity }}</td>
                                                 <td class="py-3">
                                                     @if($item->quantity == 0)
                                                         <span class="badge bg-danger">Out of Stock</span>
@@ -1158,8 +1477,8 @@
                                                         <span class="badge bg-success">In Stock</span>
                                                     @endif
                                                 </td>
-                                                <td class="py-3" style="color: #fff;">Rs. {{ number_format($item->price, 2) }}</td>
-                                                <td class="py-3 text-truncate" style="max-width: 250px; color: rgba(255,255,255,0.7);">{{ $item->description ?? '-' }}</td>
+                                                <td class="py-3" style="color: #2c2c2c;">Rs. {{ number_format($item->price, 2) }}</td>
+                                                <td class="py-3 text-truncate text-muted" style="max-width: 250px;">{{ $item->description ?? '-' }}</td>
                                             </tr>
                                             @empty
                                             <tr>
@@ -1178,6 +1497,6 @@
                 </div>
             </div>
         </div>
-    </section>
+    </div>
     @endsection
-</x-app-layout>
+</x-admin-layout>

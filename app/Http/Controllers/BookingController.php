@@ -13,7 +13,14 @@ class BookingController extends Controller
 {
     public function index(Request $request)
     {
-        $categories = ServiceCategory::all();
+        $salon = request()->attributes->get('salon');
+
+        $categoriesQuery = ServiceCategory::query();
+        if ($salon) {
+            $categoriesQuery->where('user_id', $salon->id);
+        }
+        $categories = $categoriesQuery->get();
+
         $selectedCategory = null;
         $selectedService = null;
         $services = collect();
@@ -22,7 +29,11 @@ class BookingController extends Controller
         if ($request->has('serviceCategory')) {
             $selectedCategory = ServiceCategory::find($request->serviceCategory);
             if ($selectedCategory) {
-                $services = Service::where('category_id', $selectedCategory->id)->get();
+                $servicesQuery = Service::where('category_id', $selectedCategory->id);
+                if ($salon) {
+                    $servicesQuery->where('user_id', $salon->id);
+                }
+                $services = $servicesQuery->get();
             }
         }
 
@@ -31,7 +42,11 @@ class BookingController extends Controller
             $selectedService = Service::find($request->service);
             if ($selectedService) {
                 $selectedCategory = $selectedService->category;
-                $services = Service::where('category_id', $selectedCategory->id)->get();
+                $servicesQuery = Service::where('category_id', $selectedCategory->id);
+                if ($salon) {
+                    $servicesQuery->where('user_id', $salon->id);
+                }
+                $services = $servicesQuery->get();
             }
         }
 
@@ -85,6 +100,10 @@ class BookingController extends Controller
         ]);
 
         // Redirect to payment page with booking ID
+        $salon = request()->attributes->get('salon');
+        if ($salon) {
+            return redirect()->route('salon.booking.payment', ['salon' => $salon->slug, 'id' => $booking->id]);
+        }
         return redirect()->route('booking.payment', $booking->id);
     }
 
@@ -108,6 +127,11 @@ class BookingController extends Controller
 
         // Only show payment page for pending payments
         if ($booking->payment_status !== 'pending') {
+            $salon = request()->attributes->get('salon');
+            if ($salon) {
+                return redirect()->route('salon.dashboard', ['salon' => $salon->slug])
+                    ->with('error', 'This booking has already been paid for.');
+            }
             return redirect()->route('dashboard')
                 ->with('error', 'This booking has already been paid for.');
         }
@@ -128,6 +152,11 @@ class BookingController extends Controller
 
         // Only process pending payments
         if ($booking->payment_status !== 'pending') {
+            $salon = request()->attributes->get('salon');
+            if ($salon) {
+                return redirect()->route('salon.dashboard', ['salon' => $salon->slug])
+                    ->with('error', 'This booking has already been paid for.');
+            }
             return redirect()->route('dashboard')
                 ->with('error', 'This booking has already been paid for.');
         }
@@ -141,6 +170,10 @@ class BookingController extends Controller
             // Status remains 'pending' until admin confirms
         ]);
 
+        $salon = request()->attributes->get('salon');
+        if ($salon) {
+            return redirect()->route('salon.booking.payment.success', ['salon' => $salon->slug, 'id' => $booking->id]);
+        }
         return redirect()->route('booking.payment.success', $booking->id);
     }
 
@@ -189,15 +222,25 @@ class BookingController extends Controller
 
     public function showInvoice($id)
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::with('service')->findOrFail($id);
 
         // Check if the user is authorized to view this invoice
-        if ($booking->user_id !== auth()->id() && !auth()->user()->isAdmin()) {
+        $ownerId = auth()->user()->created_by ?: auth()->id();
+        $isAuthorized = ($booking->user_id === auth()->id()) ||
+                        auth()->user()->isAdmin() ||
+                        ($booking->service && $booking->service->user_id === $ownerId);
+
+        if (!$isAuthorized) {
             abort(403, 'Unauthorized action.');
         }
 
-        // Only allow viewing invoice if the payment is paid
-        if ($booking->payment_status !== 'paid') {
+        // Only allow viewing invoice if the payment is paid OR booking is completed/closed
+        if ($booking->payment_status !== 'paid' && !in_array($booking->status, ['closed', 'completed'])) {
+            $salon = request()->attributes->get('salon');
+            if ($salon) {
+                return redirect()->route('salon.dashboard', ['salon' => $salon->slug])
+                    ->with('error', 'This booking has not been paid for yet.');
+            }
             return redirect()->route('dashboard')
                 ->with('error', 'This booking has not been paid for yet.');
         }
@@ -208,10 +251,138 @@ class BookingController extends Controller
             [
                 'customer_name' => $booking->full_name,
                 'amount' => $booking->total_price,
-                'status' => 'paid',
+                'status' => $booking->payment_status === 'paid' ? 'paid' : 'pending',
             ]
         );
 
+        if ($salesInvoice->status !== ($booking->payment_status === 'paid' ? 'paid' : 'pending')) {
+            $salesInvoice->update(['status' => $booking->payment_status === 'paid' ? 'paid' : 'pending']);
+        }
+
         return view('booking.invoice', compact('booking', 'salesInvoice'));
+    }
+
+    public function dashboardServices()
+    {
+        $salon = request()->attributes->get('salon');
+
+        $categoriesQuery = \App\Models\ServiceCategory::query()->with(['services' => function ($query) use ($salon) {
+            $query->where('status', true)->with(['images', 'icon']);
+            if ($salon) {
+                $query->where('user_id', $salon->id);
+            }
+        }]);
+
+        if ($salon) {
+            $categoriesQuery->where('user_id', $salon->id);
+        }
+
+        $categories = $categoriesQuery->get();
+
+        return view('customer.services.book', compact('categories'));
+    }
+
+    public function dashboardCreateBooking(Request $request)
+    {
+        $salon = request()->attributes->get('salon');
+        $ownerId = $salon ? $salon->id : null;
+
+        $categoriesQuery = \App\Models\ServiceCategory::query();
+        if ($ownerId) {
+            $categoriesQuery->where('user_id', $ownerId);
+        }
+        $categories = $categoriesQuery->get();
+
+        $selectedCategory = null;
+        $selectedService = null;
+        $services = collect();
+
+        // If category is selected, get its services
+        if ($request->has('serviceCategory')) {
+            $selectedCategory = \App\Models\ServiceCategory::find($request->serviceCategory);
+            if ($selectedCategory) {
+                $servicesQuery = \App\Models\Service::where('category_id', $selectedCategory->id);
+                if ($ownerId) {
+                    $servicesQuery->where('user_id', $ownerId);
+                }
+                $services = $servicesQuery->get();
+            }
+        }
+
+        // If service is specified in URL
+        if ($request->has('service')) {
+            $selectedService = \App\Models\Service::find($request->service);
+            if ($selectedService) {
+                $selectedCategory = $selectedService->category;
+                $servicesQuery = \App\Models\Service::where('category_id', $selectedCategory->id);
+                if ($ownerId) {
+                    $servicesQuery->where('user_id', $ownerId);
+                }
+                $services = $servicesQuery->get();
+            }
+        }
+
+        // Generate time slots
+        $timeSlots = [];
+        $start = new \DateTime('09:00');
+        $end = new \DateTime('20:00');
+        $interval = new \DateInterval('PT30M');
+        $current = clone $start;
+
+        while ($current <= $end) {
+            $timeSlots[] = $current->format('H:i');
+            $current->add($interval);
+        }
+
+        return view('customer.bookings.create', compact(
+            'categories',
+            'services',
+            'timeSlots',
+            'selectedService',
+            'selectedCategory'
+        ));
+    }
+
+    public function dashboardStoreBooking(Request $request)
+    {
+        $request->validate([
+            'fullName' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email',
+            'serviceCategory' => 'required|exists:service_categories,id',
+            'service' => 'required|exists:services,id',
+            'appointmentDate' => 'required|date|after_or_equal:today',
+            'appointmentTime' => 'required',
+        ]);
+
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $service = \App\Models\Service::findOrFail($request->service);
+        $basePrice = $service->price;
+        $serviceFee = $basePrice * 0.03; // 3% service fee
+        $totalPrice = $basePrice + $serviceFee;
+
+        $booking = Booking::create([
+            'user_id' => $user->id,
+            'full_name' => $request->fullName,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'service_category_id' => $request->serviceCategory,
+            'service_id' => $request->service,
+            'appointment_date' => $request->appointmentDate,
+            'appointment_time' => $request->appointmentTime,
+            'stylist_id' => null,
+            'special_requirements' => $request->requirements,
+            'base_price' => $basePrice,
+            'addons_price' => $serviceFee,
+            'total_price' => $totalPrice,
+            'status' => 'pending',
+            'payment_status' => 'pending'
+        ]);
+
+        $salon = request()->attributes->get('salon');
+        if ($salon) {
+            return redirect()->route('salon.booking.payment', ['salon' => $salon->slug, 'id' => $booking->id]);
+        }
+        return redirect()->route('booking.payment', $booking->id);
     }
 }

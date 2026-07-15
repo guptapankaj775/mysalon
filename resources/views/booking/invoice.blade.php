@@ -396,7 +396,7 @@
 
     <!-- Action Bar -->
     <div class="action-bar mb-5">
-        <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary px-4 fw-semibold">
+        <a href="{{ isset($currentSalon) ? route('salon.dashboard', ['salon' => $currentSalon->slug]) : route('dashboard') }}" class="btn btn-outline-secondary px-4 fw-semibold">
             <i class="fas fa-arrow-left me-2"></i>Dashboard
         </a>
         <div class="d-flex gap-2">

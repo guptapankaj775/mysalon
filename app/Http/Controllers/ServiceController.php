@@ -10,13 +10,24 @@ class ServiceController extends Controller
 {
     public function index()
     {
+        $salon = request()->attributes->get('salon');
+
         // Get all active categories with their services
-        $categories = ServiceCategory::with(['services' => function ($query) {
-            $query->where('status', true)
-                ->with(['images' => function ($q) {
-                    $q->where('is_primary', true);
-                }]);
-        }])->where('status', true)->get();
+        $query = ServiceCategory::with(['services' => function ($query) use ($salon) {
+            $query->where('status', true);
+            if ($salon) {
+                $query->where('user_id', $salon->id);
+            }
+            $query->with(['images' => function ($q) {
+                $q->where('is_primary', true);
+            }]);
+        }])->where('status', true);
+
+        if ($salon) {
+            $query->where('user_id', $salon->id);
+        }
+
+        $categories = $query->get();
 
         // Map services to their respective categories
         $bridalServices = $categories->where('name', 'Bridal Services')->first()?->services ?? collect();

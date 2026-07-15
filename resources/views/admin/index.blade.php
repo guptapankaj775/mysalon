@@ -9,26 +9,27 @@
 
         .stat-card {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
+            border-radius: 12px;
+            padding: 16px 20px;
             margin-bottom: 20px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
         }
 
         .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-bottom: 15px;
+            font-size: 14px;
+            margin-bottom: 0px;
+            flex-shrink: 0;
         }
 
         .stat-icon.bookings {
@@ -57,14 +58,18 @@
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
-            margin: 10px 0 5px;
+            color: #2d3748;
+            margin-top: 4px;
+            margin-bottom: 0;
+            text-align: center;
         }
 
         .stat-label {
-            color: #6c757d;
-            font-size: 14px;
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 500;
         }
 
         .data-table {
@@ -80,11 +85,12 @@
         }
 
         .action-btn {
-            padding: 5px 15px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
-            text-transform: uppercase;
             font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
         }
 
         .status-badge {
@@ -112,58 +118,68 @@
     @endpush
 
     @section('content')
-    <div class="admin-dashboard">
+    <div class="admin-dashboard" style="padding: unset !important;">
         <div class="container">
             <!-- Page Header -->
-            <div class="mb-4 d-flex justify-content-between align-items-center">
-                <h1 class="h3">Admin Dashboard</h1>
+            <div class="mb-2 d-flex justify-content-between align-items-center">
+                <h4 class="h4">Admin Dashboard</h4>
             </div>
 
             <!-- Statistics Cards -->
             <div class="mb-4 row g-4">
                 <div class="col-md-6 col-lg-3">
                     <div class="stat-card">
-                        <div class="stat-icon bookings">
-                            <i class="fas fa-calendar-check"></i>
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="stat-icon bookings me-2">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-label">Today's Bookings</div>
                         </div>
                         <div class="stat-value">{{ $todayBookings }}</div>
-                        <div class="stat-label">Today's Bookings</div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="stat-card">
-                        <div class="stat-icon revenue">
-                            <i class="fas fa-money-bill-wave"></i>
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="stat-icon revenue me-2">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="stat-label">Total Revenue</div>
                         </div>
                         <div class="stat-value">Rs. {{number_format($totalRevenue, 2)}}</div>
-                        <div class="stat-label">Total Revenue</div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="stat-card">
-                        <div class="stat-icon services">
-                            <i class="fas fa-cut"></i>
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="stat-icon services me-2">
+                                <i class="fas fa-cut"></i>
+                            </div>
+                            <div class="stat-label">Active Services</div>
                         </div>
                         <div class="stat-value">{{ $totalServices }}</div>
-                        <div class="stat-label">Active Services</div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="stat-card">
-                        <div class="stat-icon users">
-                            <i class="fas fa-users"></i>
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="stat-icon users me-2">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-label">Total Customers</div>
                         </div>
                         <div class="stat-value">{{ $totalCustomers }}</div>
-                        <div class="stat-label">Total Customers</div>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3">
                     <div class="stat-card">
-                        <div class="stat-icon feedbacks">
-                            <i class="fas fa-comments"></i>
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="stat-icon feedbacks me-2">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="stat-label">Total Feedbacks</div>
                         </div>
                         <div class="stat-value">{{ \App\Models\Feedback::count() }}</div>
-                        <div class="stat-label">Total Feedbacks</div>
                     </div>
                 </div>
             </div>
@@ -206,8 +222,8 @@
                                 </td>
                                 <td>
                                     <a href="{{ route('admin.bookings.show', $booking->id) }}"
-                                        class="btn btn-sm btn-outline-primary action-btn">
-                                        View
+                                        class="btn btn-sm btn-outline-dark action-btn" title="View Booking">
+                                        <i class="fas fa-eye"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -249,8 +265,8 @@
                                 <td>Rs. {{number_format($service->revenue, 2)}}</td>
                                 <td>
                                     <a href="{{ route('admin.services.edit', $service->id) }}"
-                                        class="btn btn-sm btn-outline-primary action-btn">
-                                        Edit
+                                        class="btn btn-sm btn-outline-dark action-btn" title="Edit Service">
+                                        <i class="fas fa-edit"></i>
                                     </a>
                                 </td>
                             </tr>

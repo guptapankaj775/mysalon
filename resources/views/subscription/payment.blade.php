@@ -380,7 +380,7 @@
 
 <div class="payment-container">
 
-    <a href="{{ route('subscription.index') }}" class="back-link">
+    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="back-link">
         <i class="fas fa-arrow-left"></i> Back to Plans
     </a>
 
@@ -445,7 +445,7 @@
                 </button>
             </div>
 
-            <form method="POST" action="{{ route('subscription.payment.process', $subscription->id) }}" onsubmit="showProcessing()">
+            <form method="POST" action="{{ isset($currentSalon) ? route('salon.subscription.payment.process', ['salon' => $currentSalon->slug, 'subscription' => $subscription->id]) : route('subscription.payment.process', $subscription->id) }}" onsubmit="showProcessing()">
                 @csrf
                 <input type="hidden" name="payment_method" id="payment_method" value="card">
 

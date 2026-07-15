@@ -50,17 +50,16 @@
         <form action="{{ route('admin.brands.store') }}" method="POST">
             @csrf
 
-            <div class="magento-sticky-header d-flex justify-content-between align-items-center">
+            <div class="magento-sticky-header d-flex justify-content-between align-items-center mb-2">
                 <div>
-                    <span class="text-muted small uppercase fw-bold">Brand Master</span>
-                    <h1 class="h3 mb-0 fw-bold">Add New Brand</h1>
+                    <h5 class="mb-0 fw-bold" style="font-size: 1.15rem; color: #2d3748;">Add New Brand</h5>
                 </div>
-                <div class="actions">
-                    <a href="{{ route('admin.brands.index') }}" class="btn btn-outline-secondary me-2">
+                <div class="actions d-flex gap-2">
+                    <a href="{{ route('admin.brands.index') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center" style="height: 30px; font-size: 0.85rem;">
                         <i class="fas fa-chevron-left me-1"></i> Back
                     </a>
-                    <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #D4AF37; border-color: #D4AF37;">
-                        <i class="fas fa-save me-1"></i> Save Brand
+                    <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm d-flex align-items-center" style="background-color: #D4AF37; border-color: #D4AF37; height: 30px; font-size: 0.85rem;">
+                        <i class="fas fa-save me-1"></i> Save
                     </button>
                 </div>
             </div>

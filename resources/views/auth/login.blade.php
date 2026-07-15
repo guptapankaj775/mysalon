@@ -18,14 +18,14 @@
 </head>
 
 <body>
-    <a href="{{ url('/') }}" class="back-to-home">
+    <a href="{{ isset($currentSalon) ? route('salon.home', ['salon' => $currentSalon->slug]) : url('/') }}" class="back-to-home">
         <i class="fas fa-arrow-left me-2"></i>Back to Home
     </a>
     <section class="auth-section">
         <div class="container">
             <div class="auth-card">
                 <div class="logo">
-                    <h2>Salon<span>JC</span></h2>
+                    <h2>{{ isset($currentSalon) ? $currentSalon->salon_name : 'Salon' }}<span>{{ isset($currentSalon) ? '' : 'JC' }}</span></h2>
                 </div>
 
                 <div class="auth-header">
@@ -40,7 +40,7 @@
                 </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}">
+                <form method="POST" action="{{ isset($currentSalon) ? route('salon.login', ['salon' => $currentSalon->slug]) : route('login') }}">
                     @csrf
 
                     <!-- Email Address -->
@@ -87,13 +87,13 @@
 
                     <div class="auth-links">
                         @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}">
+                        <a href="{{ isset($currentSalon) ? route('salon.password.request', ['salon' => $currentSalon->slug]) : route('password.request') }}">
                             {{ __('Forgot your password?') }}
                         </a>
                         @endif
 
                         @if (Route::has('register'))
-                        <a href="{{ route('register') }}">
+                        <a href="{{ isset($currentSalon) ? route('salon.register', ['salon' => $currentSalon->slug]) : route('register') }}">
                             {{ __('Create new account') }}
                         </a>
                         @endif

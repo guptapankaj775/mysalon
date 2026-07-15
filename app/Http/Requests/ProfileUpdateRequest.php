@@ -35,6 +35,17 @@ class ProfileUpdateRequest extends FormRequest
             'location' => ['nullable', 'string', 'max:500'],
             'latitude' => ['nullable', 'numeric'],
             'longitude' => ['nullable', 'numeric'],
+            'salon_name' => ['nullable', 'string', 'max:255'],
+            'salon_type' => ['nullable', 'string', 'max:255'],
+            'salon_model' => ['nullable', 'string', 'in:Franchisee,Self Owned'],
+            'franchisee_name' => [
+                Rule::requiredIf(fn () => $this->input('salon_model') === 'Franchisee'),
+                'nullable',
+                'string',
+                'max:255',
+            ],
+            'current_password' => ['nullable', 'required_with:password', 'current_password'],
+            'password' => ['nullable', 'required_with:current_password', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
         ];
     }
 }

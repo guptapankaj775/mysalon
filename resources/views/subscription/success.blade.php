@@ -289,7 +289,7 @@
     </div>
 
     <!-- CTA -->
-    <a href="{{ route('dashboard') }}" class="btn-go-dashboard">
+    <a href="{{ isset($currentSalon) ? route('salon.dashboard', ['salon' => $currentSalon->slug]) : route('dashboard') }}" class="btn-go-dashboard">
         <i class="fas fa-th-large me-2"></i>Go to Dashboard
     </a>
 

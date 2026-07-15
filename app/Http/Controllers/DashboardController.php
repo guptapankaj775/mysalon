@@ -11,10 +11,44 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user()->load('createdInventories');
+        $user = Auth::user();
+        $userSlug = $user->slug;
+        if (!$userSlug && $user->created_by) {
+            $owner = \App\Models\User::find($user->created_by);
+            if ($owner) {
+                $userSlug = $owner->slug;
+            }
+        }
+
+        // Redirect based on whether the user has a salon slug
+        $isSalonRoute = request()->attributes->get('is_salon_route', false);
+        if ($userSlug) {
+            if (!$isSalonRoute) {
+                return redirect()->route('salon.dashboard', ['salon' => $userSlug, 'tab' => request('tab')]);
+            }
+        } else {
+            if ($isSalonRoute) {
+                return redirect()->route('dashboard', ['tab' => request('tab')]);
+            }
+        }
+
+        if ($user->role === 'staff') {
+            $assignedServices = \App\Models\BookingService::with(['booking.user', 'service'])
+                ->where('staff_id', $user->id)
+                ->whereHas('booking', function ($q) {
+                    $q->where('status', '!=', 'cancelled');
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return view('admin.staff.dashboard', compact('assignedServices'));
+        }
+
+        $user->load('createdInventories');
 
         // Subscription status
-        $activeSubscription = $user->activeSubscription()->with('plan')->first();
+        $owner = $user->created_by ? \App\Models\User::find($user->created_by) : $user;
+        $activeSubscription = $owner ? $owner->activeSubscription()->with('plan')->first() : null;
         $hasActivePlan = $user->isAdmin() || ($activeSubscription !== null);
         $limitedFeatures = $hasActivePlan ? [] : SubscriptionSetting::limitedFeatures();
         $noticeMessage   = !$hasActivePlan ? SubscriptionSetting::noticeMessage() : null;
@@ -30,7 +64,7 @@ class DashboardController extends Controller
 
         // Get upcoming appointments
         $upcomingAppointments = Booking::where('user_id', $user->id)
-            ->whereIn('status', ['pending', 'confirmed'])
+            ->whereIn('status', ['pending', 'confirmed', 'assigned', 'in_progress'])
             ->where('appointment_date', '>=', now()->format('Y-m-d'))
             ->orderBy('appointment_date')
             ->orderBy('appointment_time')
@@ -41,22 +75,22 @@ class DashboardController extends Controller
         $pastAppointments = Booking::where('user_id', $user->id)
             ->where(function ($query) {
                 $query->where('appointment_date', '<', now()->format('Y-m-d'))
-                    ->orWhere('status', 'completed');
+                    ->orWhereIn('status', ['completed', 'closed']);
             })
             ->orderBy('appointment_date', 'desc')
             ->orderBy('appointment_time', 'desc')
             ->with(['service', 'category'])
             ->get();
 
-        // Calculate total spent amount (only from completed and paid appointments)
+        // Calculate total spent amount (only from completed/closed and paid appointments)
         $totalSpent = Booking::where('user_id', $user->id)
-            ->where('status', 'completed')
+            ->whereIn('status', ['completed', 'closed'])
             ->where('payment_status', 'paid')
             ->sum('total_price');
 
         // Get completed sessions count
         $completedSessions = Booking::where('user_id', $user->id)
-            ->where('status', 'completed')
+            ->whereIn('status', ['completed', 'closed'])
             ->count();
 
         // Get cancelled appointments count

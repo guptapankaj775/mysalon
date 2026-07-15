@@ -82,6 +82,14 @@
             font-size: 20px;
             color: #D4AF37;
         }
+        .action-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
     </style>
     @endpush
 
@@ -206,13 +214,13 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-2">
-                                    <a href="{{ route('admin.vendors.edit', $vendor->id) }}" class="btn btn-sm btn-outline-info me-1 rounded-circle" title="Edit Vendor">
+                                    <a href="{{ route('admin.vendors.edit', $vendor->id) }}" class="btn btn-sm btn-outline-dark action-btn" title="Edit Vendor">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form action="{{ route('admin.vendors.destroy', $vendor->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle" 
+                                        <button type="submit" class="btn btn-sm btn-outline-danger action-btn" 
                                                 onclick="return confirm('Are you sure you want to delete this vendor? This will un-assign any associated inventory items and permanently delete the vendor logo.')"
                                                 title="Delete Vendor">
                                             <i class="fas fa-trash"></i>

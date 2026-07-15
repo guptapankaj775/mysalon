@@ -12,6 +12,9 @@ test('new users can register', function () {
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
+        'salon_name' => 'My Test Salon',
+        'salon_type' => 'Unisex Salon',
+        'salon_model' => 'Self Owned',
     ]);
 
     $this->assertGuest();

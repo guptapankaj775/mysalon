@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SalonJC - Beauty Salon</title>
+    <title>{{ isset($currentSalon) ? $currentSalon->salon_name . ' - Beauty Salon' : 'SalonJC - Beauty Salon' }}</title>
 
     <!-- favicon -->
     <link
@@ -60,7 +60,7 @@
             <div class="row">
                 <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
                     <div class="footer-info">
-                        <h5>Salon<span>JC</span></h5>
+                        <h5>{{ isset($currentSalon) ? $currentSalon->salon_name : 'Salon' }}<span>{{ isset($currentSalon) ? '' : 'JC' }}</span></h5>
                         <p class="mt-3">
                             Your premier beauty destination in Pallawela,
                             offering professional services and exceptional
@@ -137,7 +137,7 @@
                     <div class="footer-bottom text-center">
                         <hr class="footer-divider" />
                         <p class="mb-0">
-                            &copy; 2025 SalonJC. All rights reserved.
+                            &copy; 2025 {{ isset($currentSalon) ? $currentSalon->salon_name : 'SalonJC' }}. All rights reserved.
                         </p>
                     </div>
                 </div>

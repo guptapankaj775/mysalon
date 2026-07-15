@@ -32,8 +32,17 @@ class RolePermissionController extends Controller
             'edit_profile' => 'Edit Profile',
         ];
 
-        // Retrieve the current mapped permissions grouped by role
-        $rolePermissions = RolePermission::all()->groupBy('role')->map(function ($items) {
+        $ownerId = \Illuminate\Support\Facades\Auth::user()->isAdmin() ? null : \Illuminate\Support\Facades\Auth::id();
+
+        // Retrieve custom permissions for this salon owner
+        $rolePermissionsQuery = RolePermission::query();
+        if ($ownerId !== null && RolePermission::where('created_by', $ownerId)->exists()) {
+            $rolePermissionsQuery->where('created_by', $ownerId);
+        } else {
+            $rolePermissionsQuery->whereNull('created_by');
+        }
+
+        $rolePermissions = $rolePermissionsQuery->get()->groupBy('role')->map(function ($items) {
             return $items->pluck('permission')->toArray();
         })->toArray();
 
@@ -51,9 +60,15 @@ class RolePermissionController extends Controller
             'permissions' => 'array',
         ]);
 
-        DB::transaction(function () use ($request) {
-            // Clear existing permissions mappings safely
-            RolePermission::query()->delete();
+        $ownerId = \Illuminate\Support\Facades\Auth::user()->isAdmin() ? null : \Illuminate\Support\Facades\Auth::id();
+
+        DB::transaction(function () use ($request, $ownerId) {
+            // Clear existing permissions mappings safely for this owner
+            if ($ownerId === null) {
+                RolePermission::whereNull('created_by')->delete();
+            } else {
+                RolePermission::where('created_by', $ownerId)->delete();
+            }
 
             $permissionsData = $request->input('permissions', []);
             foreach ($permissionsData as $role => $rolePermissionsList) {
@@ -66,6 +81,7 @@ class RolePermissionController extends Controller
                     RolePermission::create([
                         'role' => $role,
                         'permission' => $permission,
+                        'created_by' => $ownerId,
                     ]);
                 }
             }

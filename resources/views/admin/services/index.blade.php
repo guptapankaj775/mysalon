@@ -15,11 +15,12 @@
         }
 
         .action-btn {
-            padding: 5px 15px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
-            text-transform: uppercase;
             font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
         }
 
         .status-badge {
@@ -42,11 +43,11 @@
     @endpush
 
     @section('content')
-    <div class="services-page">
+    <div class="services-page" style="padding: unset !important;">
         <div class="container">
             <!-- Page Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3">Manage Services</h1>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h4 class="h4">Manage Services</h4>
                 <div class="actions">
                     <a href="{{ route('admin.services.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Add New Service
@@ -76,7 +77,11 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="me-3">
-                                            <i class="fas {{ $service->icon ? $service->icon->path : 'fa-spa' }} fa-2x"></i>
+                                            @if($service->icon && (str_contains($service->icon->path, '/') || \Illuminate\Support\Str::endsWith($service->icon->path, ['.svg', '.png', '.jpg', '.jpeg'])))
+                                                <img src="{{ asset('storage/' . $service->icon->path) }}" alt="Icon" style="width: 35px; height: 35px; object-fit: contain;">
+                                            @else
+                                                <i class="fas {{ $service->icon ? $service->icon->path : 'fa-spa' }} fa-2x"></i>
+                                            @endif
                                         </div>
                                         <div>
                                             <div class="fw-bold">{{ $service->name }}</div>
@@ -103,10 +108,10 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="btn-group">
+                                    <div class="d-flex gap-2">
                                         <a href="{{ route('admin.services.edit', $service->id) }}"
-                                            class="btn btn-sm btn-outline-primary action-btn me-2">
-                                            Edit
+                                            class="btn btn-sm btn-outline-dark action-btn">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('admin.services.destroy', $service->id) }}"
                                             method="POST"
@@ -115,7 +120,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger action-btn">
-                                                Delete
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
                                     </div>

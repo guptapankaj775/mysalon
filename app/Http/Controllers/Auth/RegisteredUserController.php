@@ -33,6 +33,9 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'salon_name' => ['required', 'string', 'max:255'],
+            'salon_type' => ['required', 'string', 'max:255'],
+            'salon_model' => ['required', 'string', 'in:Franchisee,Self Owned'],
         ]);
 
         $user = User::create([
@@ -40,6 +43,9 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'is_verified' => false,
+            'salon_name' => $request->salon_name,
+            'salon_type' => $request->salon_type,
+            'salon_model' => $request->salon_model,
         ]);
 
         event(new Registered($user));

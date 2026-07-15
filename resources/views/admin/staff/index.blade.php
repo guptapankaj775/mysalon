@@ -15,11 +15,12 @@
         }
 
         .action-btn {
-            padding: 5px 15px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
-            text-transform: uppercase;
             font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
         }
 
         .status-badge {
@@ -122,10 +123,10 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="btn-group">
+                                    <div class="d-flex gap-2">
                                         <a href="{{ route('admin.staff.edit', $member->id) }}"
-                                            class="btn btn-sm btn-outline-primary action-btn me-2">
-                                            Edit
+                                            class="btn btn-sm btn-outline-dark action-btn">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('admin.staff.destroy', $member->id) }}"
                                             method="POST"
@@ -134,7 +135,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger action-btn">
-                                                Delete
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
                                     </div>

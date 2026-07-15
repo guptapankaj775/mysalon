@@ -12,7 +12,7 @@
             </li>
             @endforeach
         </ul>
-        <a href="{{ route('booking') }}?service={{ $serviceId }}" class="btn btn-book" data-package="{{ $packageType }}">
+        <a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('booking') }}?service={{ $serviceId }}" class="btn btn-book" data-package="{{ $packageType }}">
             Book Package
         </a>
     </div>

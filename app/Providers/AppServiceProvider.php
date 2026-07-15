@@ -41,10 +41,14 @@ class AppServiceProvider extends ServiceProvider
             'create_bookings',
             'view_history',
             'edit_profile',
+            'view_sales_reports',
         ];
 
         foreach ($permissions as $permission) {
             Gate::define($permission, function ($user) use ($permission) {
+                if ($user->hasActivePlan() && !in_array($permission, ['manage_feedbacks'])) {
+                    return true;
+                }
                 return $user->hasPermission($permission);
             });
         }

@@ -25,6 +25,7 @@ class Vendor extends Model
         'logo_path',
         'description',
         'group_id',
+        'user_id',
     ];
 
     protected static function booted()

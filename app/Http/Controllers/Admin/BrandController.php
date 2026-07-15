@@ -10,7 +10,11 @@ class BrandController extends Controller
 {
     public function index()
     {
-        $brands = Brand::orderBy('name')->paginate(10);
+        $query = Brand::query();
+        if (!auth()->user()->isAdmin()) {
+            $query->where('user_id', auth()->id());
+        }
+        $brands = $query->orderBy('name')->paginate(10);
         return view('admin.brands.index', compact('brands'));
     }
 
@@ -28,6 +32,7 @@ class BrandController extends Controller
         ]);
 
         $validated['status'] = $request->boolean('status');
+        $validated['user_id'] = auth()->id();
 
         Brand::create($validated);
 
@@ -36,11 +41,18 @@ class BrandController extends Controller
 
     public function edit(Brand $brand)
     {
+        if (!auth()->user()->isAdmin() && $brand->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this brand.');
+        }
         return view('admin.brands.edit', compact('brand'));
     }
 
     public function update(Request $request, Brand $brand)
     {
+        if (!auth()->user()->isAdmin() && $brand->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this brand.');
+        }
+
         $validated = $request->validate([
             'name'        => 'required|string|max:255|unique:brands,name,' . $brand->id,
             'description' => 'nullable|string',
@@ -56,6 +68,10 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand)
     {
+        if (!auth()->user()->isAdmin() && $brand->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this brand.');
+        }
+
         $brand->delete();
         return redirect()->route('admin.brands.index')->with('success', 'Brand deleted successfully.');
     }

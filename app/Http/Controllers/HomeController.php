@@ -9,8 +9,15 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $salon = request()->attributes->get('salon');
+        
         // Get active service categories
-        $categories = ServiceCategory::where('status', true)->get()
+        $query = ServiceCategory::where('status', true);
+        if ($salon) {
+            $query->where('user_id', $salon->id);
+        }
+        
+        $categories = $query->get()
             ->map(function ($category) {
                 // If icon_class is null, provide a default icon based on category name
                 if (!$category->icon_class) {
