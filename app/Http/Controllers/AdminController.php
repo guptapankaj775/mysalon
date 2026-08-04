@@ -167,15 +167,21 @@ class AdminController extends Controller
         unset($validated['icon']);
         
         $inventoriesInput = $request->input('inventories', []);
-        unset($validated['inventories']);
+        $inventoryQtyInput = $request->input('inventory_qty', []);
+        unset($validated['inventories'], $validated['inventory_qty']);
 
         $validated['user_id'] = Auth::id();
         $service = Service::create($validated);
         $service->icon()->create(['image_path' => $iconPath]);
 
-        if (!empty($inventoriesInput)) {
-            $service->inventories()->sync($inventoriesInput);
+        $syncData = [];
+        foreach ($inventoriesInput as $invId) {
+            $qty = isset($inventoryQtyInput[$invId]) && is_numeric($inventoryQtyInput[$invId]) && (float)$inventoryQtyInput[$invId] > 0
+                ? (float)$inventoryQtyInput[$invId]
+                : 1.00;
+            $syncData[$invId] = ['quantity' => $qty];
         }
+        $service->inventories()->sync($syncData);
 
         return redirect()->route('admin.services')->with('success', 'Service created successfully');
     }
@@ -186,15 +192,16 @@ class AdminController extends Controller
             abort(403, 'Unauthorized access to this service.');
         }
 
-        $categoriesQuery = ServiceCategory::query();
-        $inventoriesQuery = Inventory::orderBy('item_name');
-
+        $categoriesQuery = ServiceCategory::orderBy('name');
         if (!Auth::user()->isAdmin()) {
             $categoriesQuery->where('user_id', Auth::id());
+        }
+        $categories = $categoriesQuery->get();
+
+        $inventoriesQuery = Inventory::orderBy('item_name');
+        if (!Auth::user()->isAdmin()) {
             $inventoriesQuery->where('user_id', Auth::id());
         }
-
-        $categories = $categoriesQuery->get();
         $inventories = $inventoriesQuery->get();
         $service->load('inventories');
         return view('admin.services.edit', compact('service', 'categories', 'inventories'));
@@ -210,6 +217,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'features' => 'nullable|array',
+            'features.*' => 'nullable|string|max:255',
             'duration' => 'required|integer|min:1',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:service_categories,id',
@@ -217,6 +225,7 @@ class AdminController extends Controller
             'icon' => 'nullable',
             'inventories' => 'nullable|array',
             'inventories.*' => 'exists:inventories,id',
+            'inventory_qty' => 'nullable|array',
         ]);
 
         $iconPath = null;
@@ -235,7 +244,8 @@ class AdminController extends Controller
         unset($validated['icon']);
 
         $inventoriesInput = $request->input('inventories', []);
-        unset($validated['inventories']);
+        $inventoryQtyInput = $request->input('inventory_qty', []);
+        unset($validated['inventories'], $validated['inventory_qty']);
 
         $service->update($validated);
 
@@ -253,7 +263,14 @@ class AdminController extends Controller
             }
         }
 
-        $service->inventories()->sync($inventoriesInput);
+        $syncData = [];
+        foreach ($inventoriesInput as $invId) {
+            $qty = isset($inventoryQtyInput[$invId]) && is_numeric($inventoryQtyInput[$invId]) && (float)$inventoryQtyInput[$invId] > 0
+                ? (float)$inventoryQtyInput[$invId]
+                : 1.00;
+            $syncData[$invId] = ['quantity' => $qty];
+        }
+        $service->inventories()->sync($syncData);
 
         return redirect()->route('admin.services')->with('success', 'Service updated successfully');
     }

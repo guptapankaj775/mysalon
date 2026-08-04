@@ -362,21 +362,42 @@
 
                                         <div class="card border-0 p-2 inventory-list-container">
                                             @forelse($inventories as $inventory)
-                                            <div class="form-check inventory-item-row">
-                                                <input class="form-check-input border-2" type="checkbox" name="inventories[]" value="{{ $inventory->id }}"
-                                                       id="inventory_{{ $inventory->id }}"
-                                                       {{ is_array(old('inventories')) && in_array($inventory->id, old('inventories')) ? 'checked' : '' }}>
-                                                <label class="ml-1 mt-1 form-check-label inventory-label-container" style="font-size: 12px !important;" for="inventory_{{ $inventory->id }}"
-                                                       data-bs-toggle="tooltip" data-bs-placement="top"
-                                                       title="{{ $inventory->item_name }}{{ $inventory->sku ? ' ['.$inventory->sku.']' : '' }}{{ ($inventory->unit_value && $inventory->unit) ? ' ('.($inventory->unit_value % 1 == 0 ? (int)$inventory->unit_value : $inventory->unit_value).' '.$inventory->unit.')' : '' }}{{ $inventory->description ? ' - '.$inventory->description : '' }}">
-                                                    <strong>{{ $inventory->item_name }}</strong> 
-                                                    <span class="inventory-details">
-                                                        @if($inventory->sku)<code class="ms-1">{{ $inventory->sku }}</code>@endif
-                                                        @if($inventory->unit && $inventory->unit_value)
-                                                            <span class="badge bg-white text-dark border ms-1">{{ $inventory->unit_value % 1 == 0 ? (int)$inventory->unit_value : $inventory->unit_value }} {{ $inventory->unit }}</span>
-                                                        @endif
-                                                    </span>
-                                                </label>
+                                            @php
+                                                $isChecked = is_array(old('inventories')) && in_array($inventory->id, old('inventories'));
+                                                $qtyVal = old('inventory_qty.'.$inventory->id, 1);
+                                            @endphp
+                                            <div class="d-flex align-items-center justify-content-between p-1 border-bottom inventory-item-row mb-1">
+                                                <div class="form-check d-flex align-items-center mb-0">
+                                                    <input class="form-check-input border-2 me-2 inventory-checkbox" type="checkbox" name="inventories[]" value="{{ $inventory->id }}"
+                                                           id="inventory_{{ $inventory->id }}"
+                                                           {{ $isChecked ? 'checked' : '' }}>
+                                                    <label class="form-check-label inventory-label-container mb-0" style="font-size: 12px !important; cursor: pointer;" for="inventory_{{ $inventory->id }}"
+                                                           data-bs-toggle="tooltip" data-bs-placement="top"
+                                                           title="{{ $inventory->item_name }}{{ $inventory->sku ? ' ['.$inventory->sku.']' : '' }}{{ ($inventory->unit_value && $inventory->unit) ? ' ('.($inventory->unit_value % 1 == 0 ? (int)$inventory->unit_value : $inventory->unit_value).' '.$inventory->unit.')' : '' }}{{ $inventory->description ? ' - '.$inventory->description : '' }}">
+                                                        <strong>{{ $inventory->item_name }}</strong> 
+                                                        <span class="inventory-details">
+                                                            @if($inventory->sku)<code class="ms-1">{{ $inventory->sku }}</code>@endif
+                                                            @if($inventory->unit && $inventory->unit_value)
+                                                                <span class="badge bg-light text-dark border ms-1">{{ $inventory->unit_value % 1 == 0 ? (int)$inventory->unit_value : $inventory->unit_value }} {{ $inventory->unit }}</span>
+                                                            @elseif($inventory->unit)
+                                                                <span class="badge bg-light text-dark border ms-1">{{ $inventory->unit }}</span>
+                                                            @endif
+                                                            <span class="badge bg-light text-muted border ms-1" title="Current Stock"><i class="fas fa-boxes me-1"></i>Stock: {{ $inventory->quantity ?? 0 }}</span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 inventory-qty-wrapper ms-2" style="min-width: 130px;">
+                                                    <span class="text-muted small" style="font-size: 11px;">Qty:</span>
+                                                    <input type="number" name="inventory_qty[{{ $inventory->id }}]" 
+                                                           value="{{ $qtyVal }}" min="0.01" step="any"
+                                                           class="form-control form-control-sm border-gold-focus inventory-qty-input"
+                                                           style="height: 24px; font-size: 11px; padding: 2px 6px; width: 65px;"
+                                                           placeholder="1"
+                                                           {{ $isChecked ? '' : 'disabled' }}>
+                                                    @if($inventory->unit)
+                                                        <span class="text-secondary fw-semibold small" style="font-size: 11px;">{{ $inventory->unit }}</span>
+                                                    @endif
+                                                </div>
                                             </div>
                                             @empty
                                             <div class="text-muted small">
@@ -419,7 +440,7 @@
                 const newRow = document.createElement('div');
                 newRow.className = 'input-group mb-2 feature-row';
                 newRow.innerHTML = `
-                    <input type="text" class="form-control border-gold-focus" name="features[]" placeholder="Highlight detail..." required>
+                    <input type="text" class="form-control border-gold-focus" name="features[]" placeholder="e.g. Include hair wash" required>
                     <button type="button" class="btn btn-outline-danger remove-feature"><i class="fas fa-trash-alt"></i></button>
                 `;
                 container.appendChild(newRow);
@@ -427,15 +448,34 @@
             });
 
             container.addEventListener('click', function(e) {
-                const btn = e.target.closest('.remove-feature');
-                if (btn) {
-                    btn.closest('.feature-row').remove();
-                    updateRemoveButtons();
+                if (e.target.closest('.remove-feature')) {
+                    const row = e.target.closest('.feature-row');
+                    if (container.querySelectorAll('.feature-row').length > 1) {
+                        row.remove();
+                        updateRemoveButtons();
+                    }
                 }
             });
 
             // Initial check
             updateRemoveButtons();
+
+            // Toggle inventory Qty input on checkbox change
+            const inventoryCheckboxes = document.querySelectorAll('.inventory-checkbox');
+            inventoryCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    const row = this.closest('.inventory-item-row');
+                    if (row) {
+                        const qtyInput = row.querySelector('.inventory-qty-input');
+                        if (qtyInput) {
+                            qtyInput.disabled = !this.checked;
+                            if (this.checked && (!qtyInput.value || qtyInput.value <= 0)) {
+                                qtyInput.value = 1;
+                            }
+                        }
+                    }
+                });
+            });
 
             // Client-side Inventory Filter
             const searchInput = document.getElementById('inventorySearch');
@@ -446,7 +486,7 @@
                     items.forEach(function(item) {
                         const text = item.textContent.toLowerCase();
                         if (text.includes(filter)) {
-                            item.style.setProperty('display', 'block', 'important');
+                            item.style.setProperty('display', 'flex', 'important');
                         } else {
                             item.style.setProperty('display', 'none', 'important');
                         }

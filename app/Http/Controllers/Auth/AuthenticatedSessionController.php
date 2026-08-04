@@ -30,6 +30,16 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
 
+        // Prevent Super Admin from using standard login
+        if ($user->isSuperAdmin()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('superadmin.login')
+                ->withErrors(['email' => 'Super Admin (admin@salonjc.com) must sign in using the dedicated Super Admin login portal.']);
+        }
+
         // Redirect non-admins without active plan (or whose owner doesn't have an active plan) to subscription selection
         $owner = $user->created_by ? \App\Models\User::find($user->created_by) : $user;
         if (!$user->isAdmin() && (!$owner || !$owner->hasActivePlan())) {
@@ -52,16 +62,19 @@ class AuthenticatedSessionController extends Controller
         $salon = $request->attributes->get('salon') ?? $request->route('salon');
         $slug = is_string($salon) ? $salon : ($salon?->slug ?? null);
 
+        $user = Auth::user();
+        $isSuperAdmin = $user && $user->isSuperAdmin();
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        if ($slug) {
-            return redirect()->route('salon.home', ['salon' => $slug]);
+        if ($isSuperAdmin || !$slug) {
+            return redirect('/');
         }
 
-        return redirect('/');
+        return redirect()->route('salon.home', ['salon' => $slug]);
     }
 }

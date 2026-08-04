@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('service_inventory_mapping', function (Blueprint $table) {
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
             $table->foreignId('inventory_id')->constrained()->onDelete('cascade');
+            $table->decimal('quantity', 10, 2)->default(1.00);
             $table->primary(['service_id', 'inventory_id']);
         });
     }

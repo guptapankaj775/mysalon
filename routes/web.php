@@ -155,6 +155,7 @@ Route::middleware(['auth'])->group(function () {
 
     // 1. Salon Scoped Admin Group (Merchants)
     Route::middleware(['salon', 'auth', 'admin'])->prefix('{salon}/portal')->where(['salon' => '(?!admin$|login$|register$|forgot-password$|reset-password$|logout$|profile$|subscription$)[a-zA-Z0-9\-]+'])->group($adminRoutes);
+    Route::middleware(['salon', 'auth', 'admin'])->prefix('{salon}/admin')->where(['salon' => '(?!admin$|login$|register$|forgot-password$|reset-password$|logout$|profile$|subscription$)[a-zA-Z0-9\-]+'])->group($adminRoutes);
 
     // 2. Global Admin Group (fallback and Super Admin)
     Route::middleware(['auth', 'admin'])->prefix('admin')->group($adminRoutes);
@@ -172,6 +173,14 @@ Route::middleware(['auth'])->group(function () {
     // Booking management routes
     Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::post('/bookings/{id}/reschedule', [BookingController::class, 'reschedule'])->name('bookings.reschedule');
+});
+
+// Dedicated Super Admin Login Routes (Guest Only - admin@salonjc.com)
+Route::middleware('guest')->group(function () {
+    Route::get('/superadmin/login', [App\Http\Controllers\Auth\AdminLoginController::class, 'create'])->name('superadmin.login');
+    Route::post('/superadmin/login', [App\Http\Controllers\Auth\AdminLoginController::class, 'store']);
+    Route::get('/admin/login', [App\Http\Controllers\Auth\AdminLoginController::class, 'create'])->name('admin.login');
+    Route::post('/admin/login', [App\Http\Controllers\Auth\AdminLoginController::class, 'store']);
 });
 
 Route::middleware('auth')->group(function () {

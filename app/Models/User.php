@@ -115,11 +115,19 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if the user is a Super Admin.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->email === 'admin@salonjc.com' || $this->role === 'super_admin';
+    }
+
+    /**
      * Check if the user is an admin.
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === 'admin' || $this->isSuperAdmin();
     }
 
     /**

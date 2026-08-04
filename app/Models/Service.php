@@ -42,7 +42,8 @@ class Service extends Model
 
     public function inventories(): BelongsToMany
     {
-        return $this->belongsToMany(Inventory::class, 'service_inventory_mapping');
+        return $this->belongsToMany(Inventory::class, 'service_inventory_mapping')
+            ->withPivot('quantity');
     }
 
     public function icon()

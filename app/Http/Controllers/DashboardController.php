@@ -20,9 +20,15 @@ class DashboardController extends Controller
             }
         }
 
-        // Redirect based on whether the user has a salon slug
+        // Redirect based on whether the user is super admin or merchant
         $isSalonRoute = request()->attributes->get('is_salon_route', false);
-        if ($userSlug) {
+        if ($user->isAdmin()) {
+            if ($isSalonRoute) {
+                // Stay on salon route if explicitly visited
+            } else if (request()->routeIs('dashboard')) {
+                return redirect()->route('admin.dashboard');
+            }
+        } elseif ($userSlug) {
             if (!$isSalonRoute) {
                 return redirect()->route('salon.dashboard', ['salon' => $userSlug, 'tab' => request('tab')]);
             }
