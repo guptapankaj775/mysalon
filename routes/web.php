@@ -23,6 +23,18 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/services', [ServiceController::class, 'index'])->name('services');
 Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews');
 
+// Public Booking & API routes
+Route::get('/booking', [BookingController::class, 'index'])->name('booking');
+Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+Route::get('/booking/{id}/payment', [BookingController::class, 'showPayment'])->name('booking.payment');
+Route::post('/booking/{id}/payment', [BookingController::class, 'processPayment'])->name('booking.payment.process');
+Route::get('/booking/{id}/payment/success', [BookingController::class, 'paymentSuccess'])->name('booking.payment.success');
+Route::get('/booking/{id}/invoice', [BookingController::class, 'showInvoice'])->name('booking.invoice');
+
+Route::get('/api/salons', [BookingController::class, 'getSalons'])->name('api.salons');
+Route::get('/api/salons/{id}/categories', [BookingController::class, 'getSalonCategories'])->name('api.salon-categories');
+Route::get('/api/salons/{id}/categories/{categoryId}/services', [BookingController::class, 'getSalonServices'])->name('api.salon-services');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -148,9 +160,16 @@ Route::middleware(['auth'])->group(function () {
             // Subscribers list & settings
             Route::get('/subscribers', [App\Http\Controllers\Admin\SubscriptionController::class, 'subscribers'])->name('admin.subscribers');
             Route::patch('/subscribers/{userSubscription}/status', [App\Http\Controllers\Admin\SubscriptionController::class, 'updateSubscriptionStatus'])->name('admin.subscribers.update-status');
+            // Subscription settings
             Route::get('/subscription-settings', [App\Http\Controllers\Admin\SubscriptionController::class, 'settings'])->name('admin.subscription.settings');
             Route::post('/subscription-settings', [App\Http\Controllers\Admin\SubscriptionController::class, 'updateSettings'])->name('admin.subscription.settings.update');
         });
+
+        // POS features
+        Route::get('/pos', [App\Http\Controllers\Admin\PosController::class, 'index'])->name('admin.pos');
+        Route::post('/pos/checkout', [App\Http\Controllers\Admin\PosController::class, 'checkout'])->name('admin.pos.checkout');
+        Route::get('/pos/history', [App\Http\Controllers\Admin\PosController::class, 'history'])->name('admin.pos.history');
+        Route::get('/pos/invoice/{id}', [App\Http\Controllers\Admin\PosController::class, 'showInvoice'])->name('admin.pos.invoice');
     };
 
     // 1. Salon Scoped Admin Group (Merchants)
@@ -159,16 +178,6 @@ Route::middleware(['auth'])->group(function () {
 
     // 2. Global Admin Group (fallback and Super Admin)
     Route::middleware(['auth', 'admin'])->prefix('admin')->group($adminRoutes);
-
-    // Booking routes
-    Route::get('/booking', [BookingController::class, 'index'])->name('booking');
-    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
-
-    // Payment routes
-    Route::get('/booking/{id}/payment', [BookingController::class, 'showPayment'])->name('booking.payment');
-    Route::post('/booking/{id}/payment', [BookingController::class, 'processPayment'])->name('booking.payment.process');
-    Route::get('/booking/{id}/payment/success', [BookingController::class, 'paymentSuccess'])->name('booking.payment.success');
-    Route::get('/booking/{id}/invoice', [BookingController::class, 'showInvoice'])->name('booking.invoice');
 
     // Booking management routes
     Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
@@ -198,6 +207,14 @@ Route::middleware(['salon'])->prefix('{salon}')->group(function () {
     Route::get('/services', [ServiceController::class, 'index'])->name('salon.services');
     Route::get('/reviews', [ReviewController::class, 'index'])->name('salon.reviews');
 
+    // Salon Scoped Booking & Payment routes
+    Route::get('/booking', [BookingController::class, 'index'])->name('salon.booking');
+    Route::post('/bookings', [BookingController::class, 'store'])->name('salon.bookings.store');
+    Route::get('/booking/{id}/payment', [BookingController::class, 'showPayment'])->name('salon.booking.payment');
+    Route::post('/booking/{id}/payment', [BookingController::class, 'processPayment'])->name('salon.booking.payment.process');
+    Route::get('/booking/{id}/payment/success', [BookingController::class, 'paymentSuccess'])->name('salon.booking.payment.success');
+    Route::get('/booking/{id}/invoice', [BookingController::class, 'showInvoice'])->name('salon.booking.invoice');
+
     // Salon Scoped Auth Routes
     Route::middleware('guest')->group(function () {
         Route::get('register', [RegisteredUserController::class, 'create'])->name('salon.register');
@@ -223,16 +240,6 @@ Route::middleware(['salon'])->prefix('{salon}')->group(function () {
         Route::post('/subscription/{subscription}/payment', [SubscriptionController::class, 'processPayment'])->name('salon.subscription.payment.process');
         Route::get('/subscription/{subscription}/success', [SubscriptionController::class, 'success'])->name('salon.subscription.success');
         
-        // Booking routes
-        Route::get('/booking', [BookingController::class, 'index'])->name('salon.booking');
-        Route::post('/bookings', [BookingController::class, 'store'])->name('salon.bookings.store');
-
-        // Payment routes
-        Route::get('/booking/{id}/payment', [BookingController::class, 'showPayment'])->name('salon.booking.payment');
-        Route::post('/booking/{id}/payment', [BookingController::class, 'processPayment'])->name('salon.booking.payment.process');
-        Route::get('/booking/{id}/payment/success', [BookingController::class, 'paymentSuccess'])->name('salon.booking.payment.success');
-        Route::get('/booking/{id}/invoice', [BookingController::class, 'showInvoice'])->name('salon.booking.invoice');
-
         // Booking management routes
         Route::post('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('salon.bookings.cancel');
         Route::post('/bookings/{id}/reschedule', [BookingController::class, 'reschedule'])->name('salon.bookings.reschedule');
