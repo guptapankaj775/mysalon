@@ -384,6 +384,11 @@
                                                 $isChecked = (is_array(old('inventories')) && in_array($inventory->id, old('inventories'))) || (!old('_token') && $existingItem);
                                                 $defaultQty = $existingItem && isset($existingItem->pivot->quantity) ? ($existingItem->pivot->quantity % 1 == 0 ? (int)$existingItem->pivot->quantity : $existingItem->pivot->quantity) : 1;
                                                 $qtyVal = old('inventory_qty.'.$inventory->id, $defaultQty);
+                                                $rate = ($inventory->cost && $inventory->cost > 0) ? $inventory->cost : ($inventory->price ?? 0);
+                                                $unitSize = ($inventory->unit_value && $inventory->unit_value > 0) ? $inventory->unit_value : 1;
+                                                $costPerUnit = $rate / $unitSize;
+                                                $consumedCost = (float)$qtyVal * $costPerUnit;
+                                                $divisionLabel = $inventory->division ?: 'Consumable';
                                             @endphp
                                             <div class="d-flex align-items-center justify-content-between p-1 border-bottom inventory-item-row mb-1">
                                                 <div class="form-check d-flex align-items-center mb-0">
@@ -395,6 +400,7 @@
                                                            title="{{ $inventory->item_name }}{{ $inventory->sku ? ' ['.$inventory->sku.']' : '' }}{{ ($inventory->unit_value && $inventory->unit) ? ' ('.($inventory->unit_value % 1 == 0 ? (int)$inventory->unit_value : $inventory->unit_value).' '.$inventory->unit.')' : '' }}{{ $inventory->description ? ' - '.$inventory->description : '' }}">
                                                         <strong>{{ $inventory->item_name }}</strong> 
                                                         <span class="inventory-details">
+                                                            <span class="badge bg-warning text-dark border ms-1" style="font-size: 10px;">{{ $divisionLabel }}</span>
                                                             @if($inventory->sku)<code class="ms-1">{{ $inventory->sku }}</code>@endif
                                                             @if($inventory->unit && $inventory->unit_value)
                                                                 <span class="badge bg-light text-dark border ms-1">{{ $inventory->unit_value % 1 == 0 ? (int)$inventory->unit_value : $inventory->unit_value }} {{ $inventory->unit }}</span>
@@ -405,17 +411,21 @@
                                                         </span>
                                                     </label>
                                                 </div>
-                                                <div class="d-flex align-items-center gap-1 inventory-qty-wrapper ms-2" style="min-width: 130px;">
+                                                <div class="d-flex align-items-center gap-1 inventory-qty-wrapper ms-2" style="min-width: 220px;">
                                                     <span class="text-muted small" style="font-size: 11px;">Qty:</span>
                                                     <input type="number" name="inventory_qty[{{ $inventory->id }}]" 
                                                            value="{{ $qtyVal }}" min="0.01" step="any"
                                                            class="form-control form-control-sm border-gold-focus inventory-qty-input"
                                                            style="height: 24px; font-size: 11px; padding: 2px 6px; width: 65px;"
                                                            placeholder="1"
+                                                           data-rate="{{ $rate }}" data-size="{{ $unitSize }}"
                                                            {{ $isChecked ? '' : 'disabled' }}>
                                                     @if($inventory->unit)
                                                         <span class="text-secondary fw-semibold small" style="font-size: 11px;">{{ $inventory->unit }}</span>
                                                     @endif
+                                                    <span class="text-success fw-bold small ms-2 consumed-cost-tag" style="font-size: 11px;" title="Calculated Consumed Cost">
+                                                        Cost: Rs. <span class="consumed-cost-val">{{ number_format($consumedCost, 2) }}</span>
+                                                    </span>
                                                 </div>
                                             </div>
                                             @empty
@@ -477,7 +487,7 @@
             // Initial check
             updateRemoveButtons();
 
-            // Toggle inventory Qty input on checkbox change
+            // Toggle inventory Qty input on checkbox change & live cost calculation
             const inventoryCheckboxes = document.querySelectorAll('.inventory-checkbox');
             inventoryCheckboxes.forEach(function(checkbox) {
                 checkbox.addEventListener('change', function() {
@@ -489,6 +499,26 @@
                             if (this.checked && (!qtyInput.value || qtyInput.value <= 0)) {
                                 qtyInput.value = 1;
                             }
+                            qtyInput.dispatchEvent(new Event('input'));
+                        }
+                    }
+                });
+            });
+
+            // Live calculation for Consumed Cost
+            const qtyInputs = document.querySelectorAll('.inventory-qty-input');
+            qtyInputs.forEach(function(input) {
+                input.addEventListener('input', function() {
+                    const row = this.closest('.inventory-item-row');
+                    if (row) {
+                        const costDisplay = row.querySelector('.consumed-cost-val');
+                        if (costDisplay) {
+                            const qty = parseFloat(this.value) || 0;
+                            const rate = parseFloat(this.dataset.rate) || 0;
+                            const size = parseFloat(this.dataset.size) || 1;
+                            const costPerUnit = rate / size;
+                            const totalCost = qty * costPerUnit;
+                            costDisplay.textContent = totalCost.toFixed(2);
                         }
                     }
                 });

@@ -198,13 +198,23 @@
                                       @enderror
                                   </div>
 
-                                  <div class="col-md-6 mb-2">
-                                      <label for="division" class="form-label fw-bold">Division</label>
-                                      <input type="text" name="division" id="division" class="form-control border-gold-focus @error('division') is-invalid @enderror" placeholder="e.g. Hair Care" value="{{ old('division', $inventory->division) }}">
-                                      @error('division')
-                                      <div class="invalid-feedback">{{ $message }}</div>
-                                      @enderror
-                                  </div>
+                                   <div class="col-md-6 mb-2">
+                                       <label for="division" class="form-label fw-bold">Stock Division / Type <span class="text-danger">*</span></label>
+                                       <select name="division" id="division" class="form-select border-gold-focus @error('division') is-invalid @enderror">
+                                           <option value="Consumable" {{ old('division', $inventory->division) == 'Consumable' ? 'selected' : '' }}>Consumable (Internal Service Use / Partial Consumption)</option>
+                                           <option value="Retail" {{ old('division', $inventory->division) == 'Retail' ? 'selected' : '' }}>Retail (Direct Customer Sale)</option>
+                                           <option value="Asset" {{ old('division', $inventory->division) == 'Asset' ? 'selected' : '' }}>Asset (Salon Equipment & Operational Tools)</option>
+                                       </select>
+                                       <small class="text-muted d-block mt-1" style="font-size: 11px;">
+                                           <i class="fas fa-info-circle text-warning me-1"></i>
+                                           <strong>Consumable</strong>: Partial usage per service. 
+                                           <strong>Retail</strong>: Direct sale. 
+                                           <strong>Asset</strong>: Equipment/tools.
+                                       </small>
+                                       @error('division')
+                                       <div class="invalid-feedback">{{ $message }}</div>
+                                       @enderror
+                                   </div>
                               </div>
                           
 

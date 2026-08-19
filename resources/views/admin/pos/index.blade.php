@@ -106,7 +106,7 @@
                                                 <div class="card-body p-3 d-flex flex-column justify-content-between">
                                                     <div>
                                                         <div class="d-flex justify-content-between align-items-start mb-2">
-                                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5 rounded text-xs font-semibold">Product</span>
+                                                            <span class="badge {{ $product->division === 'Retail' ? 'bg-primary-subtle text-primary border border-primary-subtle' : ($product->division === 'Asset' ? 'bg-secondary-subtle text-secondary border border-secondary-subtle' : 'bg-success-subtle text-success border border-success-subtle') }} px-2 py-0.5 rounded text-xs font-semibold">{{ $product->division ?: 'Product' }}</span>
                                                             <span class="text-xs {{ $outOfStock ? 'text-danger font-bold' : ($product->quantity <= $product->min_quantity ? 'text-warning font-semibold' : 'text-success') }}">
                                                                 Stock: {{ $product->manage_stock ? $product->quantity : 'Unlimited' }}
                                                             </span>
