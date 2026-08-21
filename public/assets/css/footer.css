@@ -1,122 +1,175 @@
-/* Footer Styles */
+
+/* Moroccanoil Exact Footer High Contrast & Typography */
 .footer-section {
-    background-color: var(--secondary-color);
-    color: var(--light-color);
-    border-top: 1px solid rgba(var(--highlight-color-rgb), 0.1);
-    padding: 4rem 0 2rem;
+    background-color: #008C99 !important; /* Signature Moroccanoil Teal */
+    color: #FFFFFF !important;
+    border-top: none !important;
+    padding: 4.5rem 0 0 0 !important;
     position: relative;
     width: 100%;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
+.footer-heading,
 .footer-section h5 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: var(--light-color);
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    letter-spacing: 2.2px !important;
+    text-transform: uppercase !important;
+    color: #FFFFFF !important;
+    margin-bottom: 1.5rem !important;
 }
 
-.footer-section span {
-    color: var(--primary-color);
+.footer-info p,
+.newsletter-desc,
+.footer-section p {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.65 !important;
+    color: #FFFFFF !important;
+    opacity: 0.95 !important;
+    font-weight: 400 !important;
 }
 
-.footer-info p {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: rgba(var(--light-color-rgb), 0.8);
+.footer-nav-list {
+    padding-left: 0 !important;
+    list-style: none !important;
 }
 
-.footer-links ul li, 
-.footer-services ul li {
-    margin-bottom: 0.8rem;
+.footer-nav-list li {
+    margin-bottom: 0.5rem !important;
 }
 
-.footer-links ul li a, 
-.footer-services ul li a {
-    color: rgba(var(--light-color-rgb), 0.7);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
+.footer-nav-list li a,
+.footer-section a:not(.btn) {
+    font-family: 'Montserrat', sans-serif !important;
+    color: #FFFFFF !important;
+    opacity: 0.95 !important;
+    text-decoration: none !important;
+    font-size: 14.5px !important;
+    font-weight: 400 !important;
+    line-height: 2.1 !important;
+    transition: all 0.2s ease !important;
 }
 
-.footer-links ul li a:hover, 
-.footer-services ul li a:hover {
-    color: var(--primary-color);
-    padding-left: 5px;
+.footer-nav-list li a:hover,
+.footer-section a:not(.btn):hover {
+    color: #FFFFFF !important;
+    opacity: 1 !important;
+    text-decoration: underline !important;
 }
 
-.contact-info li {
-    display: flex;
-    align-items: start;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    color: var(--text-muted-color);
+/* Newsletter Section */
+.newsletter-form label {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    letter-spacing: 2px !important;
+    color: #FFFFFF !important;
+    text-transform: uppercase !important;
 }
 
-.contact-info li i {
-    margin-right: 10px;
-    color: var(--primary-color);
+.newsletter-input-group {
+    position: relative !important;
+    border-bottom: 1.5px solid #FFFFFF !important;
+    display: flex !important;
+    align-items: center !important;
+    padding-bottom: 4px !important;
+    margin-top: 0.5rem !important;
 }
 
-.hours-list li {
-    font-size: 0.9rem;
-    color: var(--text-muted-color);
-    margin-bottom: 0.5rem;
+.newsletter-input {
+    font-family: 'Montserrat', sans-serif !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: #FFFFFF !important;
+    padding: 0.5rem 2rem 0.5rem 0 !important;
+    width: 100% !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
 }
 
-.footer-divider {
-    border-color: rgba(var(--black-rgb),0.1);
-    margin: 1rem 0;
+.newsletter-input::placeholder {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-family: 'Montserrat', sans-serif !important;
 }
 
-.footer-bottom p {
-    font-size: 0.9rem;
-    color: var(--text-muted-color);
+.newsletter-submit-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #FFFFFF !important;
+    font-size: 1.2rem !important;
+    cursor: pointer !important;
+    padding: 0 0.5rem !important;
+    transition: transform 0.2s ease !important;
 }
 
-.footer-section .social-links a {
-    color: var(--light-color);
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
+.newsletter-submit-btn:hover {
+    transform: translateX(4px) !important;
 }
 
-.footer-section .social-links a:hover {
-    color: var(--primary-color);
-    transform: translateY(-3px);
+.newsletter-consent label,
+.form-check-label {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 11px !important;
+    color: #FFFFFF !important;
+    opacity: 0.9 !important;
+    text-transform: none !important;
+    font-weight: 400 !important;
 }
 
-/* Scroll to Top Button */
-.scroll-to-top {
-    position: fixed;
-    right: 25px;
-    bottom: 25px;
-    width: 45px;
-    height: 45px;
-    background-color: var(--primary-color);
-    color: var(--dark-color);
-    text-align: center;
-    font-size: 18px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(var(--black-rgb), 0.2);
-    z-index: 1000;
+/* Bottom White Footer Bar */
+.footer-bottom-bar {
+    background-color: #FFFFFF !important;
+    border-top: 1px solid #EAE7E1 !important;
+    padding: 1.4rem 0 !important;
+    color: #121A21 !important;
+    margin-top: 4rem !important;
+    font-family: 'Montserrat', sans-serif !important;
 }
 
-.scroll-to-top:hover {
-    background-color: var(--accent-color);
-    color: var(--dark-color);
-    transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(var(--highlight-color-rgb), 0.3);
+.footer-legal-links a {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    color: #121A21 !important;
+    transition: color 0.2s ease !important;
+    opacity: 1 !important;
 }
 
-.scroll-to-top i {
-    line-height: 45px;
+.footer-legal-links a:hover {
+    color: #008C99 !important;
 }
 
-.scroll-to-top.visible {
-    opacity: 1;
-    visibility: visible;
+
+.scroll-to-top,
+#scrollToTop {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+
+/* Moroccanoil Compact Footer Spacing */
+.footer-section {
+    padding-top: 2rem !important;
+    padding-bottom: 0 !important;
+}
+
+.footer-heading,
+.footer-section h5 {
+    margin-bottom: 0.8rem !important;
+}
+
+.footer-bottom-bar {
+    margin-top: 1.5rem !important;
+    padding: 0.6rem 0 !important;
+}
+
+.footer-nav-list li {
+    margin-bottom: 0.3rem !important;
 }

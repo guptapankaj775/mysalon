@@ -9,7 +9,7 @@
             margin: 0 auto;
             border-radius: 50%;
             overflow: hidden;
-            border: 2px solid #D4AF37;
+            border: 2px solid #00A3B1;
         }
 
         .profile-image img {
@@ -22,7 +22,7 @@
             width: 100%;
             height: 100%;
             background: #f8f9fa;
-            color: #d4af37;
+            color: #00A3B1;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -35,7 +35,7 @@
             right: 0;
             width: 28px;
             height: 28px;
-            background: #D4AF37;
+            background: #00A3B1;
             border: none;
             border-radius: 50%;
             color: #fff;
@@ -48,7 +48,7 @@
         }
 
         .upload-btn:hover {
-            background: #E6B800;
+            background: #008C99;
             transform: scale(1.1);
         }
 
@@ -85,7 +85,7 @@
         .form-select:focus,
         textarea.form-control:focus {
             background-color: #ffffff !important;
-            border-color: #D4AF37 !important;
+            border-color: #00A3B1 !important;
             box-shadow: none !important;
             color: #1f2937 !important;
             outline: none !important;
@@ -97,9 +97,9 @@
         }
 
         .input-group .btn {
-            background-color: #D4AF37 !important;
-            border-color: #D4AF37 !important;
-            color: #2c2c2c !important;
+            background-color: #00A3B1 !important;
+            border-color: #00A3B1 !important;
+            color: #121A21 !important;
             font-weight: 600 !important;
             display: inline-flex !important;
             align-items: center !important;
@@ -113,9 +113,9 @@
         }
 
         .input-group .btn:hover {
-            background-color: #2c2c2c !important;
-            border-color: #2c2c2c !important;
-            color: #D4AF37 !important;
+            background-color: #121A21 !important;
+            border-color: #121A21 !important;
+            color: #00A3B1 !important;
         }
 
         .form-control:disabled {
@@ -134,8 +134,8 @@
         }
 
         .form-check-input:checked {
-            background-color: #D4AF37 !important;
-            border-color: #D4AF37 !important;
+            background-color: #00A3B1 !important;
+            border-color: #00A3B1 !important;
         }
 
         .tax-billing-header {
@@ -150,7 +150,7 @@
             display: flex;
             align-items: center;
             gap: 0.65rem;
-            color: #2C2C2C !important;
+            color: #121A21 !important;
             font-weight: 700;
         }
 
@@ -158,7 +158,7 @@
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: #D4AF37;
+            background: #00A3B1;
             display: inline-block;
         }
 
@@ -175,8 +175,8 @@
         }
 
         .btn-verify-gst {
-            border: 1px solid #D4AF37 !important;
-            color: #D4AF37 !important;
+            border: 1px solid #00A3B1 !important;
+            color: #00A3B1 !important;
             background: transparent !important;
             height: 38px !important;
             padding: 0.375rem 1rem !important;
@@ -190,14 +190,14 @@
         }
 
         .btn-verify-gst:hover {
-            background: #D4AF37 !important;
-            color: #2c2c2c !important;
+            background: #00A3B1 !important;
+            color: #121A21 !important;
         }
 
         .btn-save {
-            background-color: #D4AF37 !important;
-            color: #2c2c2c !important;
-            border: 1px solid #D4AF37 !important;
+            background-color: #00A3B1 !important;
+            color: #121A21 !important;
+            border: 1px solid #00A3B1 !important;
             padding: 0.5rem 1.5rem;
             border-radius: 6px !important;
             font-weight: 600;
@@ -205,9 +205,9 @@
         }
 
         .btn-save:hover {
-            background-color: #2c2c2c !important;
-            color: #D4AF37 !important;
-            border-color: #2c2c2c !important;
+            background-color: #121A21 !important;
+            color: #00A3B1 !important;
+            border-color: #121A21 !important;
         }
 
         .form-group label {
@@ -242,7 +242,7 @@
         .action-icon {
             width: 50px;
             height: 50px;
-            background: #D4AF37;
+            background: #00A3B1;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -257,7 +257,7 @@
 
         .action-card h4 {
             font-size: 2.2rem !important;
-            color: #D4AF37 !important;
+            color: #00A3B1 !important;
             margin: 0.5rem 0;
             font-weight: 700;
         }
@@ -280,7 +280,7 @@
         }
 
         .card-header h3 {
-            color: #2C2C2C !important;
+            color: #121A21 !important;
             font-weight: 600;
         }
 
@@ -292,7 +292,7 @@
             padding: 1.5rem;
             margin-bottom: 1rem;
             transition: all 0.3s ease;
-            color: #2C2C2C !important;
+            color: #121A21 !important;
         }
 
         .appointment-item:hover {
@@ -300,7 +300,7 @@
         }
 
         .appointment-info h4 {
-            color: #2C2C2C !important;
+            color: #121A21 !important;
         }
 
         .appointment-info p {
@@ -312,7 +312,7 @@
         }
 
         .dashboard-header h2 {
-            color: #2C2C2C !important;
+            color: #121A21 !important;
             font-weight: 600;
         }
 
@@ -378,18 +378,18 @@
         }
 
         .btn-gold {
-            background-color: #D4AF37 !important;
-            color: #2c2c2c !important;
-            border: 1px solid #D4AF37 !important;
+            background-color: #00A3B1 !important;
+            color: #121A21 !important;
+            border: 1px solid #00A3B1 !important;
             font-weight: 600;
             padding: 0.75rem 1.5rem;
             transition: all 0.3s ease;
         }
 
         .btn-gold:hover {
-            background-color: #2c2c2c !important;
-            border-color: #2c2c2c !important;
-            color: #D4AF37 !important;
+            background-color: #121A21 !important;
+            border-color: #121A21 !important;
+            color: #00A3B1 !important;
         }
 
         .locked-section {
@@ -412,11 +412,11 @@
 
         .locked-overlay i {
             font-size: 2.5rem;
-            color: rgba(212, 175, 55, 0.8);
+            color: rgba(0, 163, 177, 0.8);
         }
 
         .locked-overlay p {
-            color: #2c2c2c;
+            color: #121A21;
             font-size: 0.95rem;
             margin: 0;
             text-align: center;
@@ -425,7 +425,7 @@
         }
 
         .locked-overlay .btn-unlock {
-            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            background: linear-gradient(135deg, #00A3B1, #B8860B);
             color: #fff;
             font-weight: 700;
             padding: 0.55rem 1.5rem;
@@ -436,8 +436,8 @@
         }
 
         .subscription-notice {
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
-            border: 1px solid rgba(212, 175, 55, 0.35);
+            background: linear-gradient(135deg, rgba(0, 163, 177, 0.15), rgba(0, 163, 177, 0.05));
+            border: 1px solid rgba(0, 163, 177, 0.35);
             border-radius: 14px;
             padding: 1rem 1.5rem;
             margin-bottom: 1.5rem;
@@ -449,7 +449,7 @@
         .subscription-notice .notice-icon {
             width: 42px;
             height: 42px;
-            background: rgba(212, 175, 55, 0.2);
+            background: rgba(0, 163, 177, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -461,7 +461,7 @@
 
         .subscription-notice .notice-text {
             flex: 1;
-            color: #2c2c2c;
+            color: #121A21;
             font-size: 0.9rem;
         }
 
@@ -470,7 +470,7 @@
         }
 
         .subscription-notice .btn-subscribe {
-            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            background: linear-gradient(135deg, #00A3B1, #B8860B);
             color: #fff;
             font-weight: 700;
             padding: 0.5rem 1.25rem;
@@ -495,18 +495,18 @@
         }
 
         .btn-book-appointment {
-            background: #D4AF37;
-            color: #2c2c2c;
+            background: #00A3B1;
+            color: #121A21;
             padding: 0.8rem 1.5rem;
             border-radius: 25px;
-            border: 2px solid #D4AF37;
+            border: 2px solid #00A3B1;
             font-weight: 600;
             transition: all 0.3s ease;
         }
 
         .btn-book-appointment:hover {
             background: transparent;
-            color: #D4AF37;
+            color: #00A3B1;
             transform: translateY(-2px);
         }
     </style>
@@ -803,7 +803,7 @@
                                         </a>
                                         @endif
                                     @else
-                                    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn btn-book-appointment" style="background: rgba(0,0,0,0.03); border: 1px dashed rgba(0,0,0,0.15); color: #2C2C2C;">
+                                    <a href="{{ isset($currentSalon) ? route('salon.subscription.index', ['salon' => $currentSalon->slug]) : route('subscription.index') }}" class="btn btn-book-appointment" style="background: rgba(0,0,0,0.03); border: 1px dashed rgba(0,0,0,0.15); color: #121A21;">
                                         <i class="fas fa-lock text-muted"></i> Subscribe to Book
                                     </a>
                                     @endif
@@ -883,7 +883,7 @@
                                         </div>
                                         <div class="appointment-actions">
                                             @if($appointment->payment_status === 'paid')
-                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #00A3B1; color: #00A3B1; font-weight: 500; text-decoration: none; padding: 8px 16px;">
                                                 <i class="fas fa-file-invoice me-1"></i> Invoice
                                             </a>
                                             @endif
@@ -951,7 +951,7 @@
                                         </div>
                                         <div class="appointment-actions">
                                             @if($appointment->payment_status === 'paid')
-                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #00A3B1; color: #00A3B1; font-weight: 500; text-decoration: none; padding: 8px 16px;">
                                                 <i class="fas fa-file-invoice me-1"></i> Invoice
                                             </a>
                                             @endif
@@ -995,7 +995,7 @@
                                         </div>
                                         <div class="appointment-actions">
                                             @if($appointment->payment_status === 'paid')
-                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #D4AF37; color: #D4AF37; font-weight: 500; text-decoration: none; padding: 8px 16px;">
+                                            <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $appointment->id]) : route('booking.invoice', $appointment->id) }}" target="_blank" class="btn btn-outline-warning btn-sm me-2" style="border-radius: 20px; border-color: #00A3B1; color: #00A3B1; font-weight: 500; text-decoration: none; padding: 8px 16px;">
                                                 <i class="fas fa-file-invoice me-1"></i> Invoice
                                             </a>
                                             @endif
@@ -1069,7 +1069,7 @@
                                     {{ $errors->first() }}
                                 </div>
                                 @endif
-                                <h5 class="mt-2 mb-1" style="color: #2C2C2C; font-weight: 600;">{{ $user->name }}</h5>
+                                <h5 class="mt-2 mb-1" style="color: #121A21; font-weight: 600;">{{ $user->name }}</h5>
                                 <p class="member-since text-muted mb-1" style="font-size: 0.85rem;">Member since {{ $user->created_at->format('F Y') }}</p>
                             </div> -->
 
@@ -1307,7 +1307,7 @@
 
                                     <!-- Tax and Billing Section -->
                                     <div class="mb-2 border-bottom py-1" style="border-color: rgba(0, 0, 0, 0.08) !important;">
-                                        <h5 style="color: #D4AF37; font-weight: 600;">Tax & Billing</h5>
+                                        <h5 style="color: #00A3B1; font-weight: 600;">Tax & Billing</h5>
                                     </div>
                                     <div class="row g-2">
                                         <div class="col-md-3">
@@ -1378,7 +1378,7 @@
 
                                     <!-- Password Change Section -->
                                     <div class="my-2 py-1 border-bottom" style="border-color: rgba(0, 0, 0, 0.08) !important;">
-                                        <h5 style="color: #D4AF37; font-weight: 600;">Change Password</h5>
+                                        <h5 style="color: #00A3B1; font-weight: 600;">Change Password</h5>
                                     </div>
                                     @if (session('password-status') === 'password-updated' || session('status') === 'password-updated')
                                     <div class="alert alert-success">
@@ -1453,7 +1453,7 @@
                                 <div class="table-responsive">
                                     <table class="table align-middle">
                                         <thead>
-                                            <tr style="border-bottom: 2px solid rgba(0, 0, 0, 0.08); color: #D4AF37;">
+                                            <tr style="border-bottom: 2px solid rgba(0, 0, 0, 0.08); color: #00A3B1;">
                                                 <th class="py-3">Item Name</th>
                                                 <th class="py-3">SKU</th>
                                                 <th class="py-3">Quantity</th>
@@ -1465,9 +1465,9 @@
                                         <tbody>
                                             @forelse($user->createdInventories as $item)
                                             <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.05); vertical-align: middle;">
-                                                <td class="py-3 font-weight-bold" style="color: #2c2c2c;">{{ $item->item_name }}</td>
+                                                <td class="py-3 font-weight-bold" style="color: #121A21;">{{ $item->item_name }}</td>
                                                 <td class="py-3"><code>{{ $item->sku ?? '-' }}</code></td>
-                                                <td class="py-3" style="color: #2c2c2c;">{{ $item->quantity }}</td>
+                                                <td class="py-3" style="color: #121A21;">{{ $item->quantity }}</td>
                                                 <td class="py-3">
                                                     @if($item->quantity == 0)
                                                         <span class="badge bg-danger">Out of Stock</span>
@@ -1477,13 +1477,13 @@
                                                         <span class="badge bg-success">In Stock</span>
                                                     @endif
                                                 </td>
-                                                <td class="py-3" style="color: #2c2c2c;">Rs. {{ number_format($item->price, 2) }}</td>
+                                                <td class="py-3" style="color: #121A21;">Rs. {{ number_format($item->price, 2) }}</td>
                                                 <td class="py-3 text-truncate text-muted" style="max-width: 250px;">{{ $item->description ?? '-' }}</td>
                                             </tr>
                                             @empty
                                             <tr>
                                                 <td colspan="6" class="text-center py-5 text-muted">
-                                                    <i class="fas fa-box-open fa-2x mb-3" style="color: #D4AF37; opacity: 0.5;"></i>
+                                                    <i class="fas fa-box-open fa-2x mb-3" style="color: #00A3B1; opacity: 0.5;"></i>
                                                     <p class="mb-0">You haven't created any inventory items yet.</p>
                                                 </td>
                                             </tr>

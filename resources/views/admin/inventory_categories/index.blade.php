@@ -52,7 +52,7 @@
                     <h1 class="h3 mb-0 fw-bold">Manage Inventory Categories</h1>
                 </div>
                 <div class="actions">
-                    <a href="{{ route('admin.inventory-categories.create') }}" class="btn btn-primary" style="background-color: #D4AF37; border-color: #D4AF37; color: #fff;">
+                    <a href="{{ route('admin.inventory-categories.create') }}" class="btn btn-primary" style="background-color: #00A3B1; border-color: #00A3B1; color: #fff;">
                         <i class="fas fa-plus me-1"></i> Add New Category
                     </a>
                 </div>

@@ -167,15 +167,21 @@ class AdminController extends Controller
         unset($validated['icon']);
         
         $inventoriesInput = $request->input('inventories', []);
-        unset($validated['inventories']);
+        $inventoryQtyInput = $request->input('inventory_qty', []);
+        unset($validated['inventories'], $validated['inventory_qty']);
 
         $validated['user_id'] = Auth::id();
         $service = Service::create($validated);
         $service->icon()->create(['image_path' => $iconPath]);
 
-        if (!empty($inventoriesInput)) {
-            $service->inventories()->sync($inventoriesInput);
+        $syncData = [];
+        foreach ($inventoriesInput as $invId) {
+            $qty = isset($inventoryQtyInput[$invId]) && is_numeric($inventoryQtyInput[$invId]) && (float)$inventoryQtyInput[$invId] > 0
+                ? (float)$inventoryQtyInput[$invId]
+                : 1.00;
+            $syncData[$invId] = ['quantity' => $qty];
         }
+        $service->inventories()->sync($syncData);
 
         return redirect()->route('admin.services')->with('success', 'Service created successfully');
     }
@@ -186,15 +192,16 @@ class AdminController extends Controller
             abort(403, 'Unauthorized access to this service.');
         }
 
-        $categoriesQuery = ServiceCategory::query();
-        $inventoriesQuery = Inventory::orderBy('item_name');
-
+        $categoriesQuery = ServiceCategory::orderBy('name');
         if (!Auth::user()->isAdmin()) {
             $categoriesQuery->where('user_id', Auth::id());
+        }
+        $categories = $categoriesQuery->get();
+
+        $inventoriesQuery = Inventory::orderBy('item_name');
+        if (!Auth::user()->isAdmin()) {
             $inventoriesQuery->where('user_id', Auth::id());
         }
-
-        $categories = $categoriesQuery->get();
         $inventories = $inventoriesQuery->get();
         $service->load('inventories');
         return view('admin.services.edit', compact('service', 'categories', 'inventories'));
@@ -210,6 +217,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'features' => 'nullable|array',
+            'features.*' => 'nullable|string|max:255',
             'duration' => 'required|integer|min:1',
             'price' => 'required|numeric|min:0',
             'category_id' => 'required|exists:service_categories,id',
@@ -217,6 +225,7 @@ class AdminController extends Controller
             'icon' => 'nullable',
             'inventories' => 'nullable|array',
             'inventories.*' => 'exists:inventories,id',
+            'inventory_qty' => 'nullable|array',
         ]);
 
         $iconPath = null;
@@ -235,7 +244,8 @@ class AdminController extends Controller
         unset($validated['icon']);
 
         $inventoriesInput = $request->input('inventories', []);
-        unset($validated['inventories']);
+        $inventoryQtyInput = $request->input('inventory_qty', []);
+        unset($validated['inventories'], $validated['inventory_qty']);
 
         $service->update($validated);
 
@@ -253,7 +263,14 @@ class AdminController extends Controller
             }
         }
 
-        $service->inventories()->sync($inventoriesInput);
+        $syncData = [];
+        foreach ($inventoriesInput as $invId) {
+            $qty = isset($inventoryQtyInput[$invId]) && is_numeric($inventoryQtyInput[$invId]) && (float)$inventoryQtyInput[$invId] > 0
+                ? (float)$inventoryQtyInput[$invId]
+                : 1.00;
+            $syncData[$invId] = ['quantity' => $qty];
+        }
+        $service->inventories()->sync($syncData);
 
         return redirect()->route('admin.services')->with('success', 'Service updated successfully');
     }
@@ -431,25 +448,51 @@ class AdminController extends Controller
     public function storeUser(Request $request)
     {
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
-            'role'     => 'required|in:user,admin,staff',
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|email|unique:users,email',
+            'password'    => 'required|min:8|confirmed',
+            'role'        => 'required|in:user,admin,staff',
+            'salon_name'  => 'nullable|string|max:255',
+            'slug'        => 'nullable|string|max:255|unique:users,slug',
+            'phone'       => 'nullable|string|max:20',
+            'salon_type'  => 'nullable|string|max:255',
+            'salon_model' => 'nullable|string|max:255',
+            'address'     => 'nullable|string|max:500',
+            'city'        => 'nullable|string|max:100',
+            'state'       => 'nullable|string|max:100',
+            'zip'         => 'nullable|string|max:20',
             'is_verified' => 'nullable|boolean',
         ]);
 
+        $slug = !empty($validated['slug'])
+            ? \Illuminate\Support\Str::slug($validated['slug'])
+            : (!empty($validated['salon_name']) ? \Illuminate\Support\Str::slug($validated['salon_name']) : null);
+
+        if ($slug && User::where('slug', $slug)->exists()) {
+            $slug = $slug . '-' . time();
+        }
+
         User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role'     => $validated['role'],
+            'name'        => $validated['name'],
+            'email'       => $validated['email'],
+            'password'    => Hash::make($validated['password']),
+            'role'        => $validated['role'],
+            'salon_name'  => $validated['salon_name'] ?? null,
+            'slug'        => $slug,
+            'phone'       => $validated['phone'] ?? null,
+            'salon_type'  => $validated['salon_type'] ?? null,
+            'salon_model' => $validated['salon_model'] ?? null,
+            'address'     => $validated['address'] ?? null,
+            'city'        => $validated['city'] ?? null,
+            'state'       => $validated['state'] ?? null,
+            'zip'         => $validated['zip'] ?? null,
             'is_verified' => $request->boolean('is_verified'),
-            'created_by' => Auth::id(),
+            'created_by'  => Auth::id(),
         ]);
 
         return redirect()
             ->route('admin.users.index')
-            ->with('success', 'User created successfully.');
+            ->with('user_created', 'Salon / User created successfully.');
     }
 
     public function editUser(User $user)
@@ -467,17 +510,39 @@ class AdminController extends Controller
         }
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|in:user,admin,staff',
+            'name'        => 'required|string|max:255',
+            'email'       => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password'    => 'nullable|string|min:8|confirmed',
+            'role'        => 'required|in:user,admin,staff',
+            'salon_name'  => 'nullable|string|max:255',
+            'slug'        => 'nullable|string|max:255|unique:users,slug,' . $user->id,
+            'phone'       => 'nullable|string|max:20',
+            'salon_type'  => 'nullable|string|max:255',
+            'salon_model' => 'nullable|string|max:255',
+            'address'     => 'nullable|string|max:500',
+            'city'        => 'nullable|string|max:100',
+            'state'       => 'nullable|string|max:100',
+            'zip'         => 'nullable|string|max:20',
             'is_verified' => 'nullable|boolean',
         ]);
 
+        $slug = !empty($validated['slug'])
+            ? \Illuminate\Support\Str::slug($validated['slug'])
+            : (!empty($validated['salon_name']) ? \Illuminate\Support\Str::slug($validated['salon_name']) : $user->slug);
+
         $updateData = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'role' => $validated['role'],
+            'name'        => $validated['name'],
+            'email'       => $validated['email'],
+            'role'        => $validated['role'],
+            'salon_name'  => $validated['salon_name'] ?? null,
+            'slug'        => $slug,
+            'phone'       => $validated['phone'] ?? null,
+            'salon_type'  => $validated['salon_type'] ?? null,
+            'salon_model' => $validated['salon_model'] ?? null,
+            'address'     => $validated['address'] ?? null,
+            'city'        => $validated['city'] ?? null,
+            'state'       => $validated['state'] ?? null,
+            'zip'         => $validated['zip'] ?? null,
             'is_verified' => $user->id === Auth::id() ? true : $request->boolean('is_verified'),
         ];
 
@@ -488,7 +553,7 @@ class AdminController extends Controller
         $user->update($updateData);
 
         return redirect()->route('admin.users.index')
-            ->with('user_updated', 'User updated successfully.');
+            ->with('user_updated', 'Salon / User updated successfully.');
     }
 
     public function toggleUserVerification(User $user)

@@ -1,12 +1,13 @@
 <x-app-layout>
     @section("content")
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <h1>About Salon JC</h1>
-            <p>Your Beauty, Our Passion</p>
+    <!-- Page Header Section -->
+    <header class="page-header about-header">
+        <div class="container text-center">
+            <span class="hero-tagline d-block mb-2 text-uppercase" style="letter-spacing: 2px; color: #00A3B1; font-weight: 700; font-size: 13px;">EXCLUSIVELY AT {{ isset($currentSalon) ? strtoupper($currentSalon->salon_name) : 'SALONJC' }}</span>
+            <h1 class="display-4 fw-bold" style="color: #FFFFFF;">About Our Salon</h1>
+            <p class="lead text-white-75 mb-0">Your Beauty, Our Passion — Discover Our Story & Craft</p>
         </div>
-    </section>
+    </header>
 
     <!-- Our Story Section -->
     <section class="our-story py-5">

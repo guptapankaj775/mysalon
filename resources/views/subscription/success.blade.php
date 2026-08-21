@@ -84,7 +84,7 @@
         .success-title {
             font-size: 2.2rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #fff 0%, #D4AF37 100%);
+            background: linear-gradient(135deg, #fff 0%, #00A3B1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -164,14 +164,14 @@
         }
 
         .detail-value.trial { color: #4ade80; }
-        .detail-value.gold { color: #D4AF37; }
+        .detail-value.gold { color: #00A3B1; }
 
         /* CTA Button */
         .btn-go-dashboard {
             display: block;
             width: 100%;
             padding: 1.1rem;
-            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            background: linear-gradient(135deg, #00A3B1, #B8860B);
             color: #000;
             font-weight: 700;
             font-size: 1.05rem;
@@ -299,7 +299,7 @@
 // Confetti animation
 (function() {
     const container = document.getElementById('confetti');
-    const colors = ['#D4AF37', '#4ade80', '#60a5fa', '#f472b6', '#a78bfa'];
+    const colors = ['#00A3B1', '#4ade80', '#60a5fa', '#f472b6', '#a78bfa'];
     const count = 60;
 
     for (let i = 0; i < count; i++) {

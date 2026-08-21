@@ -13,8 +13,8 @@
     
     <style>
         :root {
-            --primary-color: #2C2C2C;
-            --accent-color: #D4AF37;
+            --primary-color: #121A21;
+            --accent-color: #00A3B1;
             --success-color: #28A745;
             --text-color: #333333;
             --muted-color: #718096;
@@ -149,7 +149,7 @@
             }
 
             .invoice-header {
-                background-color: #2C2C2C !important;
+                background-color: #121A21 !important;
                 color: #FFFFFF !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;

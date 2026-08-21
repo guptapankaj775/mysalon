@@ -106,7 +106,7 @@
                                                 <div class="card-body p-3 d-flex flex-column justify-content-between">
                                                     <div>
                                                         <div class="d-flex justify-content-between align-items-start mb-2">
-                                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5 rounded text-xs font-semibold">Product</span>
+                                                            <span class="badge {{ $product->division === 'Retail' ? 'bg-primary-subtle text-primary border border-primary-subtle' : ($product->division === 'Asset' ? 'bg-secondary-subtle text-secondary border border-secondary-subtle' : 'bg-success-subtle text-success border border-success-subtle') }} px-2 py-0.5 rounded text-xs font-semibold">{{ $product->division ?: 'Product' }}</span>
                                                             <span class="text-xs {{ $outOfStock ? 'text-danger font-bold' : ($product->quantity <= $product->min_quantity ? 'text-warning font-semibold' : 'text-success') }}">
                                                                 Stock: {{ $product->manage_stock ? $product->quantity : 'Unlimited' }}
                                                             </span>
@@ -269,7 +269,7 @@
         border-radius: 0.2rem;
     }
     .nav-pills .nav-link.active {
-        background-color: #D4AF37 !important;
+        background-color: #00A3B1 !important;
         color: #1a1a1a !important;
         font-weight: 600;
     }
@@ -279,10 +279,10 @@
         border: 1px solid #e2e8f0;
     }
     .btn-check:checked + .btn-outline-warning {
-        background-color: #D4AF37 !important;
-        border-color: #D4AF37 !important;
+        background-color: #00A3B1 !important;
+        border-color: #00A3B1 !important;
         color: #1a1a1a !important;
-        box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+        box-shadow: 0 0 8px rgba(0, 163, 177, 0.3);
     }
     .btn-outline-warning {
         border-color: #e2e8f0;

@@ -28,7 +28,7 @@
         .page-header h1 {
             font-size: 2.5rem;
             font-weight: 800;
-            color: #2c2c2c;
+            color: #121A21;
             line-height: 1.2;
             margin-bottom: 0.75rem;
         }
@@ -78,7 +78,7 @@
         }
 
         .plan-card:hover {
-            border-color: #D4AF37;
+            border-color: #00A3B1;
             transform: translateY(-4px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.06), 0 0 0 1px rgba(212,175,55,0.12);
         }
@@ -118,7 +118,7 @@
         }
 
         .badge-popular {
-            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            background: linear-gradient(135deg, #00A3B1, #B8860B);
             color: #fff;
         }
 
@@ -141,7 +141,7 @@
         .plan-name {
             font-size: 1.15rem;
             font-weight: 700;
-            color: #2c2c2c;
+            color: #121A21;
             margin-bottom: 0.25rem;
         }
 
@@ -161,7 +161,7 @@
             font-size: 2.2rem;
             font-weight: 800;
             line-height: 1;
-            color: #2c2c2c;
+            color: #121A21;
         }
 
         .price-amount.free-price {
@@ -277,7 +277,7 @@
             display: block;
             width: 100%;
             padding: 0.65rem;
-            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            background: linear-gradient(135deg, #00A3B1, #B8860B);
             color: #fff;
             font-weight: 700;
             font-size: 0.9rem;

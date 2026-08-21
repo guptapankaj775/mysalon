@@ -79,7 +79,7 @@
         .form-select:focus,
         textarea.form-control:focus {
             background-color: #ffffff !important;
-            border-color: #D4AF37 !important;
+            border-color: #00A3B1 !important;
             box-shadow: none !important;
             color: #1f2937 !important;
             outline: none !important;
@@ -228,7 +228,7 @@
                             <a href="{{ isset($currentSalon) ? route('salon.customer.services.book', ['salon' => $currentSalon->slug]) : route('customer.services.book') }}" class="btn btn-outline-secondary">
                                 Cancel
                             </a>
-                            <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #D4AF37; border-color: #D4AF37;">
+                            <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #00A3B1; border-color: #00A3B1;">
                                 <i class="fas fa-arrow-right me-1"></i> Proceed to Payment
                             </button>
                         </div>

@@ -59,6 +59,40 @@ test('admins can store service with mapped inventories', function () {
     $this->assertTrue($service->inventories->contains($inventory2->id));
 });
 
+test('admins can store service with mapped inventories and custom quantities', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $category = ServiceCategory::create(['name' => 'Hair Care', 'status' => true]);
+    
+    $inventory1 = Inventory::create([
+        'user_id' => $admin->id,
+        'item_name' => 'Shampoo Qty Test',
+        'sku' => 'SH-QTY-001',
+        'quantity' => 10,
+        'price' => 150.00,
+        'min_quantity' => 2,
+    ]);
+
+    $response = $this->actingAs($admin)->post('/admin/services', [
+        'name' => 'Luxury Hair Spa with Qty',
+        'description' => 'A deeply conditioning hair spa',
+        'duration' => 60,
+        'price' => 1200.00,
+        'category_id' => $category->id,
+        'status' => '1',
+        'icon' => 'fa-spa',
+        'features' => ['Wash'],
+        'inventories' => [$inventory1->id],
+        'inventory_qty' => [$inventory1->id => 2.5],
+    ]);
+
+    $response->assertRedirect('/admin/services');
+
+    $service = Service::where('name', 'Luxury Hair Spa with Qty')->first();
+    $this->assertNotNull($service);
+    $this->assertCount(1, $service->inventories);
+    $this->assertEquals(2.5, $service->inventories->first()->pivot->quantity);
+});
+
 test('admins can update service with updated mapped inventories', function () {
     $admin = User::factory()->create(['role' => 'admin']);
     $category = ServiceCategory::create(['name' => 'Hair Care', 'status' => true]);

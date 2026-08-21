@@ -66,14 +66,14 @@
         }
 
         .form-switch-gold .form-check-input:checked {
-            background-color: #D4AF37;
-            border-color: #D4AF37;
+            background-color: #00A3B1;
+            border-color: #00A3B1;
         }
 
         /* Gold highlights */
         .border-gold-focus:focus {
-            border-color: #D4AF37 !important;
-            box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+            border-color: #00A3B1 !important;
+            box-shadow: 0 0 0 0.25rem rgba(0, 163, 177, 0.25) !important;
         }
 
         /* Profile settings inputs matching styling */
@@ -109,7 +109,7 @@
         .form-select:focus,
         textarea.form-control:focus {
             background-color: #ffffff !important;
-            border-color: #D4AF37 !important;
+            border-color: #00A3B1 !important;
             box-shadow: none !important;
             color: #1f2937 !important;
             outline: none !important;
@@ -191,9 +191,9 @@
             z-index: 999999 !important;
         }
         .tooltip-inner {
-            background-color: #2C2C2C !important;
+            background-color: #121A21 !important;
             color: #ffffff !important;
-            border: 1px solid #D4AF37;
+            border: 1px solid #00A3B1;
             padding: 8px 12px;
             border-radius: 6px;
             max-width: 300px;
@@ -202,19 +202,19 @@
         }
         .bs-tooltip-top .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before {
-            border-top-color: #D4AF37 !important;
+            border-top-color: #00A3B1 !important;
         }
         .bs-tooltip-bottom .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="bottom"] .tooltip-arrow::before {
-            border-bottom-color: #D4AF37 !important;
+            border-bottom-color: #00A3B1 !important;
         }
         .bs-tooltip-start .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="left"] .tooltip-arrow::before {
-            border-left-color: #D4AF37 !important;
+            border-left-color: #00A3B1 !important;
         }
         .bs-tooltip-end .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="right"] .tooltip-arrow::before {
-            border-right-color: #D4AF37 !important;
+            border-right-color: #00A3B1 !important;
         }
     </style>
     @endpush
@@ -233,7 +233,7 @@
                     <a href="{{ route('admin.services') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center" style="height: 30px; font-size: 0.85rem;">
                         <i class="fas fa-chevron-left me-1"></i> Back
                     </a>
-                    <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm d-flex align-items-center" style="background-color: #D4AF37; border-color: #D4AF37; height: 30px; font-size: 0.85rem;">
+                    <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm d-flex align-items-center" style="background-color: #00A3B1; border-color: #00A3B1; height: 30px; font-size: 0.85rem;">
                         <i class="fas fa-save me-1"></i> Save
                     </button>
                 </div>
@@ -362,21 +362,52 @@
 
                                         <div class="card border-0 p-2 inventory-list-container">
                                             @forelse($inventories as $inventory)
-                                            <div class="form-check inventory-item-row">
-                                                <input class="form-check-input border-2" type="checkbox" name="inventories[]" value="{{ $inventory->id }}"
-                                                       id="inventory_{{ $inventory->id }}"
-                                                       {{ is_array(old('inventories')) && in_array($inventory->id, old('inventories')) ? 'checked' : '' }}>
-                                                <label class="ml-1 mt-1 form-check-label inventory-label-container" style="font-size: 12px !important;" for="inventory_{{ $inventory->id }}"
-                                                       data-bs-toggle="tooltip" data-bs-placement="top"
-                                                       title="{{ $inventory->item_name }}{{ $inventory->sku ? ' ['.$inventory->sku.']' : '' }}{{ ($inventory->unit_value && $inventory->unit) ? ' ('.($inventory->unit_value % 1 == 0 ? (int)$inventory->unit_value : $inventory->unit_value).' '.$inventory->unit.')' : '' }}{{ $inventory->description ? ' - '.$inventory->description : '' }}">
-                                                    <strong>{{ $inventory->item_name }}</strong> 
-                                                    <span class="inventory-details">
-                                                        @if($inventory->sku)<code class="ms-1">{{ $inventory->sku }}</code>@endif
-                                                        @if($inventory->unit && $inventory->unit_value)
-                                                            <span class="badge bg-white text-dark border ms-1">{{ $inventory->unit_value % 1 == 0 ? (int)$inventory->unit_value : $inventory->unit_value }} {{ $inventory->unit }}</span>
-                                                        @endif
+                                            @php
+                                                $isChecked = is_array(old('inventories')) && in_array($inventory->id, old('inventories'));
+                                                $qtyVal = old('inventory_qty.'.$inventory->id, 1);
+                                                $rate = ($inventory->cost && $inventory->cost > 0) ? $inventory->cost : ($inventory->price ?? 0);
+                                                $unitSize = ($inventory->unit_value && $inventory->unit_value > 0) ? $inventory->unit_value : 1;
+                                                $costPerUnit = $rate / $unitSize;
+                                                $consumedCost = (float)$qtyVal * $costPerUnit;
+                                                $divisionLabel = $inventory->division ?: 'Consumable';
+                                            @endphp
+                                            <div class="d-flex align-items-center justify-content-between p-1 border-bottom inventory-item-row mb-1">
+                                                <div class="form-check d-flex align-items-center mb-0">
+                                                    <input class="form-check-input border-2 me-2 inventory-checkbox" type="checkbox" name="inventories[]" value="{{ $inventory->id }}"
+                                                           id="inventory_{{ $inventory->id }}"
+                                                           {{ $isChecked ? 'checked' : '' }}>
+                                                    <label class="form-check-label inventory-label-container mb-0" style="font-size: 12px !important; cursor: pointer;" for="inventory_{{ $inventory->id }}"
+                                                           data-bs-toggle="tooltip" data-bs-placement="top"
+                                                           title="{{ $inventory->item_name }}{{ $inventory->sku ? ' ['.$inventory->sku.']' : '' }}{{ ($inventory->unit_value && $inventory->unit) ? ' ('.($inventory->unit_value % 1 == 0 ? (int)$inventory->unit_value : $inventory->unit_value).' '.$inventory->unit.')' : '' }}{{ $inventory->description ? ' - '.$inventory->description : '' }}">
+                                                        <strong>{{ $inventory->item_name }}</strong> 
+                                                        <span class="inventory-details">
+                                                            <span class="badge bg-warning text-dark border ms-1" style="font-size: 10px;">{{ $divisionLabel }}</span>
+                                                            @if($inventory->sku)<code class="ms-1">{{ $inventory->sku }}</code>@endif
+                                                            @if($inventory->unit && $inventory->unit_value)
+                                                                <span class="badge bg-light text-dark border ms-1">{{ $inventory->unit_value % 1 == 0 ? (int)$inventory->unit_value : $inventory->unit_value }} {{ $inventory->unit }}</span>
+                                                            @elseif($inventory->unit)
+                                                                <span class="badge bg-light text-dark border ms-1">{{ $inventory->unit }}</span>
+                                                            @endif
+                                                            <span class="badge bg-light text-muted border ms-1" title="Current Stock"><i class="fas fa-boxes me-1"></i>Stock: {{ $inventory->quantity ?? 0 }}</span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 inventory-qty-wrapper ms-2" style="min-width: 220px;">
+                                                    <span class="text-muted small" style="font-size: 11px;">Qty:</span>
+                                                    <input type="number" name="inventory_qty[{{ $inventory->id }}]" 
+                                                           value="{{ $qtyVal }}" min="0.01" step="any"
+                                                           class="form-control form-control-sm border-gold-focus inventory-qty-input"
+                                                           style="height: 24px; font-size: 11px; padding: 2px 6px; width: 65px;"
+                                                           placeholder="1"
+                                                           data-rate="{{ $rate }}" data-size="{{ $unitSize }}"
+                                                           {{ $isChecked ? '' : 'disabled' }}>
+                                                    @if($inventory->unit)
+                                                        <span class="text-secondary fw-semibold small" style="font-size: 11px;">{{ $inventory->unit }}</span>
+                                                    @endif
+                                                    <span class="text-success fw-bold small ms-2 consumed-cost-tag" style="font-size: 11px;" title="Calculated Consumed Cost">
+                                                        Cost: Rs. <span class="consumed-cost-val">{{ number_format($consumedCost, 2) }}</span>
                                                     </span>
-                                                </label>
+                                                </div>
                                             </div>
                                             @empty
                                             <div class="text-muted small">
@@ -419,7 +450,7 @@
                 const newRow = document.createElement('div');
                 newRow.className = 'input-group mb-2 feature-row';
                 newRow.innerHTML = `
-                    <input type="text" class="form-control border-gold-focus" name="features[]" placeholder="Highlight detail..." required>
+                    <input type="text" class="form-control border-gold-focus" name="features[]" placeholder="e.g. Include hair wash" required>
                     <button type="button" class="btn btn-outline-danger remove-feature"><i class="fas fa-trash-alt"></i></button>
                 `;
                 container.appendChild(newRow);
@@ -427,15 +458,54 @@
             });
 
             container.addEventListener('click', function(e) {
-                const btn = e.target.closest('.remove-feature');
-                if (btn) {
-                    btn.closest('.feature-row').remove();
-                    updateRemoveButtons();
+                if (e.target.closest('.remove-feature')) {
+                    const row = e.target.closest('.feature-row');
+                    if (container.querySelectorAll('.feature-row').length > 1) {
+                        row.remove();
+                        updateRemoveButtons();
+                    }
                 }
             });
 
             // Initial check
             updateRemoveButtons();
+
+            // Toggle inventory Qty input on checkbox change & live cost calculation
+            const inventoryCheckboxes = document.querySelectorAll('.inventory-checkbox');
+            inventoryCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    const row = this.closest('.inventory-item-row');
+                    if (row) {
+                        const qtyInput = row.querySelector('.inventory-qty-input');
+                        if (qtyInput) {
+                            qtyInput.disabled = !this.checked;
+                            if (this.checked && (!qtyInput.value || qtyInput.value <= 0)) {
+                                qtyInput.value = 1;
+                            }
+                            qtyInput.dispatchEvent(new Event('input'));
+                        }
+                    }
+                });
+            });
+
+            // Live calculation for Consumed Cost
+            const qtyInputs = document.querySelectorAll('.inventory-qty-input');
+            qtyInputs.forEach(function(input) {
+                input.addEventListener('input', function() {
+                    const row = this.closest('.inventory-item-row');
+                    if (row) {
+                        const costDisplay = row.querySelector('.consumed-cost-val');
+                        if (costDisplay) {
+                            const qty = parseFloat(this.value) || 0;
+                            const rate = parseFloat(this.dataset.rate) || 0;
+                            const size = parseFloat(this.dataset.size) || 1;
+                            const costPerUnit = rate / size;
+                            const totalCost = qty * costPerUnit;
+                            costDisplay.textContent = totalCost.toFixed(2);
+                        }
+                    }
+                });
+            });
 
             // Client-side Inventory Filter
             const searchInput = document.getElementById('inventorySearch');
@@ -446,7 +516,7 @@
                     items.forEach(function(item) {
                         const text = item.textContent.toLowerCase();
                         if (text.includes(filter)) {
-                            item.style.setProperty('display', 'block', 'important');
+                            item.style.setProperty('display', 'flex', 'important');
                         } else {
                             item.style.setProperty('display', 'none', 'important');
                         }
@@ -554,7 +624,7 @@
                     </div>
                     <div class="modal-footer border-top bg-light py-3 px-4">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #D4AF37; border-color: #D4AF37;" id="quickAddCategorySubmitBtn">
+                        <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #00A3B1; border-color: #00A3B1;" id="quickAddCategorySubmitBtn">
                             <i class="fas fa-save me-1"></i> Save Category
                         </button>
                     </div>

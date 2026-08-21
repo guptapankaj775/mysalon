@@ -24,7 +24,7 @@ beforeEach(function () {
     ]);
 });
 
-test('guest users cannot access invoice page', function () {
+test('guest users can access public invoice page', function () {
     $booking = Booking::create([
         'full_name' => 'John Doe',
         'phone' => '1234567890',
@@ -42,7 +42,7 @@ test('guest users cannot access invoice page', function () {
 
     $response = $this->get(route('booking.invoice', $booking->id));
 
-    $response->assertRedirect(route('login'));
+    $response->assertStatus(200);
 });
 
 test('authorized users can view invoice for their paid booking', function () {

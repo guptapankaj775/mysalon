@@ -111,7 +111,7 @@
                         <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                             <td class="ps-4 py-3">
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="avatar-sm" style="width:36px;height:36px;border-radius:50%;background:rgba(212,175,55,0.2);display:flex;align-items:center;justify-content:center;font-weight:700;color:#D4AF37;font-size:0.85rem;flex-shrink:0;">
+                                    <div class="avatar-sm" style="width:36px;height:36px;border-radius:50%;background:rgba(212,175,55,0.2);display:flex;align-items:center;justify-content:center;font-weight:700;color:#00A3B1;font-size:0.85rem;flex-shrink:0;">
                                         {{ strtoupper(substr($sub->user->name ?? 'U', 0, 1)) }}
                                     </div>
                                     <div>

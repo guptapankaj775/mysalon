@@ -83,7 +83,7 @@
         .form-select:focus,
         textarea.form-control:focus {
             background-color: #ffffff !important;
-            border-color: #D4AF37 !important;
+            border-color: #00A3B1 !important;
             box-shadow: none !important;
             color: #1f2937 !important;
             outline: none !important;
@@ -121,14 +121,14 @@
         }
 
         .form-switch-gold .form-check-input:checked {
-            background-color: #D4AF37;
-            border-color: #D4AF37;
+            background-color: #00A3B1;
+            border-color: #00A3B1;
         }
 
         /* Gold highlights */
         .border-gold-focus:focus {
-            border-color: #D4AF37 !important;
-            box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+            border-color: #00A3B1 !important;
+            box-shadow: 0 0 0 0.25rem rgba(0, 163, 177, 0.25) !important;
         }
     </style>
     @endpush
@@ -148,7 +148,7 @@
                     <a href="{{ route('admin.inventory.index') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center" style="height: 30px; font-size: 0.85rem;">
                         <i class="fas fa-chevron-left me-1"></i> Back
                     </a>
-                    <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm d-flex align-items-center" style="background-color: #D4AF37; border-color: #D4AF37; height: 30px; font-size: 0.85rem;">
+                    <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm d-flex align-items-center" style="background-color: #00A3B1; border-color: #00A3B1; height: 30px; font-size: 0.85rem;">
                         <i class="fas fa-save me-1"></i> Save
                     </button>
                 </div>
@@ -198,13 +198,23 @@
                                       @enderror
                                   </div>
 
-                                  <div class="col-md-6 mb-2">
-                                      <label for="division" class="form-label fw-bold">Division</label>
-                                      <input type="text" name="division" id="division" class="form-control border-gold-focus @error('division') is-invalid @enderror" placeholder="e.g. Hair Care" value="{{ old('division', $inventory->division) }}">
-                                      @error('division')
-                                      <div class="invalid-feedback">{{ $message }}</div>
-                                      @enderror
-                                  </div>
+                                   <div class="col-md-6 mb-2">
+                                       <label for="division" class="form-label fw-bold">Stock Division / Type <span class="text-danger">*</span></label>
+                                       <select name="division" id="division" class="form-select border-gold-focus @error('division') is-invalid @enderror">
+                                           <option value="Consumable" {{ old('division', $inventory->division) == 'Consumable' ? 'selected' : '' }}>Consumable (Internal Service Use / Partial Consumption)</option>
+                                           <option value="Retail" {{ old('division', $inventory->division) == 'Retail' ? 'selected' : '' }}>Retail (Direct Customer Sale)</option>
+                                           <option value="Asset" {{ old('division', $inventory->division) == 'Asset' ? 'selected' : '' }}>Asset (Salon Equipment & Operational Tools)</option>
+                                       </select>
+                                       <small class="text-muted d-block mt-1" style="font-size: 11px;">
+                                           <i class="fas fa-info-circle text-warning me-1"></i>
+                                           <strong>Consumable</strong>: Partial usage per service. 
+                                           <strong>Retail</strong>: Direct sale. 
+                                           <strong>Asset</strong>: Equipment/tools.
+                                       </small>
+                                       @error('division')
+                                       <div class="invalid-feedback">{{ $message }}</div>
+                                       @enderror
+                                   </div>
                               </div>
                           
 

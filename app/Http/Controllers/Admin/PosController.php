@@ -174,13 +174,8 @@ class PosController extends Controller
             DB::commit();
 
             $invoiceUrl = $salon 
-                ? route('salon.booking.payment.success', ['salon' => $salon->slug, 'id' => 999999]) // We will route custom invoice
-                : route('admin.pos.invoice', $posSale->id);
-            
-            // Adjust invoice url to real invoice page
-            if ($salon) {
-                $invoiceUrl = route('salon.admin.pos.invoice', ['salon' => $salon->slug, 'id' => $posSale->id]);
-            }
+                ? route('admin.pos.invoice', ['salon' => $salon->slug, 'id' => $posSale->id])
+                : route('admin.pos.invoice', ['id' => $posSale->id]);
 
             return response()->json([
                 'success' => true,

@@ -44,24 +44,31 @@ class SetCurrentSalon
                 $request->attributes->set('salon', $salon);
                 $request->attributes->set('is_salon_route', $isFromRoute);
                 
-                // Set default route parameter for URL generation
-                \Illuminate\Support\Facades\URL::defaults(['salon' => $slug]);
+                $user = \Illuminate\Support\Facades\Auth::user();
+                $isSuperAdmin = $user && $user->isAdmin();
+
+                // Set default route parameter for URL generation (only for salon routes or non-super-admins)
+                if ($isFromRoute || !$isSuperAdmin) {
+                    \Illuminate\Support\Facades\URL::defaults(['salon' => $slug]);
+                }
 
                 // Forget the salon parameter from the route so it does not pollute method signatures
                 if ($request->route()) {
                     $request->route()->forgetParameter('salon');
                 }
 
-                // If it is a GET request to a global /admin URL, redirect to the salon-scoped portal URL
-                if (!app()->environment('testing') && !$isFromRoute && $request->isMethod('GET') && $request->is('admin*')) {
-                    $path = $request->getPathInfo();
-                    $portalPath = preg_replace('/^\/admin/', '/portal', $path);
-                    $newPath = '/' . $slug . $portalPath;
-                    $queryString = $request->getQueryString();
-                    if ($queryString) {
-                        $newPath .= '?' . $queryString;
+                // If it is a GET request to a global /admin URL, redirect to the salon-scoped portal URL for non-super-admins
+                if (!app()->environment('testing') && !$isFromRoute && $request->isMethod('GET') && $request->is('admin*') && !$request->is('admin/login*')) {
+                    if (\Illuminate\Support\Facades\Auth::check() && !$isSuperAdmin) {
+                        $path = $request->getPathInfo();
+                        $portalPath = preg_replace('/^\/admin/', '/portal', $path);
+                        $newPath = '/' . $slug . $portalPath;
+                        $queryString = $request->getQueryString();
+                        if ($queryString) {
+                            $newPath .= '?' . $queryString;
+                        }
+                        return redirect($newPath);
                     }
-                    return redirect($newPath);
                 }
             }
         }

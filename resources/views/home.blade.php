@@ -1,50 +1,48 @@
 <x-app-layout>
     @section('content')
-    <!-- Hero Section -->
+    <!-- Hero Section - Moroccanoil Luxury Editorial Style -->
     <section id="home" class="hero-section">
-        <div class="overlay"></div>
-        <div class="container h-100">
-            <div
-                class="row h-100 align-items-center justify-content-center">
-                <div class="text-center text-white col-lg-10 hero-content">
-                    <h1 class="mb-3">Welcome to {{ isset($currentSalon) ? $currentSalon->salon_name : 'Salon JC' }}</h1>
-                    <h2 class="mb-4">Your Premier Beauty Destination</h2>
-                    <p class="mb-4 lead">
-                        Experience luxury beauty services with our expert team of professionals.
-                        We provide top-quality salon services that enhance your natural beauty.
-                    </p>
-                    <div class="mb-5 hero-features">
-                        <div class="gap-4 d-flex justify-content-center">
-                            <span><i class="fas fa-star me-2"></i> Expert
-                                Beauticians</span>
-                            <span><i class="fas fa-certificate me-2"></i>
-                                Premium Products</span>
-                            <span><i class="fas fa-heart me-2"></i>
-                                Personalized Care</span>
+        <div class="container">
+            <div class="row align-items-center g-4">
+                <!-- Left Column (50% Width): Editorial Text & Action CTA -->
+                <div class="col-md-6 col-lg-6 text-start">
+                    <div class="hero-text-block">
+                        <span class="hero-tagline d-block mb-3">EXCLUSIVELY AT {{ isset($currentSalon) ? strtoupper($currentSalon->salon_name) : 'SALONJC' }}</span>
+                        <h1 class="hero-editorial-title mb-3">
+                            {{ isset($currentSalon) ? $currentSalon->salon_name : 'SalonJC' }} Favourites
+                        </h1>
+                        <p class="hero-editorial-desc mb-4">
+                            From everyday elegance to special occasion styling, discover premier hair, facial, and bridal treatments designed to elevate your natural beauty.
+                        </p>
+                        <div class="hero-cta-wrapper mb-4 d-flex align-items-center flex-wrap gap-3">
+                            <a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('booking') }}" class="btn-moroccan-cta">
+                                STAY IN BEAUTY MODE
+                            </a>
+                            <a href="{{ isset($currentSalon) ? route('salon.services', ['salon' => $currentSalon->slug]) : route('services') }}" class="btn-moroccan-secondary">
+                                EXPLORE SERVICES
+                            </a>
+                        </div>
+                        <div class="hero-features-strip d-flex flex-wrap gap-3 pt-3 border-top border-secondary-subtle">
+                            <span class="feature-item"><i class="fas fa-star me-2 text-primary"></i> Expert Beauticians</span>
+                            <span class="feature-item"><i class="fas fa-certificate me-2 text-primary"></i> Premium Argan Care</span>
                         </div>
                     </div>
-                    <div
-                        class="gap-4 mb-5 hero-cta d-flex justify-content-center align-items-center">
-                        <a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('booking') }}" class="book-now-btn">Book Your Appointment Now</a>
-                        <a href="{{ isset($currentSalon) ? route('salon.services', ['salon' => $currentSalon->slug]) : route('services') }}" class="services-btn">View Our Services</a>
-                    </div>
-                    <div class="hero-badges">
-                        <div
-                            class="flex-wrap gap-4 d-flex justify-content-center">
-                            <div class="badge-item">
-                                <i class="mb-3 fas fa-users"></i>
-                                <h4>10+</h4>
-                                <p>Years Experience</p>
-                            </div>
-                            <div class="badge-item">
-                                <i class="mb-3 fas fa-smile"></i>
-                                <h4>1000+</h4>
-                                <p>Happy Clients</p>
-                            </div>
-                            <div class="badge-item">
-                                <i class="mb-3 fas fa-award"></i>
-                                <h4>100%</h4>
-                                <p>Satisfaction</p>
+                </div>
+
+                <!-- Right Column (50% Width): Moroccanoil Hero Banner Image -->
+                <div class="col-md-6 col-lg-6 text-center">
+                    <div class="hero-img-block">
+                        <div class="position-relative rounded-4 overflow-hidden shadow-lg border border-4 border-white">
+                            <img src="{{ asset('assets/img/about/salon-interior.jpg') }}" alt="SalonJC Beauty Experience" class="img-fluid w-100 hero-display-img">
+                            <!-- Floating Glassmorphism Badge -->
+                            <div class="position-absolute bottom-0 start-0 m-3 bg-white px-3 py-2 rounded-3 shadow border text-start d-flex align-items-center gap-2">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 34px; height: 34px; background-color: #00A3B1;">
+                                    <i class="fas fa-sparkles" style="font-size: 14px;"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark" style="font-size: 12px; letter-spacing: 0.5px;">LUXURY SALON EXPERIENCE</div>
+                                    <div class="text-muted" style="font-size: 11px;">100% Organic Products & Expert Stylists</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -54,38 +52,55 @@
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="services-section">
+    <section id="services" class="py-5 services-section">
         <div class="container">
             <div class="section-title">
                 <span class="subtitle">Our Services</span>
                 <h2>Luxury Beauty Services</h2>
-                <p class="text-light">
-                    Experience the Art of Beauty with Our Premium Services
+                <p class="text-muted">
+                    Experience luxury beauty services with our expert team
                 </p>
             </div>
             <div class="row g-4">
-                @foreach($categories as $category)
-                <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
-                    <x-service-category-card
-                        :title="$category->name"
-                        :description="$category->description"
-                        :icon="$category->icon_class"
-                        :start-price="$category->start_price"
-                        :category-id="Str::slug($category->name)"
-                        :is-dark="$loop->index % 2 === 1" />
-                </div>
-                @endforeach
+                @if(isset($services) && $services->count() > 0)
+                    @foreach($services as $service)
+                    <div class="col-lg-4 col-md-6">
+                        <div class="service-card h-100">
+                            @if($service->image_path)
+                            <div class="mb-3 overflow-hidden service-img-wrapper rounded-3">
+                                <img src="{{ asset('storage/' . $service->image_path) }}" alt="{{ $service->name }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;">
+                            </div>
+                            @else
+                            <i class="{{ $service->icon_class ?? 'fas fa-spa' }}"></i>
+                            @endif
+                            <h3>{{ $service->name }}</h3>
+                            <p>{{ Str::limit($service->description, 90) }}</p>
+                            <div class="service-price">
+                                <span class="price">Rs {{ number_format($service->price, 2) }}</span>
+                                <span class="duration">{{ $service->duration_minutes }} mins</span>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('booking') }}" class="service-btn">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                @else
+                    <div class="col-12 text-center text-muted">
+                        <p>No services currently available.</p>
+                    </div>
+                @endif
             </div>
         </div>
     </section>
 
     <!-- Gallery Section -->
-    <section id="gallery" class="py-5 text-white gallery-section bg-dark">
+    <section id="gallery" class="py-5 gallery-section">
         <div class="container">
             <div class="section-title">
                 <span class="subtitle">Our Gallery</span>
                 <h2>Our Beautiful Transformations</h2>
-                <p class="text-light-50">
+                <p class="text-muted">
                     Witness the artistry of our expert beauticians
                 </p>
             </div>
@@ -428,13 +443,13 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-5 text-white bg-dark">
+    <section id="about" class="py-5 about-section">
         <div class="container">
             <!-- Main About Content -->
             <div class="mb-5 section-title">
                 <span class="subtitle">About Us</span>
                 <h2>Welcome to SalonJC</h2>
-                <p class="text-light-50">
+                <p class="text-muted">
                     Your Premier Beauty Destination in Pallawela
                 </p>
             </div>
@@ -497,7 +512,7 @@
             <div class="mt-5 mb-4 section-title">
                 <span class="subtitle">Our Team</span>
                 <h2>Meet Our Experts</h2>
-                <p class="text-light-50">
+                <p class="text-muted">
                     Dedicated professionals ready to transform your look
                 </p>
             </div>
@@ -585,12 +600,12 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-5 text-white bg-dark">
+    <section id="contact" class="py-5 contact-section">
         <div class="container">
             <div class="mb-5 section-title">
                 <span class="subtitle">Contact Us</span>
                 <h2>Get In Touch</h2>
-                <p class="text-light-50">We'd Love to Hear From You</p>
+                <p class="text-muted">We'd Love to Hear From You</p>
             </div>
 
             <div class="row g-4">

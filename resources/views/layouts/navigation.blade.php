@@ -1,5 +1,10 @@
+  <!-- Top Moroccanoil Cyan Announcement Bar -->
+  <div class="top-announcement-bar text-center text-white py-2" style="background-color: #008C99; font-size: 11px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; position: fixed; top: 0; left: 0; width: 100%; z-index: 1045;">
+      JOIN OUR REWARDS TO START EARNING POINTS AND UNLOCK EXCLUSIVE PERKS!
+  </div>
+
   <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="margin-top: 32px;">
       <div class="container">
           <a class="navbar-brand" href="{{ isset($currentSalon) ? route('salon.home', ['salon' => $currentSalon->slug]) : route('home') }}">
               {{ isset($currentSalon) ? $currentSalon->salon_name : 'Salon' }}<span>{{ isset($currentSalon) ? '' : 'JC' }}</span>

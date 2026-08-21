@@ -2,9 +2,9 @@
     @push('styles')
     <style>
         .btn-gold {
-            background-color: #D4AF37;
+            background-color: #00A3B1;
             color: #fff;
-            border-color: #D4AF37;
+            border-color: #00A3B1;
             font-weight: 500;
             transition: all 0.3s ease;
         }
@@ -13,7 +13,7 @@
             background-color: #bfa130;
             border-color: #bfa130;
             color: #fff;
-            box-shadow: 0 4px 6px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 163, 177, 0.2);
         }
 
         .form-card {
@@ -24,13 +24,13 @@
         }
         
         .form-check-input:checked {
-            background-color: #D4AF37;
-            border-color: #D4AF37;
+            background-color: #00A3B1;
+            border-color: #00A3B1;
         }
         
         .form-check-input:focus {
-            border-color: #D4AF37;
-            box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+            border-color: #00A3B1;
+            box-shadow: 0 0 0 0.25rem rgba(0, 163, 177, 0.25);
         }
 
         .nav-tabs .nav-link {
@@ -41,14 +41,14 @@
         }
 
         .nav-tabs .nav-link.active {
-            color: #D4AF37;
-            border-bottom: 2px solid #D4AF37;
+            color: #00A3B1;
+            border-bottom: 2px solid #00A3B1;
             background: transparent;
         }
 
         .nav-tabs .nav-link:hover {
-            color: #D4AF37;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            color: #00A3B1;
+            border-bottom: 2px solid rgba(0, 163, 177, 0.3);
         }
     </style>
     @endpush

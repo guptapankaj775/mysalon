@@ -1,15 +1,17 @@
-<div class="service-card">
-    <div class="service-icon">
+<div class="service-card h-100">
+    <div class="service-icon mb-3">
         <i class="{{ $icon }}"></i>
     </div>
-    <h4>{{ $title }}</h4>
-    <p class="text-white-50">{{ $description }}</p>
+    <h3>{{ $title }}</h3>
+    <p class="text-muted">{{ $description }}</p>
     <div class="service-price">
-        <span>{{ $price }}</span>
-        <small>{{ $duration }}</small>
+        <span class="price">{{ $price }}</span>
+        <span class="duration">{{ $duration }}</span>
     </div>
 
     @if($showBookButton)
-    <a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('booking') }}?service={{ $serviceId }}" class="btn btn-book">Book Now</a>
+    <div class="mt-3">
+        <a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('booking') }}?service={{ $serviceId }}" class="service-btn">Book Now</a>
+    </div>
     @endif
 </div>

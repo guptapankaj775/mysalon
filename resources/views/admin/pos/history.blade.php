@@ -120,7 +120,7 @@
                                         </div>
                                     </td>
                                     <td class="px-4 py-3.5 text-center">
-                                        <a href="{{ $salon ? route('salon.admin.pos.invoice', ['salon' => $salon->slug, 'id' => $sale->id]) : route('admin.pos.invoice', $sale->id) }}" target="_blank" class="btn btn-outline-warning btn-xs py-1 px-2 text-dark font-medium d-inline-flex align-items-center gap-1 rounded shadow-xs">
+                                        <a href="{{ $salon ? route('admin.pos.invoice', ['salon' => $salon->slug, 'id' => $sale->id]) : route('admin.pos.invoice', $sale->id) }}" target="_blank" class="btn btn-outline-warning btn-xs py-1 px-2 text-dark font-medium d-inline-flex align-items-center gap-1 rounded shadow-xs">
                                             <i class="fas fa-print"></i> Invoice
                                         </a>
                                     </td>

@@ -2,31 +2,34 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-    --primary-color: #D4AF37;       /* Luxury Gold */
-    --secondary-color: #2C2C2C;     /* Charcoal Gray */
-    --dark-color: #1A1A1A;          /* Deep Black */
+    --primary-color: #00A3B1;       /* Moroccanoil Cyan / Teal */
+    --primary-hover: #008C99;       /* Darker Moroccanoil Teal */
+    --secondary-color: #121A21;     /* Moroccanoil Midnight Slate */
+    --dark-color: #0F171E;          /* Deep Midnight Slate */
     --light-color: #FFFFFF;         /* Pure White */
-    --accent-color: #E6B800;        /* Bright Gold */
-    --text-color: #333333;          /* Dark Gray Text */
+    --accent-color: #C86432;        /* Moroccanoil Argan Copper Bronze */
+    --text-color: #121A21;          /* Dark Slate Text */
     
     /* Background Colors */
-    --light-bg: #F8F6F0;           /* Cream Background */
-    --dark-bg: #2C2C2C;            /* Charcoal Background */
+    --light-bg: #F4F8F9;           /* Moroccanoil Soft Ice Tint */
+    --dark-bg: #121A21;            /* Moroccanoil Midnight Slate */
     
     /* Status Colors */
-    --success-color: #28A745;       /* Success Green */
-    --warning-color: #FFC107;       /* Warning Amber */
-    --error-color: #DC3545;         /* Error Red */
+    --success-color: #10B981;       /* Emerald Green */
+    --warning-color: #C86432;       /* Argan Copper Accent */
+    --error-color: #EF4444;         /* Vibrant Red */
     
     /* Updated Highlight & Special Colors */
-    --highlight-color: #D4AF37;         /* Changed to luxury gold */
-    --highlight-color-rgb: 212, 175, 55; /* RGB for luxury gold */
-    --navbar-base-color: #2C2C2C;       /* Charcoal for navbar */
-    --navbar-base-color-rgb: 44, 44, 44; /* RGB for charcoal */
-    --text-muted-color: #666666;        /* Keep existing muted gray */
-    --scrollbar-track-color: #F8F6F0;   /* Match light background */
-    --vibrant-pink-rgb: 212, 175, 55;   /* Changed to gold accent */
-    --black-rgb: 26, 26, 26;                 /* Pure Black for rgba */
+    --highlight-color: #00A3B1;         /* Moroccanoil Cyan */
+    --highlight-color-rgb: 0, 163, 177; /* RGB for Moroccanoil Cyan */
+    --copper-color: #C86432;            /* Moroccanoil Copper */
+    --copper-color-rgb: 200, 100, 50;   /* RGB for Copper */
+    --navbar-base-color: #121A21;       /* Moroccanoil Midnight Slate */
+    --navbar-base-color-rgb: 18, 26, 33; /* RGB for Midnight Slate */
+    --text-muted-color: #5A6A75;        /* Muted Cyan Gray */
+    --scrollbar-track-color: #F4F8F9;   /* Match light background */
+    --vibrant-pink-rgb: 0, 163, 177;   /* Moroccanoil Cyan accent */
+    --black-rgb: 15, 23, 30;            /* Deep Midnight */
 }
 
 html {
@@ -90,7 +93,6 @@ main {
 .hero-content {
     position: relative;
     z-index: 2;
-    width: 100%;
 }
 
 .hero-section h1 {
@@ -860,7 +862,7 @@ main {
 .contact-form-card select.form-control {
     border: 2px solid rgba(var(--primary-color-rgb), 0.3);
     appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgb(212, 175, 55)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgb(0, 163, 177)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 1em;
@@ -1257,4 +1259,1005 @@ main {
         margin-bottom: 1rem;
         padding: 1.5rem;
     }
+}
+
+
+/* ==========================================================================
+   Moroccanoil Bright Luxury Theme Overrides
+   ========================================================================== */
+
+body {
+    background-color: #FAFCFD !important;
+    color: #121A21 !important;
+}
+
+/* Page Sections - Bright & Clean */
+#services, .services-section {
+    background-color: #F4F8F9 !important;
+    padding: 5rem 0 !important;
+}
+
+#transformations, .gallery-section {
+    background-color: #FFFFFF !important;
+    padding: 5rem 0 !important;
+}
+
+#about {
+    background: #F4F8F9 !important;
+    padding: 5rem 0 !important;
+}
+
+#team, .team-section {
+    background-color: #FFFFFF !important;
+    padding: 5rem 0 !important;
+}
+
+#testimonials {
+    background-color: #F4F8F9 !important;
+    padding: 5rem 0 !important;
+}
+
+#contact, .contact-section {
+    background-color: #FFFFFF !important;
+    padding: 5rem 0 !important;
+}
+
+/* Section Titles & Headings */
+.section-title {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.section-title h2 {
+    color: #121A21 !important;
+    font-weight: 700 !important;
+    font-size: 2.5rem !important;
+    text-shadow: none !important;
+    margin-bottom: 15px !important;
+}
+
+.section-title h2::after {
+    background: #00A3B1 !important;
+}
+
+.section-title .subtitle {
+    color: #00A3B1 !important;
+    background: rgba(0, 163, 177, 0.08) !important;
+    border: 1px solid rgba(0, 163, 177, 0.2) !important;
+    border-radius: 20px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+    padding: 6px 20px !important;
+    display: inline-block !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.section-title .subtitle::before {
+    display: none !important;
+}
+
+.about-content h3, 
+.about-content h2 {
+    color: #121A21 !important;
+    font-weight: 700 !important;
+}
+
+.about-content p, 
+.lead, 
+p {
+    color: #4A5568 !important;
+}
+
+/* Bright White Cards with Moroccanoil Cyan Accent Borders */
+.service-card, 
+.service-package-card, 
+.achievement-box, 
+.team-member, 
+.testimonial-card, 
+.contact-info-card, 
+.contact-form-card {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0, 163, 177, 0.18) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0, 163, 177, 0.06) !important;
+    color: #121A21 !important;
+    transition: all 0.3s ease !important;
+}
+
+.service-card:hover, 
+.service-package-card:hover, 
+.achievement-box:hover, 
+.team-member:hover, 
+.testimonial-card:hover, 
+.contact-info-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 15px 35px rgba(0, 163, 177, 0.12) !important;
+    border-color: #00A3B1 !important;
+}
+
+/* Card Headings & Text */
+.service-card h3, 
+.service-package-card h3, 
+.achievement-box h4, 
+.team-member h4, 
+.member-info h4,
+.testimonial-card h5, 
+.contact-info-card h4, 
+.contact-form-card h3, 
+.contact-form-card h4 {
+    color: #121A21 !important;
+    font-weight: 700 !important;
+}
+
+.service-card p, 
+.service-package-card p, 
+.achievement-box p, 
+.testimonial-card p, 
+.contact-info-card p, 
+.member-info p,
+.contact-info-card span {
+    color: #5A6A75 !important;
+}
+
+.service-card .service-price {
+    border-top: 1px solid #E2E8F0 !important;
+    color: #00A3B1 !important;
+    padding-top: 1rem !important;
+}
+
+.service-card .service-price .price {
+    color: #121A21 !important;
+    font-weight: 700 !important;
+}
+
+.service-card .service-price .duration {
+    color: #64748B !important;
+}
+
+.service-card i, 
+.achievement-box i, 
+.contact-info i,
+.contact-info-card i {
+    color: #00A3B1 !important;
+}
+
+/* Contact Form Input Fields */
+#contact .form-control, 
+.contact-form-card .form-control {
+    background-color: #FFFFFF !important;
+    border: 1px solid #CBD5E1 !important;
+    color: #121A21 !important;
+    border-radius: 8px !important;
+}
+
+#contact .form-control::placeholder, 
+.contact-form-card .form-control::placeholder {
+    color: #94A3B8 !important;
+}
+
+#contact .form-control:focus, 
+.contact-form-card .form-control:focus {
+    background-color: #FFFFFF !important;
+    border-color: #00A3B1 !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 163, 177, 0.2) !important;
+    color: #121A21 !important;
+}
+
+/* Icon Box & Buttons */
+.contact-info-card .icon-box, 
+.service-icon {
+    background: #00A3B1 !important;
+    color: #FFFFFF !important;
+}
+
+.contact-info-card .icon-box i, 
+.service-icon i {
+    color: #FFFFFF !important;
+}
+
+.service-card .service-btn, 
+.btn-primary, 
+.contact-form-card .btn-primary {
+    background-color: #00A3B1 !important;
+    border-color: #00A3B1 !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+    border-radius: 25px !important;
+    padding: 0.6rem 1.8rem !important;
+}
+
+.service-card .service-btn:hover, 
+.btn-primary:hover, 
+.contact-form-card .btn-primary:hover {
+    background-color: #008C99 !important;
+    border-color: #008C99 !important;
+    color: #FFFFFF !important;
+}
+
+/* Footer Section - Rich Moroccanoil Midnight Slate */
+.footer-section {
+    background-color: #121A21 !important;
+    color: #FFFFFF !important;
+    border-top: 2px solid #00A3B1 !important;
+}
+
+.footer-section h5, 
+.footer-section h4 {
+    color: #FFFFFF !important;
+}
+
+.footer-section p, 
+.footer-links ul li a, 
+.footer-services ul li a, 
+.contact-info li, 
+.hours-list li {
+    color: #A0AEC0 !important;
+}
+
+.footer-links ul li a:hover, 
+.footer-services ul li a:hover {
+    color: #00A3B1 !important;
+}
+
+.scroll-to-top {
+    background-color: #00A3B1 !important;
+    color: #FFFFFF !important;
+}
+
+
+/* Lighter Hero Banner Styles */
+.hero-section {
+    background: linear-gradient(rgba(18, 26, 33, 0.35), rgba(0, 163, 177, 0.15)), url('../img/hero-bg.jpg') center/cover no-repeat !important;
+}
+
+.hero-section .overlay {
+    background: linear-gradient(135deg, rgba(18, 26, 33, 0.35) 0%, rgba(0, 163, 177, 0.1) 100%) !important;
+}
+
+.hero-section h1 {
+    color: #FFFFFF !important;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6) !important;
+}
+
+.hero-section h2 {
+    color: #00A3B1 !important;
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+.hero-section .lead {
+    color: #FFFFFF !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+    font-weight: 500 !important;
+}
+
+.hero-features span {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #121A21 !important;
+    border: 1px solid rgba(0, 163, 177, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12) !important;
+    font-weight: 600 !important;
+}
+
+.hero-features span i {
+    color: #00A3B1 !important;
+}
+
+.hero-cta .btn-primary {
+    background-color: #00A3B1 !important;
+    border-color: #00A3B1 !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 15px rgba(0, 163, 177, 0.35) !important;
+}
+
+.hero-cta .btn-primary:hover {
+    background-color: #008C99 !important;
+    border-color: #008C99 !important;
+    color: #FFFFFF !important;
+}
+
+.hero-cta .btn-outline-light {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: 2px solid #FFFFFF !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+.hero-cta .btn-outline-light:hover {
+    background-color: #FFFFFF !important;
+    color: #121A21 !important;
+}
+
+
+/* Gallery Section & Cards Styling */
+.gallery-section {
+    background-color: #FFFFFF !important;
+    padding: 5rem 0 !important;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 163, 177, 0.08);
+    border: 1px solid rgba(0, 163, 177, 0.15);
+    background: #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 163, 177, 0.15);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(18, 26, 33, 0.2) 0%, rgba(18, 26, 33, 0.85) 100%) !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    padding: 1.5rem !important;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1 !important;
+}
+
+.overlay-content {
+    color: #FFFFFF !important;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.overlay-content h4 {
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.3rem !important;
+    color: #FFFFFF !important;
+}
+
+.overlay-content p {
+    font-size: 0.9rem !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    margin-bottom: 0.8rem !important;
+}
+
+.overlay-content .view-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 38px !important;
+    height: 38px !important;
+    background-color: #00A3B1 !important;
+    color: #FFFFFF !important;
+    border-radius: 50% !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.overlay-content .view-btn:hover {
+    background-color: #008C99 !important;
+    transform: scale(1.1) !important;
+}
+
+
+/* Contact Section Moroccanoil Bright Style */
+.contact-section {
+    background-color: #F4F8F9 !important;
+    padding: 5rem 0 !important;
+}
+
+.contact-info-card {
+    background: #FFFFFF !important;
+    border-radius: 16px !important;
+    padding: 2.5rem !important;
+    text-align: center !important;
+    height: 100% !important;
+    border: 1px solid rgba(0, 163, 177, 0.18) !important;
+    box-shadow: 0 10px 30px rgba(0, 163, 177, 0.06) !important;
+    transition: all 0.3s ease !important;
+}
+
+.contact-info-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 15px 35px rgba(0, 163, 177, 0.12) !important;
+    border-color: #00A3B1 !important;
+}
+
+.contact-info-card .icon-box {
+    width: 80px !important;
+    height: 80px !important;
+    background: #00A3B1 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 1.5rem !important;
+    box-shadow: 0 4px 15px rgba(0, 163, 177, 0.25) !important;
+}
+
+.contact-info-card .icon-box i {
+    font-size: 2rem !important;
+    color: #FFFFFF !important;
+}
+
+.contact-info-card h4 {
+    font-size: 1.4rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.8rem !important;
+    color: #121A21 !important;
+}
+
+.contact-info-card p,
+.contact-info-card span {
+    color: #5A6A75 !important;
+    font-size: 0.95rem !important;
+}
+
+
+/* Explicit ID Overrides for Bright Moroccanoil Theme */
+#services,
+.services-section {
+    background: #F4F8F9 !important;
+    background-color: #F4F8F9 !important;
+    background-image: none !important;
+    color: #121A21 !important;
+}
+
+#gallery,
+.gallery-section {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    background-image: none !important;
+    color: #121A21 !important;
+}
+
+#about,
+.about-section {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    background-image: none !important;
+    color: #121A21 !important;
+}
+
+#team,
+.team-section {
+    background: #F4F8F9 !important;
+    background-color: #F4F8F9 !important;
+    background-image: none !important;
+    color: #121A21 !important;
+}
+
+#contact,
+.contact-section {
+    background: #F4F8F9 !important;
+    background-color: #F4F8F9 !important;
+    background-image: none !important;
+    color: #121A21 !important;
+}
+
+
+/* Moroccanoil Exact Editorial Banner Styling */
+#home.hero-section,
+.hero-section {
+    background: linear-gradient(135deg, #CFE8EC 0%, #E7F3F5 50%, #BFE2E7 100%) !important;
+    background-image: linear-gradient(135deg, #CFE8EC 0%, #E7F3F5 50%, #BFE2E7 100%) !important;
+    min-height: 80vh !important;
+    padding: 7rem 0 5rem 0 !important;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.hero-section .overlay {
+    display: none !important;
+}
+
+.hero-tagline {
+    color: #008C99 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 2.5px !important;
+    text-transform: uppercase !important;
+}
+
+.hero-editorial-title {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 3.4rem !important;
+    font-weight: 400 !important;
+    color: #121A21 !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.5px !important;
+    text-shadow: none !important;
+}
+
+.hero-editorial-desc {
+    font-size: 1.2rem !important;
+    color: #334155 !important;
+    line-height: 1.6 !important;
+    font-weight: 400 !important;
+    max-width: 520px;
+    text-shadow: none !important;
+}
+
+/* Rectangular Moroccanoil White Button */
+.btn-moroccan-cta {
+    display: inline-block !important;
+    background-color: #FFFFFF !important;
+    color: #121A21 !important;
+    border: 1.5px solid #121A21 !important;
+    border-radius: 0px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    padding: 1rem 2.4rem !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06) !important;
+}
+
+.btn-moroccan-cta:hover {
+    background-color: #121A21 !important;
+    color: #FFFFFF !important;
+    border-color: #121A21 !important;
+    transform: translateY(-2px) !important;
+}
+
+.btn-moroccan-secondary {
+    display: inline-block !important;
+    background-color: transparent !important;
+    color: #121A21 !important;
+    border: 1.5px solid transparent !important;
+    border-radius: 0px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    padding: 1rem 2rem !important;
+    text-decoration: underline !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-moroccan-secondary:hover {
+    color: #008C99 !important;
+}
+
+.feature-item {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    color: #121A21 !important;
+}
+
+.hero-product-image {
+    max-height: 420px;
+    width: 100%;
+    object-fit: cover;
+    border: 4px solid #FFFFFF !important;
+    box-shadow: 0 20px 40px rgba(0, 163, 177, 0.15) !important;
+}
+
+
+/* Moroccanoil Luxury Hero Banner - High Contrast & Attractive Overrides */
+#home.hero-section,
+.hero-section {
+    background: linear-gradient(135deg, #E2F2F5 0%, #F8FAFC 45%, #D0EBF0 100%) !important;
+    background-image: linear-gradient(135deg, #E2F2F5 0%, #F8FAFC 45%, #D0EBF0 100%) !important;
+    min-height: 82vh !important;
+    padding: 7rem 0 5rem 0 !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+}
+
+.hero-section .overlay {
+    display: none !important;
+}
+
+.hero-tagline {
+    color: #008C99 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    letter-spacing: 2.8px !important;
+    text-transform: uppercase !important;
+}
+
+/* Sharp Dark Charcoal Title - No Blurry White Shadows */
+.hero-section h1,
+.hero-editorial-title {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 3.5rem !important;
+    font-weight: 500 !important;
+    color: #121A21 !important;
+    line-height: 1.18 !important;
+    letter-spacing: -0.5px !important;
+    text-shadow: none !important;
+    margin-bottom: 1.2rem !important;
+}
+
+.hero-editorial-desc {
+    font-size: 1.2rem !important;
+    color: #2C3E50 !important;
+    line-height: 1.65 !important;
+    font-weight: 400 !important;
+    max-width: 520px !important;
+    text-shadow: none !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Crisp Moroccanoil White CTA Button */
+.btn-moroccan-cta {
+    display: inline-block !important;
+    background-color: #FFFFFF !important;
+    color: #121A21 !important;
+    border: 1.5px solid #121A21 !important;
+    border-radius: 4px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    padding: 0.95rem 2.5rem !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+}
+
+.btn-moroccan-cta:hover {
+    background-color: #121A21 !important;
+    color: #FFFFFF !important;
+    border-color: #121A21 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.btn-moroccan-secondary {
+    display: inline-block !important;
+    background-color: transparent !important;
+    color: #121A21 !important;
+    border: 1.5px solid transparent !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    padding: 0.95rem 1.8rem !important;
+    text-decoration: underline !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-moroccan-secondary:hover {
+    color: #008C99 !important;
+}
+
+.feature-item {
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    color: #121A21 !important;
+}
+
+.hero-product-image {
+    max-height: 400px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+    border-radius: 20px !important;
+    border: 6px solid #FFFFFF !important;
+    box-shadow: 0 20px 50px rgba(0, 163, 177, 0.2) !important;
+}
+
+
+/* Moroccanoil Floating Sub-Card Showcase Hover & Elevation */
+.showcase-sub-card {
+    transition: all 0.3s ease !important;
+    box-shadow: 0 15px 35px rgba(0, 163, 177, 0.25) !important;
+}
+
+.showcase-sub-card:hover {
+    transform: scale(1.08) translateY(-5px) !important;
+    box-shadow: 0 20px 45px rgba(0, 163, 177, 0.35) !important;
+}
+
+.showcase-main-card {
+    box-shadow: 0 20px 50px rgba(0, 163, 177, 0.18) !important;
+}
+
+
+/* Moroccanoil Hero Section Guaranteed Side-by-Side Image Display */
+#home.hero-section,
+.hero-section {
+    background: linear-gradient(135deg, #E2F2F5 0%, #F8FAFC 45%, #D0EBF0 100%) !important;
+    background-image: linear-gradient(135deg, #E2F2F5 0%, #F8FAFC 45%, #D0EBF0 100%) !important;
+    padding: 6rem 0 4rem 0 !important;
+    position: relative !important;
+    overflow: visible !important;
+    display: block !important;
+    min-height: auto !important;
+}
+
+.hero-section .overlay {
+    display: none !important;
+}
+
+.hero-banner-card {
+    border-radius: 20px !important;
+    border: 5px solid #FFFFFF !important;
+    box-shadow: 0 20px 45px rgba(0, 163, 177, 0.22) !important;
+    transition: all 0.3s ease !important;
+}
+
+.hero-banner-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 25px 55px rgba(0, 163, 177, 0.3) !important;
+}
+
+.hero-banner-img {
+    height: 380px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+
+/* Moroccanoil Global Typography System */
+:root {
+    --font-heading: 'Playfair Display', Georgia, serif;
+    --font-body: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body,
+p,
+span,
+li,
+a,
+label,
+input,
+select,
+textarea,
+button {
+    font-family: var(--font-body) !important;
+}
+
+body {
+    color: #2C3E50 !important;
+    font-size: 0.98rem !important;
+    line-height: 1.65 !important;
+}
+
+/* Luxury Editorial Serif Headings */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.section-title h2,
+.hero-editorial-title,
+.service-card h3,
+.about-content h3,
+.overlay-content h4,
+.member-info h4,
+.contact-info-card h4 {
+    font-family: var(--font-heading) !important;
+    font-weight: 500 !important;
+    color: #121A21 !important;
+    letter-spacing: -0.3px !important;
+}
+
+.section-title h2 {
+    font-size: 2.5rem !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.8rem !important;
+    line-height: 1.2 !important;
+}
+
+.section-title .subtitle,
+.subtitle {
+    font-family: var(--font-body) !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    letter-spacing: 2.8px !important;
+    text-transform: uppercase !important;
+    color: #008C99 !important;
+    background: rgba(0, 163, 177, 0.08) !important;
+    border: 1px solid rgba(0, 163, 177, 0.25) !important;
+    padding: 0.45rem 1.3rem !important;
+    border-radius: 50px !important;
+    display: inline-block !important;
+}
+
+.section-title p {
+    font-size: 1.05rem !important;
+    color: #5A6A75 !important;
+    font-family: var(--font-body) !important;
+}
+
+/* Tracked-out Uppercase Nav Links & Buttons */
+.nav-link,
+.navbar-nav .nav-link,
+.book-now-nav,
+.service-btn,
+.btn-moroccan-cta,
+.btn-moroccan-secondary,
+.top-announcement-bar,
+.footer-title {
+    font-family: var(--font-body) !important;
+    letter-spacing: 1.8px !important;
+    text-transform: uppercase !important;
+}
+
+
+/* Moroccanoil Hero Section Perfect Alignment & Containment */
+#home.hero-section,
+.hero-section {
+    background: linear-gradient(135deg, #E2F2F5 0%, #F8FAFC 45%, #D0EBF0 100%) !important;
+    background-image: linear-gradient(135deg, #E2F2F5 0%, #F8FAFC 45%, #D0EBF0 100%) !important;
+    padding-top: 140px !important;
+    padding-bottom: 5rem !important;
+    min-height: 75vh !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    margin-bottom: 0 !important;
+}
+
+.hero-section .overlay {
+    display: none !important;
+}
+
+.hero-content {
+    z-index: 2 !important;
+    position: relative !important;
+}
+
+.hero-editorial-title {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 3.4rem !important;
+    font-weight: 500 !important;
+    color: #121A21 !important;
+    line-height: 1.18 !important;
+    letter-spacing: -0.5px !important;
+    text-shadow: none !important;
+    margin-bottom: 1rem !important;
+}
+
+.hero-editorial-desc {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 1.15rem !important;
+    color: #2C3E50 !important;
+    line-height: 1.65 !important;
+    font-weight: 400 !important;
+    max-width: 520px !important;
+    margin-bottom: 1.8rem !important;
+}
+
+.hero-banner-card {
+    border-radius: 20px !important;
+    border: 5px solid #FFFFFF !important;
+    box-shadow: 0 20px 45px rgba(0, 163, 177, 0.22) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    background: #FFFFFF !important;
+}
+
+.hero-banner-img {
+    height: 380px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+/* Ensure next section (#services) starts cleanly below hero section */
+#services,
+.services-section {
+    position: relative !important;
+    clear: both !important;
+    z-index: 1 !important;
+    margin-top: 0 !important;
+}
+
+
+/* Moroccanoil Clean Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #E2F2F5 0%, #F8FAFC 45%, #D0EBF0 100%) !important;
+    background-image: linear-gradient(135deg, #E2F2F5 0%, #F8FAFC 45%, #D0EBF0 100%) !important;
+    padding-top: 140px !important;
+    padding-bottom: 4rem !important;
+    min-height: 75vh !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+}
+
+.hero-section .overlay {
+    display: none !important;
+}
+
+.hero-text-block {
+    width: 100% !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.hero-img-block {
+    width: 100% !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.hero-display-img {
+    width: 100% !important;
+    max-height: 400px !important;
+    height: 380px !important;
+    object-fit: cover !important;
+    border-radius: 20px !important;
+    border: 5px solid #FFFFFF !important;
+    box-shadow: 0 20px 45px rgba(0, 163, 177, 0.22) !important;
+    display: block !important;
+}
+
+/* Standardized Subpage Headers (Moroccanoil Editorial Header) */
+.page-header,
+.about-header,
+.service-header,
+.booking-header,
+.reviews-header {
+    background: linear-gradient(135deg, #121A21 0%, #0F171E 60%, #1A2632 100%) !important;
+    padding-top: 140px !important;
+    padding-bottom: 70px !important;
+    position: relative !important;
+    color: #FFFFFF !important;
+    border-bottom: 3px solid #00A3B1 !important;
+}
+
+.page-header h1,
+.about-header h1,
+.service-header h1,
+.booking-header h1,
+.reviews-header h1 {
+    color: #FFFFFF !important;
+    font-size: 2.8rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.page-header p.lead,
+.about-header p.lead,
+.service-header p.lead,
+.booking-header p.lead,
+.reviews-header p.lead {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 1.15rem !important;
+}
+
+/* Accent helper classes */
+.text-copper {
+    color: #C86432 !important;
+}
+
+.text-gold {
+    color: #C86432 !important;
+}
+
+.text-cyan {
+    color: #00A3B1 !important;
 }
