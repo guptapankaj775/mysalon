@@ -3,37 +3,38 @@
     <link rel="stylesheet" href="{{ asset('assets/css/booking.css') }}">
     <style>
         .city-card {
-            border: 2px solid #3a3a3a !important;
+            border: 1px solid rgba(0, 163, 177, 0.2) !important;
             transition: all 0.2s ease-in-out;
-            background-color: #222 !important;
-            color: #fff !important;
+            background-color: #FFFFFF !important;
+            color: #121A21 !important;
             cursor: pointer;
         }
         .city-card:hover {
-            border-color: #ffc107 !important;
-            background-color: #333 !important;
+            border-color: #00A3B1 !important;
+            background-color: #F4F8F9 !important;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 163, 177, 0.15);
         }
         .city-card.active {
-            border-color: #ffc107 !important;
-            background-color: #444 !important;
+            border-color: #00A3B1 !important;
+            background-color: rgba(0, 163, 177, 0.1) !important;
         }
         .city-card i {
-            color: #ffc107 !important;
+            color: #00A3B1 !important;
         }
         .modal-content {
-            border: 1px solid #444 !important;
+            border: 1px solid rgba(0, 163, 177, 0.2) !important;
         }
         .btn-outline-primary {
-            border-color: #ffc107 !important;
-            color: #ffc107 !important;
+            border-color: #00A3B1 !important;
+            color: #00A3B1 !important;
         }
         .btn-outline-primary:hover {
-            background-color: #ffc107 !important;
-            color: #000 !important;
+            background-color: #00A3B1 !important;
+            color: #FFFFFF !important;
         }
         #locationStatusText i {
-            color: #ffc107;
+            color: #00A3B1;
         }
     </style>
     @endpush
@@ -209,22 +210,22 @@
     <!-- City Selection Modal -->
     <div class="modal fade" id="cityModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="cityModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; background-color: #1a1a1a; color: #fff;">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; background-color: #FFFFFF; color: #121A21;">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fs-4 fw-bold" id="cityModalLabel" style="color: #ffc107;">Select Your City</h5>
+                    <h5 class="modal-title fs-4 fw-bold" id="cityModalLabel" style="color: #121A21;">Select Your City</h5>
                 </div>
                 <div class="modal-body p-4">
                     <!-- Search Input -->
-                    <div class="mb-4 input-group" style="border: 1px solid #444; border-radius: 30px; overflow: hidden; background-color: #2b2b2b;">
+                    <div class="mb-4 input-group" style="border: 1px solid #CBD5E1; border-radius: 30px; overflow: hidden; background-color: #F4F8F9;">
                         <span class="input-group-text bg-transparent border-0 text-muted ps-3">
-                            <i class="fas fa-search"></i>
+                            <i class="fas fa-search" style="color: #00A3B1;"></i>
                         </span>
-                        <input type="text" class="form-control bg-transparent border-0 text-white py-3 ps-1" id="citySearch" placeholder="Search for your city" style="box-shadow: none; color: #fff !important;" />
+                        <input type="text" class="form-control bg-transparent border-0 text-dark py-3 ps-1" id="citySearch" placeholder="Search for your city" style="box-shadow: none; color: #121A21 !important;" />
                     </div>
 
                     <!-- Detect my location button -->
                     <div class="mb-4">
-                        <button type="button" class="btn p-0 border-0 bg-transparent fw-semibold d-flex align-items-center gap-2" id="detectLocationBtn" style="color: #ffc107 !important; transition: transform 0.2s ease;">
+                        <button type="button" class="btn p-0 border-0 bg-transparent fw-semibold d-flex align-items-center gap-2" id="detectLocationBtn" style="color: #00A3B1 !important; transition: transform 0.2s ease;">
                             <i class="fas fa-crosshairs"></i> Detect my location
                         </button>
                     </div>

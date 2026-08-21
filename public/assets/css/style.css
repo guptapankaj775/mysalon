@@ -2214,3 +2214,50 @@ h1, h2, h3, h4, h5, h6,
     box-shadow: 0 20px 45px rgba(0, 163, 177, 0.22) !important;
     display: block !important;
 }
+
+/* Standardized Subpage Headers (Moroccanoil Editorial Header) */
+.page-header,
+.about-header,
+.service-header,
+.booking-header,
+.reviews-header {
+    background: linear-gradient(135deg, #121A21 0%, #0F171E 60%, #1A2632 100%) !important;
+    padding-top: 140px !important;
+    padding-bottom: 70px !important;
+    position: relative !important;
+    color: #FFFFFF !important;
+    border-bottom: 3px solid #00A3B1 !important;
+}
+
+.page-header h1,
+.about-header h1,
+.service-header h1,
+.booking-header h1,
+.reviews-header h1 {
+    color: #FFFFFF !important;
+    font-size: 2.8rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.page-header p.lead,
+.about-header p.lead,
+.service-header p.lead,
+.booking-header p.lead,
+.reviews-header p.lead {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 1.15rem !important;
+}
+
+/* Accent helper classes */
+.text-copper {
+    color: #C86432 !important;
+}
+
+.text-gold {
+    color: #C86432 !important;
+}
+
+.text-cyan {
+    color: #00A3B1 !important;
+}
