@@ -60,17 +60,17 @@
         }
 
         .btn-link {
-            color: #D4AF37;
+            color: #00A3B1;
         }
 
         .btn-link:hover {
-            color: #E6B800;
+            color: #008C99;
         }
 
-        /* Premium Top Navbar Styles */
+        /* Moroccanoil Premium Top Navbar Styles */
         .navbar-custom {
-            background-color: #2C2C2C !important;
-            border-bottom: 2px solid #D4AF37;
+            background-color: #121A21 !important;
+            border-bottom: 2px solid #00A3B1;
             padding: 10px 20px;
         }
 
@@ -80,7 +80,7 @@
         }
 
         .navbar-custom .nav-link {
-            color: rgba(255, 255, 255, 0.75) !important;
+            color: rgba(255, 255, 255, 0.85) !important;
             font-weight: 500;
             font-size: 0.9rem;
             padding: 6px 12px !important;
@@ -93,26 +93,26 @@
 
         .navbar-custom .nav-link:hover,
         .navbar-custom .nav-link:focus {
-            color: #D4AF37 !important;
-            background-color: rgba(255, 255, 255, 0.05);
+            color: #00A3B1 !important;
+            background-color: rgba(255, 255, 255, 0.08);
         }
 
         .navbar-custom .nav-link.active {
-            color: #D4AF37 !important;
-            background-color: rgba(212, 175, 55, 0.1);
+            color: #00A3B1 !important;
+            background-color: rgba(0, 163, 177, 0.15);
         }
 
         /* Dropdown custom dark premium styling */
         .dropdown-menu-custom {
-            background-color: #2C2C2C !important;
-            border: 1px solid rgba(212, 175, 55, 0.1) !important;
+            background-color: #121A21 !important;
+            border: 1px solid rgba(0, 163, 177, 0.2) !important;
             border-radius: 8px;
             padding: 5px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
         }
 
         .dropdown-menu-custom .dropdown-item {
-            color: rgba(255, 255, 255, 0.75) !important;
+            color: rgba(255, 255, 255, 0.85) !important;
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -122,25 +122,47 @@
         }
 
         .dropdown-menu-custom .dropdown-item:hover {
-            background-color: rgba(212, 175, 55, 0.1) !important;
-            color: #D4AF37 !important;
+            background-color: rgba(0, 163, 177, 0.15) !important;
+            color: #00A3B1 !important;
         }
 
         .dropdown-menu-custom .dropdown-item.active {
-            background-color: rgba(212, 175, 55, 0.15) !important;
-            color: #D4AF37 !important;
+            background-color: rgba(0, 163, 177, 0.2) !important;
+            color: #00A3B1 !important;
         }
 
         .main-content {
             padding: 2px 30px 30px 30px;
             min-height: calc(100vh - 65px);
-            background: #F8F6F0;
+            background: #F4F8F9;
             transition: 0.3s;
         }
 
         /* Global Table Cell Font Size */
         table td, .table td, table th, .table th {
             font-size: 14px !important;
+        }
+
+        /* Moroccanoil Global Helper Classes */
+        .border-gold-focus:focus {
+            border-color: #00A3B1 !important;
+            box-shadow: 0 0 0 0.2rem rgba(0, 163, 177, 0.25) !important;
+        }
+        .text-gold {
+            color: #00A3B1 !important;
+        }
+        .bg-gold {
+            background-color: #00A3B1 !important;
+        }
+        .btn-warning, .btn-gold {
+            background-color: #00A3B1 !important;
+            border-color: #00A3B1 !important;
+            color: #FFFFFF !important;
+        }
+        .btn-warning:hover, .btn-gold:hover {
+            background-color: #008C99 !important;
+            border-color: #008C99 !important;
+            color: #FFFFFF !important;
         }
     </style>
     @stack('styles')
@@ -151,8 +173,8 @@
         <div class="container-fluid">
             <!-- Brand Logo -->
             <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : (Auth::user()->slug ? route('salon.dashboard', ['salon' => Auth::user()->slug]) : route('dashboard')) }}" class="navbar-brand d-flex align-items-center">
-                <i class="fas fa-spa me-2 text-warning" style="color: #D4AF37 !important;"></i>
-                <span style="color: #D4AF37; font-weight: 600;">SalonJC</span>
+                <i class="fas fa-spa me-2" style="color: #00A3B1 !important;"></i>
+                <span style="color: #00A3B1; font-weight: 700;">SalonJC</span>
                 <span class="ms-2 text-white small opacity-75" style="font-size: 0.85rem;">
                     @if(Auth::user()->role === 'admin') Admin @else Portal @endif
                 </span>

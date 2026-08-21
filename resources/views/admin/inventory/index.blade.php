@@ -117,7 +117,7 @@
         }
 
         .btn-add-inventory {
-            background-color: #D4AF37;
+            background-color: #00A3B1;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -137,9 +137,9 @@
             font-size: 0.75rem !important;
         }
         .tooltip-inner {
-            background-color: #2C2C2C !important;
+            background-color: #121A21 !important;
             color: #ffffff !important;
-            border: 1px solid #D4AF37;
+            border: 1px solid #00A3B1;
             padding: 8px 12px;
             border-radius: 6px;
             max-width: 300px;
@@ -147,19 +147,19 @@
         }
         .bs-tooltip-top .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before {
-            border-top-color: #D4AF37 !important;
+            border-top-color: #00A3B1 !important;
         }
         .bs-tooltip-bottom .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="bottom"] .tooltip-arrow::before {
-            border-bottom-color: #D4AF37 !important;
+            border-bottom-color: #00A3B1 !important;
         }
         .bs-tooltip-start .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="left"] .tooltip-arrow::before {
-            border-left-color: #D4AF37 !important;
+            border-left-color: #00A3B1 !important;
         }
         .bs-tooltip-end .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="right"] .tooltip-arrow::before {
-            border-right-color: #D4AF37 !important;
+            border-right-color: #00A3B1 !important;
         }
     </style>
     @endpush
@@ -301,7 +301,7 @@
                                 <td><code>{{ $item->sku ?? 'N/A' }}</code></td>
                                 <td>
                                     @if($item->brand)
-                                        <a href="{{ route('admin.brands.edit', $item->brand->id) }}" class="text-decoration-none fw-semibold text-truncate d-inline-block" style="color: #D4AF37; max-width: 120px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $item->brand->name }}">
+                                        <a href="{{ route('admin.brands.edit', $item->brand->id) }}" class="text-decoration-none fw-semibold text-truncate d-inline-block" style="color: #00A3B1; max-width: 120px;" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ $item->brand->name }}">
                                             {{ $item->brand->name }}
                                         </a>
                                     @else

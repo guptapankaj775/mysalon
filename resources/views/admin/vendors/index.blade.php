@@ -8,9 +8,9 @@
         }
 
         .btn-gold {
-            background-color: #D4AF37;
+            background-color: #00A3B1;
             color: #fff;
-            border-color: #D4AF37;
+            border-color: #00A3B1;
             font-weight: 500;
             transition: all 0.3s ease;
         }
@@ -19,7 +19,7 @@
             background-color: #bfa130;
             border-color: #bfa130;
             color: #fff;
-            box-shadow: 0 4px 6px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 163, 177, 0.2);
         }
 
         .filter-card {
@@ -62,11 +62,11 @@
         }
 
         .text-gold {
-            color: #D4AF37;
+            color: #00A3B1;
         }
 
         .table-hover tbody tr:hover {
-            background-color: rgba(212, 175, 55, 0.02);
+            background-color: rgba(0, 163, 177, 0.02);
         }
 
         .vendor-logo {
@@ -80,7 +80,7 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            color: #D4AF37;
+            color: #00A3B1;
         }
         .action-btn {
             padding: 6px 14px;

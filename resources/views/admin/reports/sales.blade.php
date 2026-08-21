@@ -8,7 +8,7 @@
         }
 
         .section-title {
-            color: #2C2C2C;
+            color: #121A21;
             font-weight: 700;
             margin-bottom: 25px;
             font-size: 1.75rem;
@@ -20,7 +20,7 @@
             display: block;
             width: 50px;
             height: 3px;
-            background: #D4AF37;
+            background: #00A3B1;
             margin-top: 8px;
             border-radius: 2px;
         }
@@ -40,7 +40,7 @@
         .kpi-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            border-color: #D4AF37;
+            border-color: #00A3B1;
         }
 
         .kpi-icon {
@@ -54,7 +54,7 @@
             margin-right: 20px;
         }
 
-        .kpi-revenue { background: rgba(212, 175, 55, 0.1); color: #D4AF37; }
+        .kpi-revenue { background: rgba(0, 163, 177, 0.1); color: #00A3B1; }
         .kpi-paid { background: rgba(46, 125, 50, 0.1); color: #2e7d32; }
         .kpi-pending { background: rgba(230, 81, 0, 0.1); color: #e65100; }
         .kpi-bookings { background: rgba(3, 105, 161, 0.1); color: #0369a1; }
@@ -71,7 +71,7 @@
         .kpi-content h3 {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #2C2C2C;
+            color: #121A21;
             margin-bottom: 0;
         }
 
@@ -103,14 +103,14 @@
 
         .form-label {
             font-weight: 600;
-            color: #2C2C2C;
+            color: #121A21;
             font-size: 0.9rem;
         }
 
         .btn-gold {
-            background: #D4AF37;
+            background: #00A3B1;
             color: white;
-            border: 1px solid #D4AF37;
+            border: 1px solid #00A3B1;
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
@@ -124,15 +124,15 @@
 
         .btn-outline-gold {
             background: transparent;
-            color: #D4AF37;
-            border: 1px solid #D4AF37;
+            color: #00A3B1;
+            border: 1px solid #00A3B1;
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
         }
 
         .btn-outline-gold:hover {
-            background: #D4AF37;
+            background: #00A3B1;
             color: white;
         }
 
@@ -284,7 +284,7 @@
             <div class="table-responsive">
                 <table class="table align-middle">
                     <thead>
-                        <tr style="border-bottom: 2px solid rgba(0, 0, 0, 0.08); color: #D4AF37;">
+                        <tr style="border-bottom: 2px solid rgba(0, 0, 0, 0.08); color: #00A3B1;">
                             <th class="pb-3">Booking ID</th>
                             <th class="pb-3">Customer</th>
                             <th class="pb-3">Date & Time</th>
@@ -381,8 +381,8 @@
             const ctx = document.getElementById('salesTrendChart').getContext('2d');
             
             const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
-            gradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
+            gradient.addColorStop(0, 'rgba(0, 163, 177, 0.4)');
+            gradient.addColorStop(1, 'rgba(0, 163, 177, 0.0)');
 
             const labels = @json($chartLabels);
             const values = @json($chartValues);
@@ -394,12 +394,12 @@
                     datasets: [{
                         label: 'Daily Sales (₹)',
                         data: values,
-                        borderColor: '#D4AF37',
+                        borderColor: '#00A3B1',
                         borderWidth: 3,
                         backgroundColor: gradient,
                         fill: true,
                         tension: 0.4,
-                        pointBackgroundColor: '#D4AF37',
+                        pointBackgroundColor: '#00A3B1',
                         pointBorderColor: '#fff',
                         pointBorderWidth: 2,
                         pointRadius: 4,

@@ -269,7 +269,7 @@
         border-radius: 0.2rem;
     }
     .nav-pills .nav-link.active {
-        background-color: #D4AF37 !important;
+        background-color: #00A3B1 !important;
         color: #1a1a1a !important;
         font-weight: 600;
     }
@@ -279,10 +279,10 @@
         border: 1px solid #e2e8f0;
     }
     .btn-check:checked + .btn-outline-warning {
-        background-color: #D4AF37 !important;
-        border-color: #D4AF37 !important;
+        background-color: #00A3B1 !important;
+        border-color: #00A3B1 !important;
         color: #1a1a1a !important;
-        box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+        box-shadow: 0 0 8px rgba(0, 163, 177, 0.3);
     }
     .btn-outline-warning {
         border-color: #e2e8f0;

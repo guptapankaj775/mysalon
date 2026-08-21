@@ -34,13 +34,13 @@
         }
 
         .form-switch-gold .form-check-input:checked {
-            background-color: #D4AF37;
-            border-color: #D4AF37;
+            background-color: #00A3B1;
+            border-color: #00A3B1;
         }
 
         .border-gold-focus:focus {
-            border-color: #D4AF37 !important;
-            box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+            border-color: #00A3B1 !important;
+            box-shadow: 0 0 0 0.25rem rgba(0, 163, 177, 0.25) !important;
         }
     </style>
     @endpush
@@ -59,7 +59,7 @@
                     <a href="{{ route('admin.inventory-categories.index') }}" class="btn btn-outline-secondary me-2">
                         <i class="fas fa-chevron-left me-1"></i> Back
                     </a>
-                    <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #D4AF37; border-color: #D4AF37;">
+                    <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #00A3B1; border-color: #00A3B1;">
                         <i class="fas fa-save me-1"></i> Save Category
                     </button>
                 </div>

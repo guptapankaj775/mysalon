@@ -24,14 +24,14 @@
             background: #ffffff;
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border-top: 4px solid #D4AF37;
+            border-top: 4px solid #00A3B1;
             padding: 2.5rem;
             max-width: 440px;
             margin: 0 auto;
         }
         .admin-badge {
             background-color: #2d3748;
-            color: #D4AF37;
+            color: #00A3B1;
             font-size: 0.75rem;
             letter-spacing: 1px;
             padding: 4px 12px;
@@ -53,7 +53,7 @@
             <div class="admin-auth-card">
                 <div class="text-center">
                     <span class="admin-badge"><i class="fas fa-shield-alt me-1"></i> System Admin Portal</span>
-                    <h2 class="fw-bold mb-1" style="color: #1a202c;">Salon<span style="color: #D4AF37;">JC</span></h2>
+                    <h2 class="fw-bold mb-1" style="color: #1a202c;">Salon<span style="color: #00A3B1;">JC</span></h2>
                     <p class="text-muted small mb-4">Administrator Control Center Sign In</p>
                 </div>
 

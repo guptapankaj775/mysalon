@@ -191,7 +191,7 @@
 
                     <p class="mt-4">Please arrive 10 minutes before your scheduled appointment time.</p>
                     <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
-                        <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $booking->id]) : route('booking.invoice', $booking->id) }}" target="_blank" class="btn btn-warning btn-lg dashboard-button mt-0" style="background-color: #D4AF37; border-color: #D4AF37; color: #111; font-weight: 600;">
+                        <a href="{{ isset($currentSalon) ? route('salon.booking.invoice', ['salon' => $currentSalon->slug, 'id' => $booking->id]) : route('booking.invoice', $booking->id) }}" target="_blank" class="btn btn-warning btn-lg dashboard-button mt-0" style="background-color: #00A3B1; border-color: #00A3B1; color: #111; font-weight: 600;">
                             <i class="fas fa-file-invoice me-2"></i>View Invoice
                         </a>
                         <a href="{{ isset($currentSalon) ? route('salon.dashboard', ['salon' => $currentSalon->slug]) : route('dashboard') }}" class="btn btn-primary btn-lg dashboard-button mt-0">

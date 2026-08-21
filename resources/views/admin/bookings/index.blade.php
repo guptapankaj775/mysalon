@@ -120,7 +120,7 @@
             <div class="mb-2 d-flex justify-content-between align-items-center">
                 <h4 class="h4">Manage Bookings</h4>
                 @can('create_bookings')
-                <a href="{{ route('admin.bookings.create') }}" class="btn btn-warning text-dark fw-bold" style="background-color: #D4AF37; border-color: #D4AF37;">
+                <a href="{{ route('admin.bookings.create') }}" class="btn btn-warning text-dark fw-bold" style="background-color: #00A3B1; border-color: #00A3B1;">
                     <i class="fas fa-plus me-1"></i> Add New Booking
                 </a>
                 @endcan

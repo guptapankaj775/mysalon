@@ -66,14 +66,14 @@
         }
 
         .form-switch-gold .form-check-input:checked {
-            background-color: #D4AF37;
-            border-color: #D4AF37;
+            background-color: #00A3B1;
+            border-color: #00A3B1;
         }
 
         /* Gold highlights */
         .border-gold-focus:focus {
-            border-color: #D4AF37 !important;
-            box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+            border-color: #00A3B1 !important;
+            box-shadow: 0 0 0 0.25rem rgba(0, 163, 177, 0.25) !important;
         }
 
         /* Profile settings inputs matching styling */
@@ -109,7 +109,7 @@
         .form-select:focus,
         textarea.form-control:focus {
             background-color: #ffffff !important;
-            border-color: #D4AF37 !important;
+            border-color: #00A3B1 !important;
             box-shadow: none !important;
             color: #1f2937 !important;
             outline: none !important;
@@ -191,9 +191,9 @@
             z-index: 999999 !important;
         }
         .tooltip-inner {
-            background-color: #2C2C2C !important;
+            background-color: #121A21 !important;
             color: #ffffff !important;
-            border: 1px solid #D4AF37;
+            border: 1px solid #00A3B1;
             padding: 8px 12px;
             border-radius: 6px;
             max-width: 300px;
@@ -202,19 +202,19 @@
         }
         .bs-tooltip-top .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before {
-            border-top-color: #D4AF37 !important;
+            border-top-color: #00A3B1 !important;
         }
         .bs-tooltip-bottom .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="bottom"] .tooltip-arrow::before {
-            border-bottom-color: #D4AF37 !important;
+            border-bottom-color: #00A3B1 !important;
         }
         .bs-tooltip-start .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="left"] .tooltip-arrow::before {
-            border-left-color: #D4AF37 !important;
+            border-left-color: #00A3B1 !important;
         }
         .bs-tooltip-end .tooltip-arrow::before, 
         .bs-tooltip-auto[data-popper-placement^="right"] .tooltip-arrow::before {
-            border-right-color: #D4AF37 !important;
+            border-right-color: #00A3B1 !important;
         }
     </style>
     @endpush
@@ -233,7 +233,7 @@
                     <a href="{{ route('admin.services') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center" style="height: 30px; font-size: 0.85rem;">
                         <i class="fas fa-chevron-left me-1"></i> Back
                     </a>
-                    <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm d-flex align-items-center" style="background-color: #D4AF37; border-color: #D4AF37; height: 30px; font-size: 0.85rem;">
+                    <button type="submit" class="btn btn-warning text-dark fw-bold btn-sm d-flex align-items-center" style="background-color: #00A3B1; border-color: #00A3B1; height: 30px; font-size: 0.85rem;">
                         <i class="fas fa-save me-1"></i> Save
                     </button>
                 </div>
@@ -624,7 +624,7 @@
                     </div>
                     <div class="modal-footer border-top bg-light py-3 px-4">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #D4AF37; border-color: #D4AF37;" id="quickAddCategorySubmitBtn">
+                        <button type="submit" class="btn btn-warning text-dark fw-bold px-4" style="background-color: #00A3B1; border-color: #00A3B1;" id="quickAddCategorySubmitBtn">
                             <i class="fas fa-save me-1"></i> Save Category
                         </button>
                     </div>

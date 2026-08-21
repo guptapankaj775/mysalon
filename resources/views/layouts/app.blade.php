@@ -22,6 +22,10 @@
         sizes="16x16"
         href="./img/favicon_io/favicon-16x16.png" />
     <link rel="manifest" href="{{ asset('assets/img/favicon_io/site.webmanifest') }}" />
+    <!-- Google Fonts for Moroccanoil Luxury Editorial Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -54,20 +58,24 @@
 
     @yield('content')
 
-    <!-- Footer -->
-    <footer class="footer-section py-5">
-        <div class="container">
-            <div class="row">
+    <!-- Footer Section - Exact Moroccanoil Style -->
+    <footer class="footer-section">
+        <div class="container py-3">
+            <div class="row g-4">
+                <!-- Col 1: ABOUT SALONJC -->
                 <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
                     <div class="footer-info">
-                        <h5>{{ isset($currentSalon) ? $currentSalon->salon_name : 'Salon' }}<span>{{ isset($currentSalon) ? '' : 'JC' }}</span></h5>
-                        <p class="mt-3">
-                            Your premier beauty destination in Pallawela,
-                            offering professional services and exceptional
-                            care since 2025.
+                        <h5 class="footer-heading">ABOUT {{ isset($currentSalon) ? strtoupper($currentSalon->salon_name) : 'SALONJC' }}</h5>
+                        <p class="mt-3 text-white-75">
+                            Your premier beauty destination, offering professional services, premium argan care, and exceptional experience.
                         </p>
+                        <ul class="list-unstyled footer-nav-list mt-3">
+                            <li><a href="{{ isset($currentSalon) ? route('salon.about', ['salon' => $currentSalon->slug]) : route('about') }}">Our Story</a></li>
+                            <li><a href="{{ isset($currentSalon) ? route('salon.services', ['salon' => $currentSalon->slug]) : route('services') }}">Argan Oil & Care</a></li>
+                            <li><a href="#about">Sustainability</a></li>
+                        </ul>
                         <div class="social-links mt-4">
-                            <a href="#" class="me-3"><i class="fab fa-facebook"></i></a>
+                            <a href="#" class="me-3"><i class="fab fa-facebook-f"></i></a>
                             <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
                             <a href="#" class="me-3"><i class="fab fa-tiktok"></i></a>
                             <a href="#"><i class="fab fa-whatsapp"></i></a>
@@ -75,82 +83,77 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <!-- Col 2: QUICK LINKS -->
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
                     <div class="footer-links">
-                        <h5>Quick Links</h5>
-                        <ul class="list-unstyled mt-3">
-                            <li><a href="#home">Home</a></li>
-                            <li><a href="#about">About Us</a></li>
-                            <li><a href="#services">Services</a></li>
-                            <li><a href="#gallery">Gallery</a></li>
-                            <li><a href="#contact">Contact</a></li>
+                        <h5 class="footer-heading">QUICK LINKS</h5>
+                        <ul class="list-unstyled footer-nav-list mt-3">
+                            <li><a href="{{ isset($currentSalon) ? route('salon.home', ['salon' => $currentSalon->slug]) : route('home') }}">Home</a></li>
+                            <li><a href="{{ isset($currentSalon) ? route('salon.services', ['salon' => $currentSalon->slug]) : route('services') }}">Services</a></li>
+                            <li><a href="{{ isset($currentSalon) ? route('salon.about', ['salon' => $currentSalon->slug]) : route('about') }}">About Us</a></li>
+                            <li><a href="{{ isset($currentSalon) ? route('salon.booking', ['salon' => $currentSalon->slug]) : route('booking') }}">Book Now</a></li>
                         </ul>
                     </div>
                 </div>
 
+                <!-- Col 3: SUPPORT & SALON LOCATOR -->
                 <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
                     <div class="footer-services">
-                        <h5>Our Services</h5>
-                        <ul class="list-unstyled mt-3">
-                            <li><a href="#bridal">Bridal Dressing</a></li>
-                            <li><a href="#facial">Facial Treatments</a></li>
-                            <li><a href="#hair">Hair Styling</a></li>
-                            <li><a href="#makeup">Makeup Services</a></li>
-                            <li>
-                                <a href="#special">Special Occasions</a>
-                            </li>
+                        <h5 class="footer-heading">SUPPORT</h5>
+                        <ul class="list-unstyled footer-nav-list mt-3">
+                            <li><a href="#contact">Contact Us</a></li>
+                            <li><a href="#faq">FAQ</a></li>
+                            <li><a href="#booking-info">Booking Information</a></li>
+                            <li><a href="#locator">Salon Locator</a></li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
-                    <div class="footer-contact">
-                        <h5>Contact Info</h5>
-                        <ul class="list-unstyled contact-info mt-3">
-                            <li>
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Kaloliya Rd, Pallawela, Sri Lanka</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-phone"></i>
-                                <span>071 414 7628</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-envelope"></i>
-                                <span>salonjc2092@gmail.com</span>
-                            </li>
-                        </ul>
-                        <div class="business-hours mt-4">
-                            <h5>Business Hours</h5>
-                            <ul class="list-unstyled hours-list mt-3">
-                                <li>
-                                    Monday - Saturday: 9:00 AM - 8:00 PM
-                                </li>
-                                <li>Sunday: 10:00 AM - 6:00 PM</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="footer-bottom text-center">
-                        <hr class="footer-divider" />
-                        <p class="mb-0">
-                            &copy; 2025 {{ isset($currentSalon) ? $currentSalon->salon_name : 'SalonJC' }}. All rights reserved.
+                <!-- Col 4: SIGN UP TO OUR NEWSLETTER (Exact Moroccanoil Style) -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-newsletter">
+                        <h5 class="footer-heading">— SIGN UP TO OUR NEWSLETTER</h5>
+                        <p class="newsletter-desc mt-3">
+                            Stay in the loop about exclusive offers and the latest product & service information with our newsletter.
                         </p>
+                        <form action="#" method="POST" class="newsletter-form mt-4" onsubmit="event.preventDefault();">
+                            @csrf
+                            <label class="text-uppercase fw-bold text-white small d-block mb-1" style="font-size: 11px; letter-spacing: 1.5px;">EMAIL ADDRESS</label>
+                            <div class="newsletter-input-group">
+                                <input type="email" class="newsletter-input" placeholder="Enter Email" required>
+                                <button type="submit" class="newsletter-submit-btn" aria-label="Subscribe">
+                                    <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            <div class="form-check mt-3 newsletter-consent">
+                                <input class="form-check-input border-white bg-transparent me-2" type="checkbox" id="newsletterConsent" required>
+                                <label class="form-check-label text-white-75" for="newsletterConsent" style="font-size: 11px; line-height: 1.5;">
+                                    By signing up, I agree to receive promotional offers and understand that my data may be used to enhance marketing efforts. <a href="#privacy" class="text-white text-decoration-underline">Privacy Policy</a>.
+                                </label>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    </footer>
-    <!-- Scroll to Top Button -->
-    <button
-        id="scrollToTop"
-        class="scroll-to-top"
-        aria-label="Scroll to top">
-        <i class="fas fa-chevron-up"></i>
-    </button>
+
+        <!-- Bottom White Bar (Exact Moroccanoil Style) -->
+        <div class="footer-bottom-bar bg-white text-dark py-2">
+            <div class="container">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3" style="font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;">
+                    <div class="text-secondary">
+                        &copy; 2026 {{ isset($currentSalon) ? strtoupper($currentSalon->salon_name) : 'SALONJC' }}. ALL RIGHTS RESERVED.
+                    </div>
+                    <div class="d-flex flex-wrap gap-4 footer-legal-links">
+                        <a href="#privacy" class="text-dark text-decoration-none">PRIVACY POLICY</a>
+                        <a href="#terms" class="text-dark text-decoration-none">TERMS OF SERVICE</a>
+                        <a href="#sustainability" class="text-dark text-decoration-none">SUSTAINABILITY</a>
+                        <a href="#accessibility" class="text-dark text-decoration-none">ACCESSIBILITY STATEMENT</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Footer Section Ends -->
 
 
     <!-- Scripts -->

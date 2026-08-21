@@ -12,8 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #D4AF37;       /* Luxury Gold */
-            --secondary-color: #2C2C2C;     /* Charcoal Gray */
+            --primary-color: #00A3B1;       /* Luxury Gold */
+            --secondary-color: #121A21;     /* Charcoal Gray */
             --dark-color: #1A1A1A;          /* Deep Black */
             --light-bg: #F8F6F0;           /* Cream Background */
             --text-color: #333333;
@@ -32,7 +32,7 @@
             background-color: #FFFFFF;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(212, 175, 55, 0.15);
+            border: 1px solid rgba(0, 163, 177, 0.15);
             overflow: hidden;
             max-width: 1150px;
             margin: 0 auto;
@@ -167,8 +167,8 @@
         }
 
         .btn-gold:hover {
-            background-color: #E6B800;
-            border-color: #E6B800;
+            background-color: #008C99;
+            border-color: #008C99;
             color: var(--dark-color);
             transform: translateY(-1px);
         }
@@ -196,7 +196,7 @@
             }
 
             .invoice-header h1 {
-                color: #D4AF37 !important;
+                color: #00A3B1 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }

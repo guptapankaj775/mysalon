@@ -28,7 +28,7 @@
                                     <th class="ps-4 py-3" style="width: 40%;">Permission Capability</th>
                                     @foreach($roles as $role)
                                         <th class="text-center py-3" style="width: 20%;">
-                                            <span class="text-uppercase tracking-wider font-semibold text-xs py-1 px-3 rounded bg-{{ $role === 'admin' ? 'dark text-gold' : ($role === 'staff' ? 'secondary text-white' : 'light text-dark') }}" style="{{ $role === 'admin' ? 'color: #D4AF37; background-color: #212529;' : '' }}">
+                                            <span class="text-uppercase tracking-wider font-semibold text-xs py-1 px-3 rounded bg-{{ $role === 'admin' ? 'dark text-gold' : ($role === 'staff' ? 'secondary text-white' : 'light text-dark') }}" style="{{ $role === 'admin' ? 'color: #00A3B1; background-color: #212529;' : '' }}">
                                                 {{ ucfirst($role) }}
                                             </span>
                                         </th>
@@ -84,9 +84,9 @@
     @push('styles')
     <style>
         .btn-gold {
-            background-color: #D4AF37;
+            background-color: #00A3B1;
             color: #fff;
-            border-color: #D4AF37;
+            border-color: #00A3B1;
             font-weight: 500;
             transition: all 0.3s ease;
         }
@@ -94,18 +94,18 @@
             background-color: #bfa130;
             border-color: #bfa130;
             color: #fff;
-            box-shadow: 0 4px 6px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 163, 177, 0.2);
         }
         .form-check-input:checked {
-            background-color: #D4AF37;
-            border-color: #D4AF37;
+            background-color: #00A3B1;
+            border-color: #00A3B1;
         }
         .form-check-input:focus {
-            border-color: #D4AF37;
-            box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+            border-color: #00A3B1;
+            box-shadow: 0 0 0 0.25rem rgba(0, 163, 177, 0.25);
         }
         .text-gold {
-            color: #D4AF37;
+            color: #00A3B1;
         }
         .bg-dark-subtle {
             background-color: #e2e3e5;
@@ -118,7 +118,7 @@
         }
         /* Custom hover effect on table rows */
         .table-hover tbody tr:hover {
-            background-color: rgba(212, 175, 55, 0.03);
+            background-color: rgba(0, 163, 177, 0.03);
         }
     </style>
     @endpush

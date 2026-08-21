@@ -15,9 +15,9 @@
         }
 
         .service-category-title {
-            color: #D4AF37;
+            color: #00A3B1;
             font-weight: 700;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.2);
+            border-bottom: 2px solid rgba(0, 163, 177, 0.2);
             padding-bottom: 5px;
             margin-bottom: 15px;
             margin-top: 20px;

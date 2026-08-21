@@ -34,7 +34,7 @@
         .booking-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 16px -1px rgba(0, 0, 0, 0.04);
-            border-color: #d4af37;
+            border-color: #00A3B1;
         }
 
         .booking-card-header {
@@ -59,7 +59,7 @@
 
         .detail-item i {
             width: 24px;
-            color: #d4af37;
+            color: #00A3B1;
             font-size: 1.1rem;
         }
 

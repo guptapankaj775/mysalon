@@ -58,7 +58,7 @@
         .service-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
-            border-color: #d4af37;
+            border-color: #00A3B1;
         }
 
         .service-card-body {
@@ -71,7 +71,7 @@
         .service-name {
             font-size: 1.05rem;
             font-weight: 600;
-            color: #2c2c2c;
+            color: #121A21;
             margin-bottom: 8px;
         }
 
@@ -92,8 +92,8 @@
         }
 
         .btn-book-now {
-            background-color: #d4af37;
-            border-color: #d4af37;
+            background-color: #00A3B1;
+            border-color: #00A3B1;
             color: #1a1a1a;
             font-weight: 600;
             width: 100%;

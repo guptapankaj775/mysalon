@@ -1,30 +1,33 @@
 /* Auth Pages Styling */
 :root{
-    --primary-color: #D4AF37;       /* Luxury Gold */
-    --secondary-color: #2C2C2C;     /* Charcoal Gray */
-    --dark-color: #1A1A1A;          /* Deep Black */
+    --primary-color: #00A3B1;       /* Moroccanoil Cyan / Teal */
+    --primary-hover: #008C99;       /* Darker Moroccanoil Teal */
+    --secondary-color: #121A21;     /* Moroccanoil Midnight Slate */
+    --dark-color: #0F171E;          /* Deep Midnight Slate */
     --light-color: #FFFFFF;         /* Pure White */
-    --accent-color: #E6B800;        /* Bright Gold */
-    --text-color: #333333;          /* Dark Gray Text */
+    --accent-color: #C86432;        /* Moroccanoil Argan Copper Bronze */
+    --text-color: #121A21;          /* Dark Slate Text */
     
     /* Background Colors */
-    --light-bg: #F8F6F0;           /* Cream Background */
-    --dark-bg: #2C2C2C;            /* Charcoal Background */
+    --light-bg: #F4F8F9;           /* Moroccanoil Soft Ice Tint */
+    --dark-bg: #121A21;            /* Moroccanoil Midnight Slate */
     
     /* Status Colors */
-    --success-color: #28A745;       /* Success Green */
-    --warning-color: #FFC107;       /* Warning Amber */
-    --error-color: #DC3545;         /* Error Red */
+    --success-color: #10B981;       /* Emerald Green */
+    --warning-color: #C86432;       /* Argan Copper Accent */
+    --error-color: #EF4444;         /* Vibrant Red */
     
     /* Updated Highlight & Special Colors */
-    --highlight-color: #D4AF37;         /* Changed to luxury gold */
-    --highlight-color-rgb: 212, 175, 55; /* RGB for luxury gold */
-    --navbar-base-color: #2C2C2C;       /* Charcoal for navbar */
-    --navbar-base-color-rgb: 44, 44, 44; /* RGB for charcoal */
-    --text-muted-color: #666666;        /* Keep existing muted gray */
-    --scrollbar-track-color: #F8F6F0;   /* Match light background */
-    --vibrant-pink-rgb: 212, 175, 55;   /* Changed to gold accent */
-    --black-rgb: 26, 26, 26;   
+    --highlight-color: #00A3B1;         /* Moroccanoil Cyan */
+    --highlight-color-rgb: 0, 163, 177; /* RGB for Moroccanoil Cyan */
+    --copper-color: #C86432;            /* Moroccanoil Copper */
+    --copper-color-rgb: 200, 100, 50;   /* RGB for Copper */
+    --navbar-base-color: #121A21;       /* Moroccanoil Midnight Slate */
+    --navbar-base-color-rgb: 18, 26, 33; /* RGB for Midnight Slate */
+    --text-muted-color: #5A6A75;        /* Muted Cyan Gray */
+    --scrollbar-track-color: #F4F8F9;   /* Match light background */
+    --vibrant-pink-rgb: 0, 163, 177;   /* Moroccanoil Cyan accent */
+    --black-rgb: 15, 23, 30;            /* Deep Midnight */
 }
     
 

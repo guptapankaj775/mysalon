@@ -94,7 +94,7 @@
         .plan-summary-name {
             font-size: 1.3rem;
             font-weight: 700;
-            color: #D4AF37;
+            color: #00A3B1;
             margin-bottom: 0.5rem;
         }
 
@@ -193,7 +193,7 @@
 
         .method-tab.active {
             background: rgba(212,175,55,0.2);
-            color: #D4AF37;
+            color: #00A3B1;
         }
 
         .method-tab i { font-size: 1.2rem; }
@@ -293,7 +293,7 @@
         .btn-pay {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            background: linear-gradient(135deg, #00A3B1, #B8860B);
             color: #000;
             font-weight: 700;
             font-size: 1.05rem;
@@ -357,7 +357,7 @@
             width: 60px;
             height: 60px;
             border: 3px solid rgba(212,175,55,0.2);
-            border-top-color: #D4AF37;
+            border-top-color: #00A3B1;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
@@ -495,7 +495,7 @@
                             <span>Paytm</span>
                         </div>
                         <div class="upi-app" onclick="selectUpi(this)">
-                            <i class="fas fa-mobile-alt" style="color:#D4AF37;"></i>
+                            <i class="fas fa-mobile-alt" style="color:#00A3B1;"></i>
                             <span>BHIM</span>
                         </div>
                     </div>
